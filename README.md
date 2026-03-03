@@ -37,3 +37,8 @@ The website showcases my:
 ---
 
 ## 📂 Project Structure
+resume-website/
+│
+├── frontend/ # React + Tailwind application
+├── backend/ # FastAPI backend
+└── README.md
