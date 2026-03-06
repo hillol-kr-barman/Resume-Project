@@ -1,6 +1,18 @@
-@import url("https://cdn.jsdelivr.net/npm/@fontsource/cascadia-code@5.2.5/index.css");
+@import url("https://cdn.jsdelivr.net/npm/@fontsource/plus-jakarta-sans@5.2.6/index.css");
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Cascadia Code", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: "Plus Jakarta Sans", "Avenir Next", "Segoe UI", sans-serif;
+}
+
+@layer base {
+  html {
+    /* Equivalent to roughly viewing the site at ~85% zoom */
+    font-size: 85%;
+  }
+
+  body {
+    font-weight: 400;
+    line-height: 1.5;
+  }
 }

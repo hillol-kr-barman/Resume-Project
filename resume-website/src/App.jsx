@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import HomePage from './pages/HomePage'
 import AuthPage from './pages/AuthPage'
+import ComponentsTestPage from './pages/ComponentsTestPage'
 
 function normalizePath(pathname) {
   if (!pathname || pathname === '/') return '/'
@@ -26,6 +27,9 @@ export default function App() {
   const page = useMemo(() => {
     if (path === '/login' || path === '/register') {
       return <AuthPage mode={path === '/register' ? 'register' : 'login'} onNavigate={navigate} />
+    }
+    if (path === '/components-test') {
+      return <ComponentsTestPage onNavigate={navigate} />
     }
     return <HomePage onNavigate={navigate} />
   }, [path])
