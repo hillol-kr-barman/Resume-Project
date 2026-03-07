@@ -21,14 +21,17 @@ export default function AuthPage({ mode = 'login', onNavigate }) {
 
   return (
     <>
+      {/* Auth Page Layout */}
       <div className="flex min-h-screen flex-col justify-center px-4 py-4 sm:px-6 lg:px-8">
 
+        {/* Top Bar: Back Button + Logo */}
         <div className="grid grid-cols-3 items-center sm:mx-auto sm:w-full sm:max-w-md">
+          {/* Back to Home */}
           <div className="justify-self-start px-1 py-1 sm:px-3.5">
             <button
               type="button"
               onClick={(event) => handleRouteChange(event, '/')}
-              className="inline-flex items-center gap-x-2 rounded-md bg-indigo-500/20 px-2.5 py-1.5 text-sm font-semibold text-indigo-400 shadow-none hover:bg-indigo-500/30"
+              className="inline-flex items-center gap-x-2 rounded-md bg-accent/20 px-2.5 py-1.5 text-sm font-semibold text-accent shadow-none hover:bg-accent/30"
             >
               <ArrowLongLeftIcon aria-hidden="true" className="-ml-0.5 size-5" />
               Back
@@ -43,16 +46,21 @@ export default function AuthPage({ mode = 'login', onNavigate }) {
           <div aria-hidden="true" className="justify-self-end" />
         </div>
 
+        {/* Auth Card Wrapper */}
         <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md">
+          {/* Auth Heading */}
           <h2 className="mt-4 text-center text-2xl/9 font-bold tracking-tight text-white">
             {title}
           </h2>
 
+          {/* Auth Subheading */}
           <p className="mt-2 text-center text-sm/9 font-medium tracking-tight text-white">
             {subtitle}
           </p>
           
+          {/* Auth Form Card */}
           <div className="bg-gray-800/50 px-5 mt-4 py-6 shadow-none outline -outline-offset-1 outline-white/10 sm:rounded-lg sm:px-8">
+            {/* Email/Password Form */}
             <form action="#" method="POST" className="space-y-4">
 
               {/* Email Text Box*/}
@@ -67,7 +75,7 @@ export default function AuthPage({ mode = 'login', onNavigate }) {
                     type="email"
                     required
                     autoComplete="email"
-                    className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-sm text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
+                    className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-sm text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-accent"
                   />
                 </div>
               </div>
@@ -84,7 +92,7 @@ export default function AuthPage({ mode = 'login', onNavigate }) {
                     type="password"
                     required
                     autoComplete="current-password"
-                    className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-sm text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
+                    className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-sm text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-accent"
                   />
                 </div>
               </div>
@@ -98,7 +106,7 @@ export default function AuthPage({ mode = 'login', onNavigate }) {
                         id="remember-me"
                         name="remember-me"
                         type="checkbox"
-                        className="col-start-1 row-start-1 appearance-none rounded-sm border border-white/10 bg-white/5 checked:border-indigo-500 checked:bg-indigo-500 indeterminate:border-indigo-500 indeterminate:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:border-gray-700 disabled:bg-gray-800 disabled:checked:bg-gray-800 forced-colors:appearance-auto"
+                        className="col-start-1 row-start-1 appearance-none rounded-sm border border-white/10 bg-white/5 checked:border-accent checked:bg-accent indeterminate:border-accent indeterminate:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:border-gray-700 disabled:bg-gray-800 disabled:checked:bg-gray-800 forced-colors:appearance-auto"
                       />
                       <svg
                         fill="none"
@@ -130,7 +138,7 @@ export default function AuthPage({ mode = 'login', onNavigate }) {
                 <div className="text-sm/6">
                   <a
                     href="#"
-                    className="font-semibold text-indigo-400 hover:text-indigo-300"
+                    className="font-semibold text-accent hover:text-accent/80"
                   >
                     Forgot password?
                   </a>
@@ -141,20 +149,23 @@ export default function AuthPage({ mode = 'login', onNavigate }) {
                 <button
                   type="submit"
                   onClick={(event) => handleRouteChange(event, '/login')}
-                  className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-none hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                  className="flex w-full justify-center rounded-md bg-accent px-3 py-1.5 text-sm/6 font-semibold text-black shadow-none hover:bg-accent/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                 >
                   Sign in
                 </button>
               </div>
             </form>
 
+            {/* Social Login Options */}
             <div>
+              {/* Social Divider */}
               <div className="mt-6 flex items-center gap-x-4">
                 <div className="w-full flex-1 border-t border-white/10" />
                 <p className="text-sm/6 font-medium text-nowrap text-white">Or continue with</p>
                 <div className="w-full flex-1 border-t border-white/10" />
               </div>
 
+              {/* Social Buttons */}
               <div className="mt-4 grid grid-cols-2 gap-3">
                 <a
                   href="#"
@@ -203,12 +214,13 @@ export default function AuthPage({ mode = 'login', onNavigate }) {
             </div>
           </div>
 
+          {/* Register Redirect */}
           <p className="mt-6 text-center text-sm/6 text-gray-400">
             Not a member?{' '}
             <a
               href="#"
               onClick={(event) => handleRouteChange(event, '/register')}
-              className="font-semibold text-indigo-400 hover:text-indigo-300"
+              className="font-semibold text-accent hover:text-accent/80"
             >
               Register Now!
             </a>
