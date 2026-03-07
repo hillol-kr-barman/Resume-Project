@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Dialog, DialogPanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
@@ -10,6 +10,14 @@ const navigation = [
 
 export default function HomePage({ onNavigate }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > 28)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   const handleComponentsTestClick = (event) => {
     event.preventDefault()
@@ -24,8 +32,17 @@ export default function HomePage({ onNavigate }) {
 
   return (
     <div className="bg-gray-900">
-      <header className="absolute inset-x-0 top-0 z-50">
-        <nav aria-label="Global" className="flex items-center justify-between p-6 lg:px-8">
+      <header
+        className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+          isScrolled ? 'border-b border-white/10 bg-gray-900/85 shadow-lg shadow-black/20 backdrop-blur-md' : 'bg-transparent'
+        }`}
+      >
+        <nav
+          aria-label="Global"
+          className={`mx-auto flex max-w-7xl items-center justify-between px-6 transition-[padding] duration-300 lg:px-8 ${
+            isScrolled ? 'py-4' : 'py-6'
+          }`}
+        >
           <div className="flex lg:flex-1">
             <a href="#" className="-m-1.5 p-1.5">
               <span className="sr-only">Hillol Barman</span>
@@ -108,7 +125,7 @@ export default function HomePage({ onNavigate }) {
         </Dialog>
       </header>
 
-      <div className="relative isolate min-h-screen px-6 pt-20 pb-8 lg:px-8">
+      <div className="relative isolate min-h-screen px-6 pt-24 pb-8 lg:px-8">
         <div
           aria-hidden="true"
           className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
