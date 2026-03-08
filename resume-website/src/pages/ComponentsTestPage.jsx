@@ -29,6 +29,7 @@ export default function ComponentsTestPage({ onNavigate }) {
             >
               <ArrowLongLeftIcon aria-hidden="true" className="-ml-0.5 size-5" />
               Back to Home
+              <div class="size-18 rounded-full bg-radial-[at_20%_50%] from-sky-200 via-blue-400 to-indigo-900 to-90%"></div>
             </button>
             
 

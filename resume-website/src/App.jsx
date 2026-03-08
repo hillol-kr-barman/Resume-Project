@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import HomePage from './pages/HomePage'
 import AuthPage from './pages/AuthPage'
 import ComponentsTestPage from './pages/ComponentsTestPage'
+import AllProjects from './pages/AllProjects'
 
 function normalizePath(pathname) {
   if (!pathname || pathname === '/') return '/'
@@ -30,6 +31,9 @@ export default function App() {
     }
     if (path === '/components-test') {
       return <ComponentsTestPage onNavigate={navigate} />
+    }
+    if (path === '/projects') {
+      return <AllProjects onNavigate={navigate} />
     }
     return <HomePage onNavigate={navigate} />
   }, [path])

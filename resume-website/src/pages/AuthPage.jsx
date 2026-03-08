@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { ArrowLongLeftIcon } from '@heroicons/react/20/solid'
+import logo from '../assets/logo_green.svg'
 
 export default function AuthPage({ mode = 'login', onNavigate }) {
   const isRegistered = mode === 'register'
@@ -22,8 +23,25 @@ export default function AuthPage({ mode = 'login', onNavigate }) {
   return (
     <>
       {/* Auth Page Layout */}
-      <div className="flex min-h-screen flex-col justify-center px-4 py-4 sm:px-6 lg:px-8">
-
+      <div className="relative flex min-h-screen flex-col justify-center px-4 py-4 sm:px-6 lg:px-8">
+        <svg
+          aria-hidden="true"
+          className="absolute inset-0 -z-10 size-full mask-[radial-gradient(90%_90%_at_center,white,transparent)] stroke-accent/25"
+        >
+          <defs>
+            <pattern
+              x="50%"
+              y={-1}
+              id="auth-grid-pattern"
+              width={200}
+              height={200}
+              patternUnits="userSpaceOnUse"
+            >
+              <path d="M.5 200V.5H200" fill="none" />
+            </pattern>
+          </defs>
+          <rect fill="url(#auth-grid-pattern)" width="100%" height="100%" strokeWidth={0} />
+        </svg>
         {/* Top Bar: Back Button + Logo */}
         <div className="grid grid-cols-3 items-center sm:mx-auto sm:w-full sm:max-w-md">
           {/* Back to Home */}
@@ -39,8 +57,8 @@ export default function AuthPage({ mode = 'login', onNavigate }) {
           </div>
 
           <img
-            alt="Your Company"
-            src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
+            alt="Hillol Barman - Logo"
+            src={logo}
             className="justify-self-center h-10 w-auto"
           />
           <div aria-hidden="true" className="justify-self-end" />
@@ -57,9 +75,9 @@ export default function AuthPage({ mode = 'login', onNavigate }) {
           <p className="mt-2 text-center text-sm/9 font-medium tracking-tight text-white">
             {subtitle}
           </p>
-          
+
           {/* Auth Form Card */}
-          <div className="bg-gray-800/50 px-5 mt-4 py-6 shadow-none outline -outline-offset-1 outline-white/10 sm:rounded-lg sm:px-8">
+          <div className="bg-black px-5 mt-4 py-6 shadow-none outline -outline-offset-1 outline-white/10 sm:rounded-lg sm:px-8">
             {/* Email/Password Form */}
             <form action="#" method="POST" className="space-y-4">
 
