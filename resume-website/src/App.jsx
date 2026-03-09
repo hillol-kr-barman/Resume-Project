@@ -3,6 +3,7 @@ import HomePage from './pages/HomePage'
 import AuthPage from './pages/AuthPage'
 import ComponentsTestPage from './pages/ComponentsTestPage'
 import AllProjects from './pages/AllProjects'
+import AboutMe from './pages/AboutMe'
 
 function normalizePath(pathname) {
   if (!pathname || pathname === '/') return '/'
@@ -34,6 +35,9 @@ export default function App() {
     }
     if (path === '/projects') {
       return <AllProjects onNavigate={navigate} />
+    }
+    if (path === '/about') {
+      return <AboutMe onNavigate={navigate} />
     }
     return <HomePage onNavigate={navigate} />
   }, [path])
