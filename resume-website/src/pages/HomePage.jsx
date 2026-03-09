@@ -6,7 +6,7 @@ import profHeadshot from '../assets/prof_headshot.png'
 import placeHolderImage from '../assets/placeholder_image.jpg'
 import logo from '../assets/logo_green.svg'
 import coffeeCup from '../assets/coffeeCup.svg'
-import { navigation, techStackLogos, featuredProjects, socials } from '../homePageData'
+import { navigation, techStackLogos, featuredProjects, socials } from './pageData/homePageData'
 
 export default function HomePage({ onNavigate }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
