@@ -49,7 +49,7 @@ export default function AuthPage({ mode = 'login', onNavigate }) {
             <button
               type="button"
               onClick={(event) => handleRouteChange(event, '/')}
-              className="inline-flex items-center gap-x-2 rounded-md bg-accent/20 px-2.5 py-1.5 text-sm font-semibold text-accent shadow-none hover:bg-accent/30"
+              className="inline-flex items-center gap-x-2 rounded-md bg-accent/20 px-2.5 py-1.5 text-sm font-semibold text-accent shadow-none transition-shadow duration-300 hover:shadow-[0_0_18px_rgba(158,255,31,0.45)]"
             >
               <ArrowLongLeftIcon aria-hidden="true" className="-ml-0.5 size-5" />
               Back
@@ -77,7 +77,7 @@ export default function AuthPage({ mode = 'login', onNavigate }) {
           </p>
 
           {/* Auth Form Card */}
-          <div className="bg-black px-5 mt-4 py-6 shadow-none outline -outline-offset-1 outline-white/10 sm:rounded-lg sm:px-8">
+          <div className="bg-card px-5 mt-4 py-6 shadow-none outline -outline-offset-1 outline-white/10 sm:rounded-lg sm:px-8">
             {/* Email/Password Form */}
             <form action="#" method="POST" className="space-y-4">
 
@@ -167,7 +167,7 @@ export default function AuthPage({ mode = 'login', onNavigate }) {
                 <button
                   type="submit"
                   onClick={(event) => handleRouteChange(event, '/login')}
-                  className="flex w-full justify-center rounded-md bg-accent px-3 py-1.5 text-sm/6 font-semibold text-black shadow-none hover:bg-accent/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                  className="flex w-full justify-center rounded-md bg-accent px-3 py-1.5 text-sm/6 font-semibold text-black shadow-none transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                 >
                   Sign in
                 </button>
@@ -187,7 +187,7 @@ export default function AuthPage({ mode = 'login', onNavigate }) {
               <div className="mt-4 grid grid-cols-2 gap-3">
                 <a
                   href="#"
-                  className="flex w-full items-center justify-center gap-3 rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-white shadow-none inset-ring inset-ring-white/5 hover:bg-white/20 focus-visible:inset-ring-transparent"
+                  className="flex w-full items-center justify-center gap-3 rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-white shadow-none inset-ring inset-ring-white/5 transition-shadow duration-300 hover:shadow-[0_0_16px_rgba(158,255,31,0.35)] focus-visible:inset-ring-transparent"
                 >
                   <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
                     <path
@@ -212,7 +212,7 @@ export default function AuthPage({ mode = 'login', onNavigate }) {
 
                 <a
                   href="#"
-                  className="flex w-full items-center justify-center gap-3 rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-white shadow-none inset-ring inset-ring-white/5 hover:bg-white/20 focus-visible:inset-ring-transparent"
+                  className="flex w-full items-center justify-center gap-3 rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-white shadow-none inset-ring inset-ring-white/5 transition-shadow duration-300 hover:shadow-[0_0_16px_rgba(158,255,31,0.35)] focus-visible:inset-ring-transparent"
                 >
                   <svg
                     fill="currentColor"
