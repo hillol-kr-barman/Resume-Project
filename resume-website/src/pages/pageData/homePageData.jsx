@@ -1,9 +1,8 @@
 export const navigation = [
-    { name: 'Featured', href: '#' },
+    { name: 'Home', href: '/' },
     { name: 'Projects', href: '/projects'},
-    { name: 'Playground', href: '/Playground' },
-    { name: 'About Me', href: '/about' },
-    { name: 'Contact', href: '/contact' }
+    { name: 'Playground', href: '/playground' },
+    { name: 'About Me', href: '/about' }
   ]
   
 export const techStackLogos = [
@@ -15,28 +14,60 @@ export const techStackLogos = [
     { name: 'Redis', src: 'https://cdn.simpleicons.org/redis/ffffff' },
     { name: 'Docker', src: 'https://cdn.simpleicons.org/docker/ffffff' },
   ]
-  
-export const featuredProjects = [
-    {
-      title: 'Example 1',
-      content: 'Demo content of the project goes here. Lorem ipsum dolor init sel.',
-      imageSrc: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
-      gitLink: 'https://github.com/hillol-kr-barman/Resume-Project/'
-    },
-    {
-      title: 'Example 2',
-      content: 'Demo content of the project goes here. Lorem ipsum dolor init sel.',
-      imageSrc: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
-      gitLink: 'https://github.com/hillol-kr-barman/Resume-Project/'
-    },
-    {
-      title: 'Example 3',
-      content: 'Demo content of the project goes here. Lorem ipsum dolor init sel.',
-      imageSrc: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
-      gitLink: 'https://github.com/hillol-kr-barman/Resume-Project/'
-    }
-  ]
-  
+
+export const projects = [
+  {
+    id: 1,
+    title: 'Example 1',
+    content: 'Demo content of the project goes here. Lorem ipsum dolor init sel.',
+    projectTechstack : "React, Tailwind, Postgres",
+    imageSrc: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
+    gitLink: 'https://github.com/hillol-kr-barman/Resume-Project/'
+  },
+  {
+    id: 2,
+    title: 'Example 2',
+    content: 'Demo content of the project goes here. Lorem ipsum dolor init sel.',
+    projectTechstack : "React, Tailwind, Postgres",
+    imageSrc: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
+    gitLink: 'https://github.com/hillol-kr-barman/Resume-Project/'
+  },
+  {
+    id: 3,
+    title: 'Example 3',
+    content: 'Demo content of the project goes here. Lorem ipsum dolor init sel.',
+    projectTechstack : "React, Tailwind, Postgres",
+    imageSrc: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
+    gitLink: 'https://github.com/hillol-kr-barman/Resume-Project/'
+  },
+  {
+    id: 4,
+    title: 'Example 4',
+    content: 'Demo content of the project goes here. Lorem ipsum dolor init sel.',
+    projectTechstack : "React, Tailwind, Postgres",
+    imageSrc: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
+    gitLink: 'https://github.com/hillol-kr-barman/Resume-Project/'
+  },
+  {
+    id: 5,
+    title: 'Example 5',
+    content: 'Demo content of the project goes here. Lorem ipsum dolor init sel.',
+    projectTechstack : "React, Tailwind, Postgres",
+    imageSrc: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
+    gitLink: 'https://github.com/hillol-kr-barman/Resume-Project/'
+  },
+  {
+    id: 6,
+    title: 'Example 6',
+    content: 'Demo content of the project goes here. Lorem ipsum dolor init sel.',
+    projectTechstack : "React, Tailwind, Postgres",
+    imageSrc: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
+    gitLink: 'https://github.com/hillol-kr-barman/Resume-Project/'
+  }
+]
+
+export const featuredProjectIds = [1, 2, 3]
+
 export const socials = [
     {
       name: 'Facebook',
