@@ -6,7 +6,7 @@ import profHeadshot from '../assets/prof_headshot.png'
 import placeHolderImage from '../assets/placeholder_image.jpg'
 import logo from '../assets/logo_green.svg'
 import coffeeCup from '../assets/coffeeCup.svg'
-import { navigation, techStackLogos, featuredProjects, socials } from './pageData/homePageData'
+import { navigation, techStackLogos, projects, featuredProjectIds, socials } from './pageData/homePageData'
 
 export default function HomePage({ onNavigate }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -24,6 +24,10 @@ export default function HomePage({ onNavigate }) {
     if (closeMobileMenu) setMobileMenuOpen(false)
     onNavigate(to)
   }
+
+  const featuredProjects = featuredProjectIds
+    .map((id) => projects.find((project) => project.id === id))
+    .filter(Boolean)
 
   return (
     <div>
@@ -227,15 +231,18 @@ export default function HomePage({ onNavigate }) {
       </div>
 
       {/* Logo Clouds Section */}
-      <div className="bg-background mt-40 mb-32 py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <h4 className="text-center text-lg/8 font-semibold text-white">Most Used Tech Stacks</h4>
-          <p className="mt-6 text-center text-base/7 text-body">
+
+      <div className="mx-auto mt-32 max-w-7xl sm:mt-40 sm:px-6 lg:px-8">
+        <div className="relative isolate overflow-hidden bg-card px-6 py-24 text-center after:pointer-events-none after:absolute after:inset-0 after:inset-ring after:inset-ring-white/10 sm:rounded-3xl sm:px-16 after:sm:rounded-3xl">
+          <h4 className="mx-auto max-w-2xl text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            Most Used Tech Stacks
+          </h4>
+          <p className="mx-auto mt-6 text-base/7 text-body">
             Throughout my coding journey, I have worked with various technologies and tools. I strongly
             believe that staying updated and learning best practices is essential for building solid expertise
             in modern industry-standard development environments.
           </p>
-          <div className="mx-auto mt-10 opacity-60 grid max-w-4xl grid-cols-2 items-center justify-items-center gap-x-8 gap-y-10 sm:grid-cols-3 lg:max-w-none lg:grid-cols-7">
+          <div className="mx-auto mt-18 opacity-60 grid max-w-4xl grid-cols-2 items-center justify-items-center gap-x-8 gap-y-10 sm:grid-cols-3 lg:max-w-none lg:grid-cols-7">
             {techStackLogos.map((logo) => (
               <img
                 key={logo.name}
@@ -251,7 +258,7 @@ export default function HomePage({ onNavigate }) {
       </div>
 
       {/* Featured Projects */}
-      <div className="mx-auto mt-24 mb-32 max-w-7xl px-6 lg:px-8">
+      <div className="mx-auto mt-32 mb-32 max-w-7xl px-6 lg:px-8">
         <h2 className="text-4xl text-center font-semibold tracking-tight text-white sm:text-5xl">Featured Projects</h2>
         <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {featuredProjects.map((item) => (

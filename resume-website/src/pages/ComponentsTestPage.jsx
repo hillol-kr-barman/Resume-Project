@@ -1,4 +1,5 @@
 import { ArrowLongLeftIcon } from '@heroicons/react/20/solid'
+import { projects } from './pageData/homePageData'
 
 export default function ComponentsTestPage({ onNavigate }) {
   return (
@@ -22,19 +23,44 @@ export default function ComponentsTestPage({ onNavigate }) {
         <section className="rounded-lg border border-white/10 p-6">
           <h2 className="text-lg font-semibold">Starter Area</h2>
 
-          
-            <button
-              type="button"
-              className="inline-flex items-center gap-x-1.5 rounded-md bg-indigo-500 px-2.5 py-1.5 text-sm font-semibold text-white shadow-none hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-            >
-              <ArrowLongLeftIcon aria-hidden="true" className="-ml-0.5 size-5" />
-              Back to Home
-              <div class="size-18 rounded-full bg-radial-[at_20%_50%] from-sky-200 via-blue-400 to-indigo-900 to-90%"></div>
-            </button>
-            
 
-          
-          
+          <div className="mt-12 grid grid-cols-1 gap-6">
+            {projects.map((item) => (
+              <article
+                key={item.id}
+                className="grid h-full grid-cols-2 items-center rounded-2xl bg-card p-6 outline -outline-offset-1 outline-white/10"
+              >
+                <div>
+
+                  <h2 className="text-left text-2xl font-semibold text-white">{item.title}</h2>
+                  <p className="mt-4 text-left text-base/7 text-body">{item.content}</p>
+                  <p className="mt-4 text-left text-base/7 text-body">
+                    <span className="font-bold"> Techstack: </span><span className="italic">{item.projectTechstack}</span>
+                  </p>  
+                  <a
+                    href={item.gitLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-6 inline-flex items-center justify-center gap-2 text-sm font-semibold text-accent hover:text-accent/80"
+                  >
+                    <img src="https://cdn.simpleicons.org/github/ffffff" alt="GitHub icon" className="h-5 w-5" />
+                    View on GitHub
+                  </a>
+                </div>
+                <div className="flex items-center">
+                <img
+                    src={item.imageSrc}
+                    alt={`${item.title} thumbnail`}
+                    className="h-44 w-full rounded-xl object-cover"
+                  />
+                </div>
+              </article>
+            ))}
+          </div>
+
+
+
+
         </section>
       </div>
     </main>
