@@ -68,7 +68,7 @@ export default function App() {
       return <ComponentsTestPage onNavigate={navigate} />
     }
     if (route.path === '/projects') {
-      return <AllProjects onNavigate={navigate} />
+      return <AllProjects onNavigate={navigate} currentUser={currentUser} onLogout={handleLogout} currentPath={route.path} />
     }
     if (route.path === '/playground') {
       return (
@@ -81,9 +81,9 @@ export default function App() {
       )
     }
     if (route.path === '/about') {
-      return <AboutMe onNavigate={navigate} />
+      return <AboutMe onNavigate={navigate} currentUser={currentUser} onLogout={handleLogout} currentPath={route.path} />
     }
-    return <HomePage onNavigate={navigate} />
+    return <HomePage onNavigate={navigate} currentUser={currentUser} onLogout={handleLogout} currentPath={route.path} />
   }, [currentUser, route])
 
   return page

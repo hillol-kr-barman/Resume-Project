@@ -1,14 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Dialog, DialogPanel } from '@headlessui/react'
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import logo from '../assets/logo_green.svg'
-import { navigation, socials } from './pageData/homePageData'
 import {
-    getDocumentByShareToken,
-    listDocumentsForUser,
-    listTemporaryDocuments,
-    saveDocument,
+  getDocumentByShareToken,
+  listDocumentsForUser,
+  listTemporaryDocuments,
+  saveDocument,
 } from '../lib/playgroundStore'
+import SiteHeader from '../components/SiteHeader'
+import SiteFooter from '../components/SiteFooter'
 
 const languageOptions = [
     { value: 'javascript', label: 'JavaScript' },
@@ -27,23 +25,14 @@ console.log(greet('world'))
 `
 
 export default function Playground({ onNavigate, routeSearch = '', currentUser, onLogout }) {
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-    const [isScrolled, setIsScrolled] = useState(false)
-    const [documents, setDocuments] = useState([])
+  const [documents, setDocuments] = useState([])
     const [activeDocumentId, setActiveDocumentId] = useState(null)
     const [title, setTitle] = useState('Untitled snippet')
     const [language, setLanguage] = useState('javascript')
     const [code, setCode] = useState(starterSnippet)
     const [notice, setNotice] = useState('')
 
-    useEffect(() => {
-        const onScroll = () => setIsScrolled(window.scrollY > 28)
-        onScroll()
-        window.addEventListener('scroll', onScroll, { passive: true })
-        return () => window.removeEventListener('scroll', onScroll)
-    }, [])
-
-    const refreshDocuments = useMemo(() => {
+  const refreshDocuments = useMemo(() => {
         return () => {
             const nextDocuments = currentUser
                 ? listDocumentsForUser(currentUser.id)
@@ -78,16 +67,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
         }
     }, [activeDocumentId, documents, routeSearch])
 
-    const handleNavigate = (event, to, { closeMobileMenu = false } = {}) => {
-        event.preventDefault()
-        if (closeMobileMenu) setMobileMenuOpen(false)
-        if (onNavigate) onNavigate(to)
-    }
-
-    const fullName = currentUser?.name ?? ''
-    const firstName = fullName.trim().split(/\s+/)[0] || ''
-
-    const openDocument = (document) => {
+  const openDocument = (document) => {
         setActiveDocumentId(document.id)
         setTitle(document.title)
         setLanguage(document.language)
@@ -147,121 +127,9 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
         ? `${currentUser.name} is signed in. Documents saved here stay attached to this account.`
         : 'Guest mode stores drafts temporarily for 24 hours. Log in to keep documents permanently.'
 
-    return (
-        <div>
-            <header
-                className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${isScrolled ? 'border-b border-accent/40 bg-background/75 shadow-black/20 backdrop-blur-md' : 'bg-transparent'}`}
-            >
-                <nav
-                    aria-label="Global"
-                    className={`mx-auto flex max-w-7xl items-center justify-between px-6 transition-[padding] duration-300 lg:px-8 ${isScrolled ? 'py-4' : 'py-6'}`}
-                >
-                    <div className="flex lg:flex-1">
-                        <a href="/" onClick={(event) => handleNavigate(event, '/', { closeMobileMenu: true })} className="-m-1.5 p-1.5">
-                            <span className="sr-only">Hillol Barman</span>
-                            <img alt="Hillol Barman - Logo" src={logo} className="h-8 w-auto" />
-                        </a>
-                    </div>
-                    <div className="flex lg:hidden">
-                        <button
-                            type="button"
-                            onClick={() => setMobileMenuOpen(true)}
-                            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-200"
-                        >
-                            <span className="sr-only">Open main menu</span>
-                            <Bars3Icon aria-hidden="true" className="size-6" />
-                        </button>
-                    </div>
-                    <div className="hidden lg:flex lg:gap-x-12">
-                        {navigation.map((item) => (
-                            <a key={item.name} href={item.href} className="group text-sm/6 font-semibold text-white transition duration-300">
-                                {item.name}
-                                <span className="block h-0.5 w-full origin-center scale-x-0 bg-accent transition-transform duration-500 group-hover:scale-x-100" />
-                            </a>
-                        ))}
-                    </div>
-                    <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-                        {currentUser ? (
-                            <div className="flex items-center gap-5">
-                                <a href="#" className="group block shrink-0">
-                                    <div className="flex items-center">
-                                        <div>
-                                            <img
-                                                alt={`${currentUser.name} profile`}
-                                                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                                className="inline-block size-9 rounded-full outline -outline-offset-1 outline-white/10"
-                                            />
-                                        </div>
-                                        <div className="ml-3">
-                                            <p className="text-sm font-medium text-gray-300 group-hover:text-white">{firstName}</p>
-                                            <p className="text-xs font-medium text-gray-400 group-hover:text-gray-300">
-                                                View profile
-                                            </p>
-                                        </div>
-                                    </div>
-                                </a>
-                                <button type="button" onClick={onLogout} className="text-sm/6 font-semibold text-white">
-                                    Log out <span aria-hidden="true">&rarr;</span>
-                                </button>
-                            </div>
-                        ) : (
-                            <a
-                                href="/login?redirect=/playground"
-                                onClick={(event) => handleNavigate(event, '/login?redirect=/playground', { closeMobileMenu: true })}
-                                className="text-sm/6 font-semibold text-white"
-                            >
-                                Log in <span aria-hidden="true">&rarr;</span>
-                            </a>
-                        )}
-                    </div>
-                </nav>
-
-                <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
-                    <div className="fixed inset-0 z-50" />
-                    <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-background p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-100/10">
-                        <div className="flex items-center justify-between">
-                            <a href="/" onClick={(event) => handleNavigate(event, '/', { closeMobileMenu: true })} className="-m-1.5 p-1.5">
-                                <span className="sr-only">Your Company</span>
-                                <img alt="" src={logo} className="h-8 w-auto" />
-                            </a>
-                            <button
-                                type="button"
-                                onClick={() => setMobileMenuOpen(false)}
-                                className="-m-2.5 rounded-md p-2.5 text-gray-200"
-                            >
-                                <span className="sr-only">Close menu</span>
-                                <XMarkIcon aria-hidden="true" className="size-6" />
-                            </button>
-                        </div>
-                        <div className="mt-6 flow-root">
-                            <div className="-my-6 divide-y divide-white/10">
-                                <div className="space-y-2 py-6">
-                                    {navigation.map((item) => (
-                                        <a key={item.name} href={item.href} className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">
-                                            {item.name}
-                                        </a>
-                                    ))}
-                                </div>
-                                <div className="py-6">
-                                    {currentUser ? (
-                                        <button type="button" onClick={onLogout} className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-white hover:bg-white/5">
-                                            Log out
-                                        </button>
-                                    ) : (
-                                        <a
-                                            href="/login?redirect=/playground"
-                                            onClick={(event) => handleNavigate(event, '/login?redirect=/playground', { closeMobileMenu: true })}
-                                            className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-white hover:bg-white/5"
-                                        >
-                                            Log in
-                                        </a>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </DialogPanel>
-                </Dialog>
-            </header>
+  return (
+    <div>
+      <SiteHeader onNavigate={onNavigate} currentUser={currentUser} onLogout={onLogout} currentPath="/playground" />
 
             <main className="mx-auto mt-24 max-w-7xl px-6 py-20 lg:px-8">
                 <div className="mx-auto max-w-3xl text-center">
@@ -288,12 +156,12 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
                         </div>
 
                         {!currentUser ? (
-                            <button
-                                type="button"
-                                onClick={(event) => handleNavigate(event, '/login?redirect=/playground')}
-                                className="mt-5 w-full rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-black shadow-none transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)]"
-                            >
-                                Log in for permanent storage
+              <button
+                type="button"
+                onClick={() => onNavigate('/login?redirect=/playground')}
+                className="mt-5 w-full rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-black shadow-none transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)]"
+              >
+                Log in for permanent storage
                             </button>
                         ) : null}
 
@@ -408,26 +276,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
                 </div>
             </main>
 
-            <footer>
-                <div className="mx-auto max-w-7xl overflow-hidden px-6 py-20 sm:py-24 lg:px-8">
-                    <nav aria-label="Footer" className="-mb-6 flex flex-wrap justify-center gap-x-12 gap-y-3 text-sm/6">
-                        {navigation.map((item) => (
-                            <a key={item.name} href={item.href} className="text-gray-400 hover:text-white">
-                                {item.name}
-                            </a>
-                        ))}
-                    </nav>
-                    <div className="mt-16 flex justify-center gap-x-10">
-                        {socials.map((item) => (
-                            <a key={item.name} href={item.href} className="text-gray-400 hover:text-white">
-                                <span className="sr-only">{item.name}</span>
-                                <item.icon aria-hidden="true" className="size-6" />
-                            </a>
-                        ))}
-                    </div>
-                    <p className="mt-10 text-center text-sm/6 text-gray-400">&copy; {new Date().getFullYear()} Hillol Barman Portfolio. All rights reserved.</p>
-                </div>
-            </footer>
-        </div>
-    )
+      <SiteFooter />
+    </div>
+  )
 }
