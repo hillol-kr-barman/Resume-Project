@@ -3,10 +3,12 @@ import { Dialog, DialogPanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import logo from '../assets/logo_green.svg'
 import { navigation } from '../pages/pageData/homePageData'
+import AlertDialogBox from './AlertDialogBox'
 
 export default function SiteHeader({ onNavigate, currentUser, onLogout, currentPath = '/' }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false)
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 28)
@@ -27,6 +29,20 @@ export default function SiteHeader({ onNavigate, currentUser, onLogout, currentP
   }, [currentUser])
 
   const loginPath = `/login?redirect=${encodeURIComponent(currentPath)}`
+
+  const openLogoutDialog = () => {
+    setMobileMenuOpen(false)
+    setLogoutDialogOpen(true)
+  }
+
+  const closeLogoutDialog = () => {
+    setLogoutDialogOpen(false)
+  }
+
+  const handleConfirmLogout = () => {
+    setLogoutDialogOpen(false)
+    onLogout()
+  }
 
   return (
     <header
@@ -56,9 +72,17 @@ export default function SiteHeader({ onNavigate, currentUser, onLogout, currentP
 
         <div className="hidden lg:flex lg:gap-x-12">
           {navigation.map((item) => (
-            <a key={item.name} href={item.href} className="group text-sm/6 font-semibold text-white transition duration-300">
+            <a
+              key={item.name}
+              href={item.href}
+              onClick={(event) => handleNavigate(event, item.href)}
+              aria-current={currentPath === item.href ? 'page' : undefined}
+              className={`group text-sm/6 font-semibold transition duration-300 ${currentPath === item.href ? 'text-accent' : 'text-white'}`}
+            >
               {item.name}
-              <span className="block h-0.5 w-full origin-center scale-x-0 bg-accent transition-transform duration-500 group-hover:scale-x-100" />
+              <span
+                className={`block h-0.5 w-full origin-center bg-accent transition-transform duration-500 ${currentPath === item.href ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`}
+              />
             </a>
           ))}
         </div>
@@ -77,7 +101,7 @@ export default function SiteHeader({ onNavigate, currentUser, onLogout, currentP
                   <a href="#" className="group block shrink-0">
                     <p className="text-sm font-medium text-gray-300 group-hover:text-white">{firstName}</p>
                   </a>
-                  <button type="button" onClick={onLogout} className="text-sm/6 font-semibold text-white">
+                  <button type="button" onClick={openLogoutDialog} className="text-sm/6 font-semibold text-white">
                     Log out <span aria-hidden="true">&rarr;</span>
                   </button>
                 </div>
@@ -118,7 +142,13 @@ export default function SiteHeader({ onNavigate, currentUser, onLogout, currentP
             <div className="-my-6 divide-y divide-white/10">
               <div className="space-y-2 py-6">
                 {navigation.map((item) => (
-                  <a key={item.name} href={item.href} className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    onClick={(event) => handleNavigate(event, item.href, { closeMobileMenu: true })}
+                    aria-current={currentPath === item.href ? 'page' : undefined}
+                    className={`-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold ${currentPath === item.href ? 'bg-accent/10 text-accent' : 'text-white hover:bg-white/5'}`}
+                  >
                     {item.name}
                   </a>
                 ))}
@@ -127,7 +157,7 @@ export default function SiteHeader({ onNavigate, currentUser, onLogout, currentP
                 {currentUser ? (
                   <button
                     type="button"
-                    onClick={onLogout}
+                    onClick={openLogoutDialog}
                     className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-white hover:bg-white/5"
                   >
                     Log out
@@ -146,6 +176,16 @@ export default function SiteHeader({ onNavigate, currentUser, onLogout, currentP
           </div>
         </DialogPanel>
       </Dialog>
+
+      <AlertDialogBox
+        open={logoutDialogOpen}
+        onClose={closeLogoutDialog}
+        onConfirm={handleConfirmLogout}
+        title="Log out?"
+        description="Your current session will end on this device. You can sign back in at any time."
+        confirmLabel="Log out"
+        cancelLabel="Cancel"
+      />
     </header>
   )
 }
