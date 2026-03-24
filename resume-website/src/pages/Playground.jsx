@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
+import Editor from '@monaco-editor/react'
 import {
-  getDocumentByShareToken,
-  listDocumentsForUser,
-  listTemporaryDocuments,
-  saveDocument,
+    getDocumentByShareToken,
+    listDocumentsForUser,
+    listTemporaryDocuments,
+    saveDocument,
 } from '../lib/playgroundStore'
 import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
@@ -25,14 +26,14 @@ console.log(greet('world'))
 `
 
 export default function Playground({ onNavigate, routeSearch = '', currentUser, onLogout }) {
-  const [documents, setDocuments] = useState([])
+    const [documents, setDocuments] = useState([])
     const [activeDocumentId, setActiveDocumentId] = useState(null)
     const [title, setTitle] = useState('Untitled snippet')
     const [language, setLanguage] = useState('javascript')
     const [code, setCode] = useState(starterSnippet)
     const [notice, setNotice] = useState('')
 
-  const refreshDocuments = useMemo(() => {
+    const refreshDocuments = useMemo(() => {
         return () => {
             const nextDocuments = currentUser
                 ? listDocumentsForUser(currentUser.id)
@@ -67,7 +68,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
         }
     }, [activeDocumentId, documents, routeSearch])
 
-  const openDocument = (document) => {
+    const openDocument = (document) => {
         setActiveDocumentId(document.id)
         setTitle(document.title)
         setLanguage(document.language)
@@ -127,9 +128,9 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
         ? `${currentUser.name} is signed in. Documents saved here stay attached to this account.`
         : 'Guest mode stores drafts temporarily for 24 hours. Log in to keep documents permanently.'
 
-  return (
-    <div>
-      <SiteHeader onNavigate={onNavigate} currentUser={currentUser} onLogout={onLogout} currentPath="/playground" />
+    return (
+        <div>
+            <SiteHeader onNavigate={onNavigate} currentUser={currentUser} onLogout={onLogout} currentPath="/playground" />
 
             <main className="mx-auto mt-24 max-w-7xl px-6 py-20 lg:px-8">
                 <div className="mx-auto max-w-3xl text-center">
@@ -156,12 +157,12 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
                         </div>
 
                         {!currentUser ? (
-              <button
-                type="button"
-                onClick={() => onNavigate('/login?redirect=/playground')}
-                className="mt-5 w-full rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-black shadow-none transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)]"
-              >
-                Log in for permanent storage
+                            <button
+                                type="button"
+                                onClick={() => onNavigate('/login?redirect=/playground')}
+                                className="mt-5 w-full rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-black shadow-none transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)]"
+                            >
+                                Log in for permanent storage
                             </button>
                         ) : null}
 
@@ -177,8 +178,8 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
                                         type="button"
                                         onClick={() => openDocument(document)}
                                         className={`w-full rounded-2xl border px-4 py-3 text-left transition ${activeDocumentId === document.id
-                                                ? 'border-accent bg-accent/10'
-                                                : 'border-white/10 bg-black/20 hover:border-white/30'
+                                            ? 'border-accent bg-accent/10'
+                                            : 'border-white/10 bg-black/20 hover:border-white/30'
                                             }`}
                                     >
                                         <p className="truncate text-sm font-semibold text-white">{document.title}</p>
@@ -227,10 +228,6 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
 
                         <div className="mt-5 rounded-2xl border border-white/10 bg-black/40 p-3">
                             <div className="mb-3 flex items-center justify-between gap-3 border-b border-white/10 pb-3">
-                                <div>
-                                    <p className="text-sm font-semibold text-white">Editor</p>
-                                    <p className="text-xs text-body">Replace this textarea with CodeMirror when you add the package.</p>
-                                </div>
                                 <div className="flex gap-2">
                                     <button
                                         type="button"
@@ -248,13 +245,20 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
                                     </button>
                                 </div>
                             </div>
-
-                            <textarea
-                                value={code}
-                                onChange={(event) => setCode(event.target.value)}
-                                spellCheck="false"
-                                className="min-h-[28rem] w-full resize-none rounded-xl bg-transparent p-4 font-mono text-sm leading-7 text-white outline-none"
-                            />
+                            <div className="min-h-28rem w-full resize-none rounded-xl bg-transparent p-4 font-mono text-sm leading-7 text-white outline-none"
+                                onChange={(event) => setCode(event.target.value)}>
+                                <Editor
+                                    height="70vh"
+                                    theme="vs-dark"
+                                    defaultLanguage="javascript"
+                                    defaultValue="// edit here"
+                                    options={{
+                                        minimap: { enabled: false },
+                                        fontSize: 14,
+                                        automaticLayout: true,
+                                    }}
+                                />
+                            </div>
                         </div>
 
                         <div className="mt-5 grid gap-4 xl:grid-cols-[minmax(0,1fr)_18rem]">
@@ -276,7 +280,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
                 </div>
             </main>
 
-      <SiteFooter />
-    </div>
-  )
+            <SiteFooter />
+        </div>
+    )
 }
