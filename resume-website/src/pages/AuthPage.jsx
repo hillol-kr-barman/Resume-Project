@@ -11,6 +11,7 @@ export default function AuthPage({ mode = 'login', onNavigate, routeSearch = '',
     password: '',
   })
   const [errorMessage, setErrorMessage] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const redirectPath = useMemo(() => {
     const params = new URLSearchParams(routeSearch)
@@ -43,16 +44,19 @@ export default function AuthPage({ mode = 'login', onNavigate, routeSearch = '',
     setFormState((current) => ({ ...current, [name]: value }))
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
     setErrorMessage('')
+    setIsSubmitting(true)
 
     try {
-      const user = isRegistered ? registerUser(formState) : loginUser(formState)
+      const user = isRegistered ? await registerUser(formState) : loginUser(formState)
       onAuthChange(user)
       onNavigate(redirectPath)
     } catch (error) {
       setErrorMessage(error.message)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -103,6 +107,7 @@ export default function AuthPage({ mode = 'login', onNavigate, routeSearch = '',
                     name="name"
                     type="text"
                     required
+                    disabled={isSubmitting}
                     value={formState.name}
                     onChange={handleChange}
                     className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-sm text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-accent"
@@ -116,16 +121,17 @@ export default function AuthPage({ mode = 'login', onNavigate, routeSearch = '',
                 Email address
               </label>
               <div className="mt-2">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  value={formState.email}
-                  onChange={handleChange}
-                  className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-sm text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-accent"
-                />
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    disabled={isSubmitting}
+                    autoComplete="email"
+                    value={formState.email}
+                    onChange={handleChange}
+                    className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-sm text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-accent"
+                  />
               </div>
             </div>
 
@@ -134,15 +140,16 @@ export default function AuthPage({ mode = 'login', onNavigate, routeSearch = '',
                 Password
               </label>
               <div className="mt-2">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  autoComplete={isRegistered ? 'new-password' : 'current-password'}
-                  value={formState.password}
-                  onChange={handleChange}
-                  className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-sm text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-accent"
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    required
+                    disabled={isSubmitting}
+                    autoComplete={isRegistered ? 'new-password' : 'current-password'}
+                    value={formState.password}
+                    onChange={handleChange}
+                    className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-sm text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-accent"
                 />
               </div>
             </div>
@@ -156,9 +163,10 @@ export default function AuthPage({ mode = 'login', onNavigate, routeSearch = '',
             <div>
               <button
                 type="submit"
+                disabled={isSubmitting}
                 className="flex w-full justify-center rounded-md bg-accent px-3 py-1.5 text-sm/6 font-semibold text-black shadow-none transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
-                {isRegistered ? 'Create account' : 'Sign in'}
+                {isSubmitting ? 'Submitting...' : isRegistered ? 'Create account' : 'Sign in'}
               </button>
             </div>
           </form>
