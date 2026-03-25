@@ -9,11 +9,8 @@
   --font-sans: "Fira Code", "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
-@layer base {
-
-  body {
-    font-weight: 400;
-    line-height: 1.5;
-    background-color: black;
-  }
+body {
+  font-weight: 400;
+  line-height: 1.5;
+  background-color: black;
 }

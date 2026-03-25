@@ -2,6 +2,7 @@ const USERS_KEY = 'resume-users'
 const SESSION_KEY = 'resume-session'
 const DOCUMENTS_KEY = 'resume-playground-documents'
 const TEMP_DOCUMENT_TTL_MS = 1000 * 60 * 60 * 24
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000'
 
 function readJson(key, fallback) {
   try {
@@ -32,27 +33,40 @@ export function getCurrentUser() {
   return readJson(SESSION_KEY, null)
 }
 
-export function registerUser({ name, email, password }) {
-  const users = readJson(USERS_KEY, [])
-  const normalizedEmail = email.trim().toLowerCase()
-  const existingUser = users.find((user) => user.email === normalizedEmail)
+export async function registerUser({ name, email, password }) {
+  const response = await fetch(`${API_BASE_URL}/signup`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      name: name.trim(),
+      email: email.trim().toLowerCase(),
+      password,
+    }),
+  })
 
-  if (existingUser) {
-    throw new Error('An account with that email already exists.')
+  let payload = null
+
+  try {
+    payload = await response.json()
+  } catch {
+    payload = null
   }
 
-  const user = {
-    id: createId('user'),
+  if (!response.ok) {
+    const detail = typeof payload?.detail === 'string' ? payload.detail : 'Could not create your account.'
+    throw new Error(detail)
+  }
+
+  const sessionUser = {
+    id: payload?.user?.id ?? createId('user'),
     name: name.trim(),
-    email: normalizedEmail,
-    password,
-    createdAt: new Date().toISOString(),
+    email: payload?.user?.email ?? email.trim().toLowerCase(),
   }
 
-  const nextUsers = [...users, user]
-  writeJson(USERS_KEY, nextUsers)
-  writeJson(SESSION_KEY, { id: user.id, name: user.name, email: user.email })
-  return { id: user.id, name: user.name, email: user.email }
+  writeJson(SESSION_KEY, sessionUser)
+  return sessionUser
 }
 
 export function loginUser({ email, password }) {
