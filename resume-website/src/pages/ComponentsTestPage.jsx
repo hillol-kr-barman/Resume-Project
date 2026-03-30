@@ -1,7 +1,15 @@
 import Editor from '@monaco-editor/react'
 import { ArrowLongLeftIcon } from '@heroicons/react/20/solid'
+import HomePageCard from '../components/HomePageCard'
+import { projects, featuredProjectIds } from '../pages/pageData/homePageData'
+
 
 export default function ComponentsTestPage({ onNavigate }) {
+  const featuredProjects = featuredProjectIds
+  .map((id) => projects.find((project) => project.id === id))
+  .filter(Boolean)
+
+
   return (
     <main className="min-h-screen bg-gray-900 px-6 py-10 text-white">
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
@@ -19,19 +27,13 @@ export default function ComponentsTestPage({ onNavigate }) {
           <p className="mt-2 text-sm text-gray-300">
             Use this page to experiment with reusable UI components before adding them to your main pages.
           </p>
-          <div className="mt-6 overflow-hidden rounded-xl border border-white/10">
-            <Editor
-              height="70vh"
-              theme="vs-dark"
-              defaultLanguage="javascript"
-              defaultValue="// edit here"
-              options={{
-                minimap: { enabled: false },
-                fontSize: 14,
-                automaticLayout: true,
-              }}
-            />
+
+          <div>
+            {featuredProjects.map((project) => (
+              <HomePageCard key={project.id} project={project} />
+            ))}
           </div>
+
         </header>
       </div>
     </main>

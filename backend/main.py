@@ -139,7 +139,6 @@ def read_root() -> dict[str, str]:
 @app.post("/signup")
 def signup(payload: SignUpRequest) -> dict:
     signup_response = supabase_sign_up(payload)
-    print("SUPABASE SIGNUP RESPONSE:", signup_response)
     user = signup_response.get("user")
 
     if not user:

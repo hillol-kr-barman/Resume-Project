@@ -5,17 +5,18 @@ import coffeeCup from '../assets/coffeeCup.svg'
 import { techStackLogos, projects, featuredProjectIds } from './pageData/homePageData'
 import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
+import HomePageCard from '../components/HomePageCard'
 
 export default function HomePage({ onNavigate, currentUser, onLogout, currentPath = '/' }) {
   const handleNavigate = (event, to, { closeMobileMenu = false } = {}) => {
     event.preventDefault()
     onNavigate(to)
   }
-
+/* test component */
   const featuredProjects = featuredProjectIds
     .map((id) => projects.find((project) => project.id === id))
     .filter(Boolean)
-
+/* test component */
   return (
     <div>
       <SiteHeader onNavigate={onNavigate} currentUser={currentUser} onLogout={onLogout} currentPath={currentPath} />
@@ -151,28 +152,8 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
       <div className="mx-auto mt-32 mb-32 max-w-7xl px-6 lg:px-8">
         <h2 className="text-4xl text-center font-semibold tracking-tight text-white sm:text-5xl">Featured Projects</h2>
         <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {featuredProjects.map((item) => (
-            <article
-              key={item.title}
-              className="flex h-full flex-col rounded-2xl bg-card p-6 outline -outline-offset-1 outline-white/10"
-            >
-              <h4 className="text-center text-2xl font-semibold text-white">{item.title}</h4>
-              <p className="mt-4 text-center text-base/7 text-body">{item.content}</p>
-              <img
-                src={item.imageSrc}
-                alt={`${item.title} thumbnail`}
-                className="mt-6 h-44 w-full rounded-xl object-cover"
-              />
-              <a
-                href={item.gitLink}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-6 inline-flex items-center justify-center gap-2 text-sm font-semibold text-accent hover:text-accent/80"
-              >
-                <img src="https://cdn.simpleicons.org/github/ffffff" alt="GitHub icon" className="h-5 w-5" />
-                View on GitHub
-              </a>
-            </article>
+          {featuredProjects.map((project) => (
+            <HomePageCard key={project.id} project={project} />
           ))}
         </div>
         <div className="grid grid-cols-5 mt-12">
