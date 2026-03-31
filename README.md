@@ -1,45 +1,31 @@
-# 🌐 Personal Portfolio Website
+# Personal Portfolio Website
 
-This is my personal portfolio website built using **React (Vite)** for the frontend and **FastAPI** for the backend.
+This repository contains a personal portfolio website built with React and Vite, along with a FastAPI backend.
 
-The website showcases my:
-- 👨‍💻 Technical skills
-- 🚀 Featured and complete projects
-- 📄 Resume
-- 📬 Contact information
-
----
-
-## 🛠 Tech Stack
+## Tech Stack
 
 ### Frontend
-- React (Vite)
+- React
+- Vite
 - Tailwind CSS
-- JavaScript / TypeScript
 
 ### Backend
 - FastAPI
 - Python
-- PostgreSQL (planned)
-- SQLAlchemy (planned)
 
----
+## Features
 
-## ✨ Features
+- Responsive landing page
+- About and projects sections
+- Interactive playground
+- Resume and contact links
 
-- Modern responsive landing page
-- Hero section with introduction
-- Featured projects section
-- All projects listing
-- Contact section
-- Clean and minimal UI design
+## Project Structure
 
----
-
-## 📂 Project Structure
-```
-resume-website/
-├── frontend/   (React + Tailwind)
-├── backend/    (FastAPI)
+```text
+.
+├── src/        # Frontend source
+├── public/     # Static frontend assets
+├── backend/    # FastAPI backend
 └── README.md
 ```
