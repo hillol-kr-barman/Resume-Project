@@ -25,7 +25,7 @@ export default function ComponentsTestPage({ onNavigate }) {
         <header>
           <h1 className="text-3xl font-bold">Components Test Page</h1>
           <p className="mt-2 text-sm text-gray-300">
-            Use this page to experiment with reusable UI components before adding them to your main pages.
+            this page is used to test new components before adding to the website 
           </p>
 
           <section className="relative mt-8 overflow-hidden rounded-3xl border border-white/10 bg-card">
