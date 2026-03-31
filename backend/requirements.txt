@@ -1,0 +1,5 @@
+certifi>=2024.2.2,<2027
+fastapi>=0.115,<1
+pydantic>=2.10,<3
+stripe>=12,<13
+uvicorn[standard]>=0.30,<1
