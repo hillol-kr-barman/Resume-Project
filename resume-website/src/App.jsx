@@ -5,6 +5,7 @@ import ComponentsTestPage from './pages/ComponentsTestPage'
 import AllProjects from './pages/AllProjects'
 import AboutMe from './pages/AboutMe'
 import Playground from './pages/Playground'
+import BuyMeCoffee from './pages/BuyMeCoffee'
 import Preloader from './components/Preloader'
 import { getCurrentUser, logoutUser } from './lib/playgroundStore'
 
@@ -36,6 +37,17 @@ export default function App() {
   }, [])
 
   useEffect(() => {
+    if (!('scrollRestoration' in window.history)) return undefined
+
+    const previousScrollRestoration = window.history.scrollRestoration
+    window.history.scrollRestoration = 'manual'
+
+    return () => {
+      window.history.scrollRestoration = previousScrollRestoration
+    }
+  }, [])
+
+  useEffect(() => {
     if (isPreloading) return
 
     const timer = window.setTimeout(() => {
@@ -44,6 +56,11 @@ export default function App() {
 
     return () => window.clearTimeout(timer)
   }, [isPreloading])
+
+  useEffect(() => {
+    if (isPreloading) return
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+  }, [isPreloading, route.path, route.search])
 
   const navigate = (to) => {
     const nextUrl = new URL(to, window.location.origin)
@@ -95,6 +112,9 @@ export default function App() {
     }
     if (route.path === '/about') {
       return <AboutMe onNavigate={navigate} currentUser={currentUser} onLogout={handleLogout} currentPath={route.path} />
+    }
+    if (route.path === '/coffee') {
+      return <BuyMeCoffee onNavigate={navigate} currentUser={currentUser} onLogout={handleLogout} currentPath={route.path} />
     }
     return <HomePage onNavigate={navigate} currentUser={currentUser} onLogout={handleLogout} currentPath={route.path} />
   }, [currentUser, route])
