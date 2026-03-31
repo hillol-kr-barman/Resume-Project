@@ -28,7 +28,7 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
         <div className="mx-auto max-w-7xl px-6 pt-10 pb-24 sm:pb-32 lg:px-8 lg:py-32">
           <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-16 xl:gap-20">
           {/* Hero Text Content */}
-            <div className="mx-auto flex w-full max-w-2xl flex-col justify-center lg:mx-0 lg:min-h-[30rem]">
+            <div className="mx-auto flex w-full max-w-2xl flex-col justify-center lg:mx-0 lg:min-h-120">
               <p className="text-sm uppercase tracking-[0.35em] text-accent/70">Feeling Stack Overflowed?</p>
               <h1 className="mt-8 text-5xl font-semibold tracking-tight text-pretty text-white sm:text-7xl">
                 Hey!
@@ -163,16 +163,24 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
         <div className="grid items-center gap-10 lg:grid-cols-2">
           <div>
             <h2 className="max-w-2xl text-4xl font-semibold tracking-tight text-balance text-white sm:text-5xl">
-              Liked what you saw? Contact me to hire, or buy me a coffee!
+              Liked what you saw? 
+              <p className="mt-8 max-w-xl text-lg font-medium text-pretty text-gray-400 sm:text-xl/8">
+              Contact me to hire, or buy me a coffee!
+              </p>
             </h2>
             <div className="mt-10 flex items-center gap-x-6">
               <a
-                href="#"
+                href="/about"
+                onClick={(event) => handleNavigate(event, '/about')}
                 className="rounded-md bg-accent px-3.5 py-2.5 text-sm font-semibold text-black transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 Contact Me
               </a>
-              <a href="#" className="text-sm/6 font-semibold text-gray-300 hover:text-white">
+              <a
+                href="/coffee"
+                onClick={(event) => handleNavigate(event, '/coffee')}
+                className="text-sm/6 font-semibold text-gray-300 hover:text-white"
+              >
                 Get me a coffee <span aria-hidden="true">→</span>
               </a>
             </div>

@@ -4,6 +4,7 @@ import ssl
 from pathlib import Path
 from urllib import error, request
 
+import stripe
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -15,6 +16,15 @@ except ImportError:  # pragma: no cover
 
 
 app = FastAPI(title="Resume Project API")
+
+class CheckoutRequest(BaseModel):
+    tier: str
+
+PRICE_MAP = {
+    "espresso": 500,
+    "double": 1000,
+    "snacks": 2000,
+}
 
 app.add_middleware(
     CORSMiddleware,
@@ -82,6 +92,22 @@ def get_ssl_context() -> ssl.SSLContext:
     if certifi is not None:
         return ssl.create_default_context(cafile=certifi.where())
     return ssl.create_default_context()
+
+
+def get_stripe_config() -> tuple[str, str]:
+    stripe_secret_key = os.getenv("STRIPE_SECRET_KEY")
+    frontend_base_url = os.getenv("FRONTEND_BASE_URL", "http://localhost:5173").rstrip("/")
+
+    if not stripe_secret_key or "..." in stripe_secret_key:
+        raise HTTPException(
+            status_code=500,
+            detail=(
+                "Stripe is not configured. Set a real STRIPE_SECRET_KEY in backend/.env or "
+                "resume-website/.env.local."
+            ),
+        )
+
+    return stripe_secret_key, frontend_base_url
 
 
 def supabase_sign_up(payload: SignUpRequest) -> dict:
@@ -152,3 +178,34 @@ def signup(payload: SignUpRequest) -> dict:
         },
         "session": signup_response.get("session"),
     }
+
+@app.post("/create-checkout-session")
+def create_checkout_session(payload: CheckoutRequest):
+    stripe_secret_key, frontend_base_url = get_stripe_config()
+    amount = PRICE_MAP.get(payload.tier)
+    if not amount:
+        raise HTTPException(status_code=400, detail="Invalid support tier.")
+
+    stripe.api_key = stripe_secret_key
+
+    try:
+        session = stripe.checkout.Session.create(
+            mode="payment",
+            success_url=f"{frontend_base_url}/coffee?status=success",
+            cancel_url=f"{frontend_base_url}/coffee?status=cancelled",
+            line_items=[
+                {
+                    "price_data": {
+                        "currency": "aud",
+                        "product_data": {"name": "Buy me a coffee"},
+                        "unit_amount": amount,
+                    },
+                    "quantity": 1,
+                }
+            ],
+        )
+    except stripe.error.StripeError as exc:
+        message = getattr(exc, "user_message", None) or str(exc) or "Stripe checkout session creation failed."
+        raise HTTPException(status_code=502, detail=message) from exc
+
+    return {"url": session.url}
