@@ -130,7 +130,7 @@ export default function BuyMeCoffee({ onNavigate, currentUser, onLogout, current
                 <p className="mt-4 text-sm/7 text-body">
                   Select a tier below to create a Checkout Session on the backend and continue with Stripe.
                 </p>
-                <div id="stripe-placeholder" className="mt-6 rounded-2xl border border-dashed border-white/15 bg-white/[0.03] p-5">
+                <div id="stripe-placeholder" className="mt-6 rounded-2xl border border-dashed border-white/15 bg-white/3 p-5">
                   <p className="text-sm font-medium text-white">Secure payment via Stripe Checkout</p>
                   <p className="mt-2 text-sm/6 text-gray-400">
                     Your card details stay on Stripe. This page only requests a checkout session from your FastAPI backend.

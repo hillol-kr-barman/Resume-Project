@@ -44,7 +44,7 @@ class SignUpRequest(BaseModel):
 def load_env_file() -> None:
     env_candidates = [
         Path(__file__).resolve().parent / ".env",
-        Path(__file__).resolve().parent.parent / "resume-website" / ".env.local",
+        Path(__file__).resolve().parent.parent / ".env.local",
     ]
 
     for env_path in env_candidates:
@@ -80,7 +80,7 @@ def get_supabase_config() -> tuple[str, str]:
                 "Supabase credentials are missing. Set SUPABASE_URL with SUPABASE_KEY or "
                 "SUPABASE_ANON_KEY, or provide VITE_SUPABASE_URL with "
                 "VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY or VITE_SUPABASE_ANON_KEY "
-                "in resume-website/.env.local."
+                "in .env.local."
             ),
         )
 
@@ -103,7 +103,7 @@ def get_stripe_config() -> tuple[str, str]:
             status_code=500,
             detail=(
                 "Stripe is not configured. Set a real STRIPE_SECRET_KEY in backend/.env or "
-                "resume-website/.env.local."
+                ".env.local."
             ),
         )
 
