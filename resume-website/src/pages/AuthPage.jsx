@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ArrowLongLeftIcon } from '@heroicons/react/20/solid'
 import logo from '../assets/logo_green.svg'
+import BackgroundBeams from '../components/BackgroundBeams'
 import { loginUser, registerUser } from '../lib/playgroundStore'
 
 export default function AuthPage({ mode = 'login', onNavigate, routeSearch = '', currentUser, onAuthChange }) {
@@ -62,17 +63,7 @@ export default function AuthPage({ mode = 'login', onNavigate, routeSearch = '',
 
   return (
     <div className="relative flex min-h-screen flex-col justify-center px-4 py-4 sm:px-6 lg:px-8">
-      <svg
-        aria-hidden="true"
-        className="absolute inset-0 -z-10 size-full mask-[radial-gradient(90%_90%_at_center,white,transparent)] stroke-accent/25"
-      >
-        <defs>
-          <pattern x="50%" y={-1} id="auth-grid-pattern" width={200} height={200} patternUnits="userSpaceOnUse">
-            <path d="M.5 200V.5H200" fill="none" />
-          </pattern>
-        </defs>
-        <rect fill="url(#auth-grid-pattern)" width="100%" height="100%" strokeWidth={0} />
-      </svg>
+      <BackgroundBeams className="-z-10" />
 
       <div className="grid grid-cols-3 items-center sm:mx-auto sm:w-full sm:max-w-md">
         <div className="justify-self-start px-1 py-1 sm:px-3.5">
