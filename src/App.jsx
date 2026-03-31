@@ -7,7 +7,9 @@ import AboutMe from './pages/AboutMe'
 import Playground from './pages/Playground'
 import BuyMeCoffee from './pages/BuyMeCoffee'
 import Preloader from './components/Preloader'
+import LayoutDebugPanel from './components/LayoutDebugPanel'
 import { getCurrentUser, logoutUser } from './lib/playgroundStore'
+import { isLayoutDebugEnabled } from './lib/isLayoutDebugEnabled'
 
 function normalizePath(pathname) {
   if (!pathname || pathname === '/') return '/'
@@ -15,6 +17,7 @@ function normalizePath(pathname) {
 }
 
 export default function App() {
+  const debugLayout = isLayoutDebugEnabled()
   const [isPreloading, setIsPreloading] = useState(true)
   const [isPageVisible, setIsPageVisible] = useState(false)
   const [route, setRoute] = useState(() => ({
@@ -123,5 +126,10 @@ export default function App() {
     return <Preloader onComplete={() => setIsPreloading(false)} />
   }
 
-  return <div className={`app-shell${isPageVisible ? ' app-shell--visible' : ''}`}>{page}</div>
+  return (
+    <div className={`app-shell${isPageVisible ? ' app-shell--visible' : ''}`}>
+      {page}
+      {debugLayout ? <LayoutDebugPanel /> : null}
+    </div>
+  )
 }
