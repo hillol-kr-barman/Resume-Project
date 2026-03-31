@@ -11,7 +11,7 @@ export default function ComponentsTestPage({ onNavigate }) {
 
 
   return (
-    <main className="min-h-screen bg-gray-900 px-6 py-10 text-white">
+    <main className="min-h-screen bg-background px-6 py-10 text-white">
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
         <button
           type="button"

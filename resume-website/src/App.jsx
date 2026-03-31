@@ -5,6 +5,7 @@ import ComponentsTestPage from './pages/ComponentsTestPage'
 import AllProjects from './pages/AllProjects'
 import AboutMe from './pages/AboutMe'
 import Playground from './pages/Playground'
+import Preloader from './components/Preloader'
 import { getCurrentUser, logoutUser } from './lib/playgroundStore'
 
 function normalizePath(pathname) {
@@ -13,6 +14,8 @@ function normalizePath(pathname) {
 }
 
 export default function App() {
+  const [isPreloading, setIsPreloading] = useState(true)
+  const [isPageVisible, setIsPageVisible] = useState(false)
   const [route, setRoute] = useState(() => ({
     path: normalizePath(window.location.pathname),
     search: window.location.search,
@@ -31,6 +34,16 @@ export default function App() {
     window.addEventListener('popstate', handlePopState)
     return () => window.removeEventListener('popstate', handlePopState)
   }, [])
+
+  useEffect(() => {
+    if (isPreloading) return
+
+    const timer = window.setTimeout(() => {
+      setIsPageVisible(true)
+    }, 40)
+
+    return () => window.clearTimeout(timer)
+  }, [isPreloading])
 
   const navigate = (to) => {
     const nextUrl = new URL(to, window.location.origin)
@@ -86,5 +99,9 @@ export default function App() {
     return <HomePage onNavigate={navigate} currentUser={currentUser} onLogout={handleLogout} currentPath={route.path} />
   }, [currentUser, route])
 
-  return page
+  if (isPreloading) {
+    return <Preloader onComplete={() => setIsPreloading(false)} />
+  }
+
+  return <div className={`app-shell${isPageVisible ? ' app-shell--visible' : ''}`}>{page}</div>
 }
