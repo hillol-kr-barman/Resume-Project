@@ -13,58 +13,62 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
     event.preventDefault()
     onNavigate(to)
   }
-  /* test component */
+  
   const featuredProjects = featuredProjectIds
     .map((id) => projects.find((project) => project.id === id))
     .filter(Boolean)
-  /* test component */
+
   return (
     <div>
       <SiteHeader onNavigate={onNavigate} currentUser={currentUser} onLogout={onLogout} currentPath={currentPath} />
 
-
       {/* Hero Section */}
       <div className="relative isolate overflow-hidden pt-24">
         <BackgroundBeams className="-z-10" />
-        <div className="mx-auto max-w-7xl px-6 pt-10 pb-24 sm:pb-32 lg:flex lg:px-8 lg:py-40">
+        <div className="mx-auto max-w-7xl px-6 pt-10 pb-24 sm:pb-32 lg:px-8 lg:py-32">
+          <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-16 xl:gap-20">
           {/* Hero Text Content */}
-          <div className="mx-auto max-w-2xl lg:mx-0 lg:shrink-0 lg:pt-8">
+            <div className="mx-auto flex w-full max-w-2xl flex-col justify-center lg:mx-0 lg:min-h-[30rem]">
+              <p className="text-sm uppercase tracking-[0.35em] text-accent/70">Feeling Stack Overflowed?</p>
+              <h1 className="mt-8 text-5xl font-semibold tracking-tight text-pretty text-white sm:text-7xl">
+                Hey!
+              </h1>
+              <h4 className="mt-4 text-5xl font-semibold tracking-tight text-pretty text-white sm:text-5xl">
+                I'm Hillol!
+              </h4>
+              <p className="mt-8 max-w-xl text-lg font-medium text-pretty text-gray-400 sm:text-xl/8">
+                I create responsive websites and critical web applications using industry standard system design.
+              </p>
+              <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-x-6">
+                <a
+                  href="/HillolBarman_Resume.pdf"
+                  download
+                  className="inline-flex rounded-md bg-accent px-4 py-2.5 text-sm font-semibold text-black transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                >
+                  Download CV
+                </a>
 
-            <h1 className="mt-10 text-5xl font-semibold tracking-tight text-pretty text-white sm:text-7xl">
-              Hey! I'm Hillol!
-            </h1>
-            <p className="mt-8 text-lg font-medium text-pretty text-gray-400 sm:text-xl/8">
-              I create responsive websites and critical web applications using industry standard system design.
-            </p>
-            <div className="mt-10 flex items-center gap-x-6">
-              <a
-                href="/HillolBarman_Resume.pdf"
-                download
-                className="mt-6 inline-flex rounded-md bg-accent px-4 py-2.5 text-sm font-semibold text-black transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-              >
-                Download CV
-              </a>
-              
-              <button
-                type="button"
-                className="mt-6 inline-flex rounded-md bg-accent px-4 py-2.5 text-sm font-semibold text-black transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-                onClick={(event) => handleNavigate(event, '/components-test')}
-              >
-                Debug Button
-              </button>
+                <button
+                  type="button"
+                  className="inline-flex rounded-md bg-accent px-4 py-2.5 text-sm font-semibold text-black transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                  onClick={(event) => handleNavigate(event, '/components-test')}
+                >
+                  Debug Button
+                </button>
+              </div>
             </div>
-          </div>
-          {/* Hero Visual / Screenshot */}
-          <div className="mx-auto mt-16 flex max-w-2xl sm:mt-24 lg:mt-0 lg:mr-0 lg:ml-10 lg:max-w-none lg:flex-none xl:ml-32">
-            <div className="max-w-3xl flex-none sm:max-w-5xl lg:max-w-none">
-              <div className="-m-2 rounded-xl bg-white/2.5 p-2 ring-1 ring-white/10 ring-inset lg:-m-4 lg:rounded-2xl lg:p-4">
-                <img
-                  alt="App screenshot"
-                  src={placeHolderImage}
-                  width={2432}
-                  height={1442}
-                  className="w-full max-w-xl h-auto rounded-md bg-white/5 shadow-2xl ring-1 ring-white/10"
-                />
+            {/* Hero Visual / Screenshot */}
+            <div className="mx-auto flex w-full max-w-2xl justify-center lg:mx-0 lg:max-w-none lg:justify-end">
+              <div className="w-full max-w-3xl">
+                <div className="rounded-xl bg-white/2.5 p-2 ring-1 ring-white/10 ring-inset lg:rounded-2xl lg:p-4">
+                  <img
+                    alt="App screenshot"
+                    src={placeHolderImage}
+                    width={2432}
+                    height={1442}
+                    className="h-auto w-full rounded-md bg-white/5 shadow-2xl ring-1 ring-white/10"
+                  />
+                </div>
               </div>
             </div>
           </div>
