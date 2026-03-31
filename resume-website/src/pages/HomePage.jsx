@@ -6,42 +6,26 @@ import { techStackLogos, projects, featuredProjectIds } from './pageData/homePag
 import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
 import HomePageCard from '../components/HomePageCard'
+import BackgroundBeams from '../components/BackgroundBeams'
 
 export default function HomePage({ onNavigate, currentUser, onLogout, currentPath = '/' }) {
   const handleNavigate = (event, to, { closeMobileMenu = false } = {}) => {
     event.preventDefault()
     onNavigate(to)
   }
-/* test component */
+  /* test component */
   const featuredProjects = featuredProjectIds
     .map((id) => projects.find((project) => project.id === id))
     .filter(Boolean)
-/* test component */
+  /* test component */
   return (
     <div>
       <SiteHeader onNavigate={onNavigate} currentUser={currentUser} onLogout={onLogout} currentPath={currentPath} />
 
+
       {/* Hero Section */}
       <div className="relative isolate overflow-hidden pt-24">
-        {/* Hero Background Pattern */}
-        <svg
-          aria-hidden="true"
-          className="absolute inset-0 -z-10 size-full mask-[radial-gradient(100%_100%_at_top_right,white,transparent)] stroke-accent/25"
-        >
-          <defs>
-            <pattern
-              x="50%"
-              y={-1}
-              id="0787a7c5-978c-4f66-83c7-11c213f99cb7"
-              width={200}
-              height={200}
-              patternUnits="userSpaceOnUse"
-            >
-              <path d="M.5 200V.5H200" fill="none" />
-            </pattern>
-          </defs>
-          <rect fill="url(#0787a7c5-978c-4f66-83c7-11c213f99cb7)" width="100%" height="100%" strokeWidth={0} />
-        </svg>
+        <BackgroundBeams className="-z-10" />
         <div className="mx-auto max-w-7xl px-6 pt-10 pb-24 sm:pb-32 lg:flex lg:px-8 lg:py-40">
           {/* Hero Text Content */}
           <div className="mx-auto max-w-2xl lg:mx-0 lg:shrink-0 lg:pt-8">
@@ -54,20 +38,19 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
             </p>
             <div className="mt-10 flex items-center gap-x-6">
               <a
-                href="#"
-                className="rounded-md bg-accent px-3.5 py-2.5 text-sm font-semibold text-black shadow-xs transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                href="/HillolBarman_Resume.pdf"
+                download
+                className="mt-6 inline-flex rounded-md bg-accent px-4 py-2.5 text-sm font-semibold text-black transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
-                Get started
+                Download CV
               </a>
-              <a href="#" className="text-sm/6 font-semibold text-white">
-                Learn more <span aria-hidden="true">→</span>
-              </a>
+              
               <button
                 type="button"
-                className="rounded-md bg-accent px-2.5 py-1.5 text-sm font-semibold text-black shadow-none transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                className="mt-6 inline-flex rounded-md bg-accent px-4 py-2.5 text-sm font-semibold text-black transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                 onClick={(event) => handleNavigate(event, '/components-test')}
               >
-                Test Me
+                Debug Button
               </button>
             </div>
           </div>

@@ -1,5 +1,5 @@
-import Editor from '@monaco-editor/react'
 import { ArrowLongLeftIcon } from '@heroicons/react/20/solid'
+import BackgroundBeams from '../components/BackgroundBeams'
 import HomePageCard from '../components/HomePageCard'
 import { projects, featuredProjectIds } from '../pages/pageData/homePageData'
 
@@ -28,7 +28,21 @@ export default function ComponentsTestPage({ onNavigate }) {
             Use this page to experiment with reusable UI components before adding them to your main pages.
           </p>
 
-          <div>
+          <section className="relative mt-8 overflow-hidden rounded-3xl border border-white/10 bg-card">
+            <BackgroundBeams />
+            <div className="relative px-6 py-12 sm:px-10">
+              <p className="text-sm uppercase tracking-[0.35em] text-accent/70">Background Test</p>
+              <h2 className="mt-3 max-w-2xl text-4xl font-semibold tracking-tight text-white">
+                Beams background preview using the site accent palette.
+              </h2>
+              <p className="mt-4 max-w-2xl text-base/7 text-body">
+                This replaces the particles experiment and the old grid rectangle pattern with a single shared
+                background system.
+              </p>
+            </div>
+          </section>
+
+          <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {featuredProjects.map((project) => (
               <HomePageCard key={project.id} project={project} />
             ))}
