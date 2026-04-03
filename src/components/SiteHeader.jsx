@@ -50,7 +50,7 @@ export default function SiteHeader({ onNavigate, currentUser, onLogout, currentP
     >
       <nav
         aria-label="Global"
-        className={`mx-auto flex max-w-7xl items-center justify-between px-6 transition-[padding] duration-300 lg:px-8 ${isScrolled ? 'py-4' : 'py-6'}`}
+        className={`mx-auto flex max-w-6xl items-center justify-between px-5 transition-[padding] duration-300 lg:px-6 ${isScrolled ? 'py-3' : 'py-4'}`}
       >
         <div className="flex lg:flex-1">
           <a href="/" onClick={(event) => handleNavigate(event, '/', { closeMobileMenu: true })} className="-m-1.5 p-1.5">
@@ -70,14 +70,14 @@ export default function SiteHeader({ onNavigate, currentUser, onLogout, currentP
           </button>
         </div>
 
-        <div className="hidden lg:flex lg:gap-x-12">
+        <div className="hidden lg:flex lg:gap-x-9">
           {navigation.map((item) => (
             <a
               key={item.name}
               href={item.href}
               onClick={(event) => handleNavigate(event, item.href)}
               aria-current={currentPath === item.href ? 'page' : undefined}
-              className={`group text-sm/6 font-semibold transition duration-300 ${currentPath === item.href ? 'text-accent' : 'text-white'}`}
+              className={`group text-sm/6 font-medium transition duration-300 ${currentPath === item.href ? 'text-accent' : 'text-white'}`}
             >
               {item.name}
               <span

@@ -62,7 +62,7 @@ export default function AuthPage({ mode = 'login', onNavigate, routeSearch = '',
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col justify-center px-4 py-4 sm:px-6 lg:px-8">
+    <div className="relative flex min-h-screen flex-col justify-center px-4 py-4 sm:px-5 lg:px-6">
       <BackgroundBeams className="-z-10" />
 
       <div className="grid grid-cols-3 items-center sm:mx-auto sm:w-full sm:max-w-md">
@@ -81,11 +81,11 @@ export default function AuthPage({ mode = 'login', onNavigate, routeSearch = '',
         <div aria-hidden="true" className="justify-self-end" />
       </div>
 
-      <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-4 text-center text-2xl/9 font-bold tracking-tight text-white">{title}</h2>
+      <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-xs">
+        <h2 className="mt-3 text-center text-lg/8 font-bold tracking-tight text-white">{title}</h2>
         <p className="mt-2 text-center text-sm/7 font-medium tracking-tight text-white">{subtitle}</p>
 
-        <div className="mt-4 bg-card px-5 py-6 shadow-none outline -outline-offset-1 outline-white/10 sm:rounded-lg sm:px-8">
+        <div className="mt-4 bg-card px-5 py-5 shadow-none outline -outline-offset-1 outline-white/10 sm:rounded-lg sm:px-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             {isRegistered ? (
               <div>
