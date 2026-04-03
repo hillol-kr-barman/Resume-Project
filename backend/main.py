@@ -18,13 +18,17 @@ except ImportError:  # pragma: no cover
 app = FastAPI(title="Resume Project API")
 
 class CheckoutRequest(BaseModel):
-    tier: str
+    tier: str | None = None
+    custom_amount: float | None = None
 
 PRICE_MAP = {
     "espresso": 500,
     "double": 1000,
     "snacks": 2000,
 }
+
+MIN_CUSTOM_AMOUNT_CENTS = 2600
+MAX_CUSTOM_AMOUNT_CENTS = 1_000_000
 
 app.add_middleware(
     CORSMiddleware,
@@ -88,7 +92,6 @@ def get_supabase_config() -> tuple[str, str]:
 
 
 def get_ssl_context() -> ssl.SSLContext:
-    # Some local Python installs do not have a populated system CA bundle.
     if certifi is not None:
         return ssl.create_default_context(cafile=certifi.where())
     return ssl.create_default_context()
@@ -182,9 +185,20 @@ def signup(payload: SignUpRequest) -> dict:
 @app.post("/create-checkout-session")
 def create_checkout_session(payload: CheckoutRequest):
     stripe_secret_key, frontend_base_url = get_stripe_config()
-    amount = PRICE_MAP.get(payload.tier)
-    if not amount:
-        raise HTTPException(status_code=400, detail="Invalid support tier.")
+    amount = None
+
+    if payload.custom_amount is not None:
+        amount = int(round(payload.custom_amount * 100))
+
+        if amount < MIN_CUSTOM_AMOUNT_CENTS:
+            raise HTTPException(status_code=400, detail="Mate it must be at least $26.00.")
+
+        if amount > MAX_CUSTOM_AMOUNT_CENTS:
+            raise HTTPException(status_code=400, detail="You want the ATO to pay me a visit?")
+    else:
+        amount = PRICE_MAP.get(payload.tier or "")
+        if not amount:
+            raise HTTPException(status_code=400, detail="Invalid support tier.")
 
     stripe.api_key = stripe_secret_key
 
