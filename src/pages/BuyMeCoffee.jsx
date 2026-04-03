@@ -29,6 +29,7 @@ const supportTiers = [
 export default function BuyMeCoffee({ onNavigate, currentUser, onLogout, currentPath = '/coffee' }) {
   const [isSubmittingTier, setIsSubmittingTier] = useState(null)
   const [checkoutError, setCheckoutError] = useState('')
+  const [customAmount, setCustomAmount] = useState('')
   const handleNavigate = (event, to) => {
     event.preventDefault()
     onNavigate(to)
@@ -36,16 +37,41 @@ export default function BuyMeCoffee({ onNavigate, currentUser, onLogout, current
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000'
   const checkoutStatus = useMemo(() => new URLSearchParams(window.location.search).get('status'), [])
+  const shouldShowDefaultMessage = checkoutStatus === null && !checkoutError
 
-  async function startCheckout(tier) {
+  async function startCheckout({ tier = null, customAmount: rawCustomAmount = null }) {
     setCheckoutError('')
-    setIsSubmittingTier(tier)
+
+    const submissionId = tier ?? 'custom'
+    setIsSubmittingTier(submissionId)
+
+    let requestBody = {}
+
+    if (rawCustomAmount !== null) {
+      const parsedAmount = Number.parseFloat(rawCustomAmount)
+
+      if (!Number.isFinite(parsedAmount)) {
+        setCheckoutError('Enter a valid amount, for example 26 or 26.50.')
+        setIsSubmittingTier(null)
+        return
+      }
+
+      if (parsedAmount <= 25) {
+        setCheckoutError('Mate it must be at least $26.00.')
+        setIsSubmittingTier(null)
+        return
+      }
+
+      requestBody = { custom_amount: parsedAmount }
+    } else {
+      requestBody = { tier }
+    }
 
     try {
       const response = await fetch(`${API_BASE_URL}/create-checkout-session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier }),
+        body: JSON.stringify(requestBody),
       })
 
       let payload = null
@@ -66,7 +92,12 @@ export default function BuyMeCoffee({ onNavigate, currentUser, onLogout, current
 
       window.location.href = payload.url
     } catch (error) {
-      setCheckoutError(error.message || 'Could not start checkout.')
+      const message =
+        error instanceof TypeError
+          ? `Could not reach the payment API at ${API_BASE_URL}. Make sure the FastAPI server is running.`
+          : error.message || 'Could not start checkout.'
+
+      setCheckoutError(message)
     } finally {
       setIsSubmittingTier(null)
     }
@@ -78,15 +109,18 @@ export default function BuyMeCoffee({ onNavigate, currentUser, onLogout, current
 
       <main className="mx-auto max-w-6xl px-5 pb-20 pt-28 lg:px-6">
         <section className="overflow-hidden rounded-3xl border border-white/10 bg-card">
-          <div className="grid gap-0 lg:grid-cols-[minmax(0,1.1fr)_24rem]">
+          <div className='flex flex-col items-center text-center'>
             <div className="px-6 py-8 sm:px-8 sm:py-10">
               <p className="text-xs uppercase tracking-[0.28em] text-accent/70">Support My Work</p>
               <h1 className="mt-4 max-w-2xl text-2xl font-semibold tracking-tight text-white sm:text-3xl">
                 Buy me a coffee while I build the next thing.
               </h1>
-              <p className="mt-5 max-w-2xl text-sm/7 text-body">
-                Choose a support tier and you will be redirected to secure Stripe Checkout.
-              </p>
+              {shouldShowDefaultMessage ? (
+                <p className="mt-5 max-w-2xl text-sm/7 text-body">
+                  Choose a support tier and you will be redirected to secure Stripe Checkout.
+                </p>
+              ) : null}
+
 
               {checkoutStatus === 'success' ? (
                 <div className="mt-6 rounded-2xl border border-accent/30 bg-accent/10 px-4 py-3 text-sm text-white">
@@ -105,68 +139,55 @@ export default function BuyMeCoffee({ onNavigate, currentUser, onLogout, current
                   {checkoutError}
                 </div>
               ) : null}
-
-              <div className="mt-8 flex flex-wrap gap-3">
-                <a
-                  href="/about"
-                  onClick={(event) => handleNavigate(event, '/about')}
-                  className="inline-flex rounded-md border border-white/15 px-4 py-2.5 text-sm font-semibold text-white transition hover:border-accent/60 hover:text-accent"
-                >
-                  Contact me instead
-                </a>
-                <a
-                  href="#stripe-placeholder"
-                  className="inline-flex rounded-md bg-accent px-4 py-2.5 text-sm font-semibold text-black transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)]"
-                >
-                  Continue to payment
-                </a>
-              </div>
-            </div>
-
-            <div className="border-t border-white/10 bg-background/40 px-6 py-8 sm:px-8 sm:py-10 lg:border-t-0 lg:border-l">
-              <div className="rounded-2xl border border-accent/20 bg-black/40 p-5">
-                <p className="text-xs font-medium uppercase tracking-[0.24em] text-accent/70">Next Step</p>
-                <h2 className="mt-3 text-lg font-semibold text-white">Stripe checkout goes here</h2>
-                <p className="mt-3 text-sm/7 text-body">
-                  Select a tier below to create a Checkout Session on the backend and continue with Stripe.
-                </p>
-                <div id="stripe-placeholder" className="mt-5 rounded-2xl border border-dashed border-white/15 bg-white/3 p-4">
-                  <p className="text-sm font-medium text-white">Secure payment via Stripe Checkout</p>
-                  <p className="mt-2 text-sm/6 text-gray-400">
-                    Your card details stay on Stripe. This page only requests a checkout session from your FastAPI backend.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => startCheckout('espresso')}
-                    disabled={isSubmittingTier !== null}
-                    className="mt-5 inline-flex rounded-md bg-accent px-4 py-2.5 text-sm font-semibold text-black transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)] disabled:cursor-wait disabled:opacity-80"
-                  >
-                    {isSubmittingTier === 'espresso' ? 'Redirecting...' : 'Quick support checkout'}
-                  </button>
-                </div>
-              </div>
             </div>
           </div>
-        </section>
-
-        <section className="mt-8">
-          <div className="grid gap-5 md:grid-cols-3">
-            {supportTiers.map((tier) => (
-              <article key={tier.amount} className="rounded-2xl border border-white/10 bg-card p-5">
-                <p className="text-xs uppercase tracking-[0.24em] text-accent/70">{tier.label}</p>
-                <p className="mt-3 text-2xl font-semibold text-white">{tier.amount}</p>
-                <p className="mt-3 text-sm/7 text-body">{tier.description}</p>
+          <section className="m-8">
+            <div className='grid gap-5 md:grid-cols-1'>
+              <div className="grid gap-5 md:grid-cols-3">
+                {supportTiers.map((tier) => (
+                  <article key={tier.amount} className="flex h-full flex-col rounded-2xl border border-white/10 bg-card p-5">
+                    <p className="text-xs uppercase tracking-[0.24em] text-accent/70">{tier.label}</p>
+                    <p className="mt-3 text-2xl font-semibold text-white">{tier.amount}</p>
+                    <p className="mt-3 flex-1 text-sm/7 text-body">{tier.description}</p>
+                    <button
+                      type="button"
+                      onClick={() => startCheckout({ tier: tier.id })}
+                      disabled={isSubmittingTier !== null}
+                      className="mt-6 inline-flex w-full justify-center rounded-md border border-white/10 px-4 py-2.5 text-sm font-semibold text-white transition hover:border-accent/60 hover:text-accent disabled:cursor-wait disabled:opacity-80"
+                    >
+                      {isSubmittingTier === tier.id ? 'Redirecting...' : tier.cta}
+                    </button>
+                  </article>
+                ))}
+              </div>
+              <div className='rounded-2xl border border-white/10 bg-card p-5'>
+                <p className="text-xs uppercase tracking-[0.24em] text-accent/70">A Coffee Factory</p>
+                <div className="mt-3">
+                  <input
+                    id="custom_amount"
+                    name="custom_amount"
+                    type="number"
+                    min="1"
+                    step="0.01"
+                    inputMode="decimal"
+                    placeholder="30.00"
+                    aria-describedby="custom_amount"
+                    value={customAmount}
+                    onChange={(event) => setCustomAmount(event.target.value)}
+                    className="block w-full rounded-md border border-white/10 bg-white/5 px-4 py-3 text-base text-white placeholder:text-gray-500 focus:border-accent/60 focus:outline-none"
+                  />
+                </div>
+                <p className="mt-3 text-sm/7 text-body">Do your magic, I want that coffee bean roastering plant</p>
                 <button
                   type="button"
-                  onClick={() => startCheckout(tier.id)}
+                  onClick={() => startCheckout({ customAmount })}
                   disabled={isSubmittingTier !== null}
                   className="mt-6 inline-flex w-full justify-center rounded-md border border-white/10 px-4 py-2.5 text-sm font-semibold text-white transition hover:border-accent/60 hover:text-accent disabled:cursor-wait disabled:opacity-80"
                 >
-                  {isSubmittingTier === tier.id ? 'Redirecting...' : tier.cta}
-                </button>
-              </article>
-            ))}
-          </div>
+                  {isSubmittingTier === 'custom' ? 'Redirecting...' : 'Support with custom amount'}
+                </button></div>
+            </div>
+          </section>
         </section>
       </main>
 
