@@ -5,7 +5,7 @@ import coffeeCup from '../assets/coffeeCup.svg'
 import { techStackLogos, projects, featuredProjectIds } from './pageData/homePageData'
 import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
-import HomePageCard from '../components/HomePageCard'
+import ProjectsCard from '../components/ProjectsCard'
 import BackgroundBeams from '../components/BackgroundBeams'
 
 export default function HomePage({ onNavigate, currentUser, onLogout, currentPath = '/' }) {
@@ -23,23 +23,23 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
       <SiteHeader onNavigate={onNavigate} currentUser={currentUser} onLogout={onLogout} currentPath={currentPath} />
 
       {/* Hero Section */}
-      <div className="relative isolate overflow-hidden pt-24">
+      <div className="relative isolate overflow-hidden pt-20">
         <BackgroundBeams className="-z-10" />
-        <div className="mx-auto max-w-7xl px-6 pt-10 pb-24 sm:pb-32 lg:px-8 lg:py-32">
-          <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-16 xl:gap-20">
+        <div className="mx-auto max-w-6xl px-5 pt-8 pb-18 sm:pb-22 lg:px-6 lg:py-20">
+          <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-12 xl:gap-14">
           {/* Hero Text Content */}
-            <div className="mx-auto flex w-full max-w-2xl flex-col justify-center lg:mx-0 lg:min-h-120">
-              <p className="text-sm uppercase tracking-[0.35em] text-accent/70">Feeling Stack Overflowed?</p>
-              <h1 className="mt-8 text-5xl font-semibold tracking-tight text-pretty text-white sm:text-7xl">
+            <div className="mx-auto flex w-full max-w-lg flex-col justify-center lg:mx-0 lg:min-h-120">
+              <p className="text-xs uppercase tracking-[0.28em] text-accent/70">Feeling Stack Overflowed?</p>
+              <h1 className="mt-5 text-3xl font-semibold tracking-tight text-pretty text-white sm:text-5xl">
                 Hey!
               </h1>
-              <h4 className="mt-4 text-5xl font-semibold tracking-tight text-pretty text-white sm:text-5xl">
+              <h4 className="mt-2 text-xl font-semibold tracking-tight text-pretty text-white sm:text-2xl">
                 I'm Hillol!
               </h4>
-              <p className="mt-8 max-w-xl text-lg font-medium text-pretty text-gray-400 sm:text-xl/8">
+              <p className="mt-5 max-w-md text-sm font-medium text-pretty text-gray-400 sm:text-base/7">
                 I create responsive websites and critical web applications using industry standard system design.
               </p>
-              <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-x-6">
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-x-4">
                 <a
                   href="/HillolBarman_Resume.pdf"
                   download
@@ -58,9 +58,9 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
               </div>
             </div>
             {/* Hero Visual / Screenshot */}
-            <div className="mx-auto flex w-full max-w-2xl justify-center lg:mx-0 lg:max-w-none lg:justify-end">
-              <div className="w-full max-w-3xl">
-                <div className="rounded-xl bg-white/2.5 p-2 ring-1 ring-white/10 ring-inset lg:rounded-2xl lg:p-4">
+            <div className="mx-auto flex w-full max-w-lg justify-center lg:mx-0 lg:max-w-none lg:justify-end">
+              <div className="w-full max-w-xl">
+                <div className="rounded-xl bg-white/2.5 p-2 ring-1 ring-white/10 ring-inset lg:rounded-2xl lg:p-2.5">
                   <img
                     alt="App screenshot"
                     src={placeHolderImage}
@@ -76,19 +76,19 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
       </div>
 
       {/* Who Am I Section */}
-      <div className="mt-32 overflow-hidden sm:mt-40">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-6 gap-y-10 lg:mx-0 lg:max-w-none lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-stretch">
+      <div className="mt-24 overflow-hidden sm:mt-28">
+        <div className="mx-auto max-w-6xl px-5 lg:px-6">
+          <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 lg:mx-0 lg:max-w-none lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-stretch">
             {/* Who Am I Content */}
             <div className="lg:pb-2">
-              <h2 className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">Whoami</h2>
-              <p className="mt-6 text-base/7 text-body">
+              <h2 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Whoami</h2>
+              <p className="mt-5 text-sm/7 text-body">
                 Engineer by training. Builder by habit. I design and develop scalable web applications and systems with a focus on clean architecture and thoughtful user experiences.
               </p>
-              <p className="mt-6 text-base/7 text-body">
+              <p className="mt-5 text-sm/7 text-body">
                 I enjoy breaking down complex problems, designing reliable system architectures, and turning ideas into practical products. With experience across the full development lifecycle, I focus on building solutions that are both technically solid and easy for people to use.
               </p>
-              <p className="mt-6 text-base/7 text-body">
+              <p className="mt-5 text-sm/7 text-body">
                 I hold a background in computer science and continue to explore better ways to build efficient, scalable systems.
               </p>
             </div>
@@ -110,17 +110,17 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
 
       {/* Logo Clouds Section */}
 
-      <div className="mx-auto mt-32 max-w-7xl sm:mt-40 sm:px-6 lg:px-8">
-        <div className="relative isolate overflow-hidden bg-card px-6 py-24 text-center after:pointer-events-none after:absolute after:inset-0 after:inset-ring after:inset-ring-white/10 sm:rounded-3xl sm:px-16 after:sm:rounded-3xl">
-          <h4 className="mx-auto max-w-2xl text-3xl font-bold tracking-tight text-white sm:text-4xl">
+      <div className="mx-auto mt-24 max-w-6xl sm:mt-28 sm:px-5 lg:px-6">
+        <div className="relative isolate overflow-hidden bg-card px-5 py-18 text-center after:pointer-events-none after:absolute after:inset-0 after:inset-ring after:inset-ring-white/10 sm:rounded-3xl sm:px-12 after:sm:rounded-3xl">
+          <h4 className="mx-auto max-w-2xl text-xl font-bold tracking-tight text-white sm:text-2xl">
             Most Used Tech Stacks
           </h4>
-          <p className="mx-auto mt-6 text-base/7 text-body">
+          <p className="mx-auto mt-5 max-w-3xl text-sm/7 text-body">
             Throughout my coding journey, I have worked with various technologies and tools. I strongly
             believe that staying updated and learning best practices is essential for building solid expertise
             in modern industry-standard development environments.
           </p>
-          <div className="mx-auto mt-18 opacity-60 grid max-w-4xl grid-cols-2 items-center justify-items-center gap-x-8 gap-y-10 sm:grid-cols-3 lg:max-w-none lg:grid-cols-7">
+          <div className="mx-auto mt-12 grid max-w-4xl grid-cols-2 items-center justify-items-center gap-x-8 gap-y-8 opacity-60 sm:grid-cols-3 lg:max-w-none lg:grid-cols-7">
             {techStackLogos.map((logo) => (
               <img
                 key={logo.name}
@@ -136,14 +136,14 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
       </div>
 
       {/* Featured Projects */}
-      <div className="mx-auto mt-32 mb-32 max-w-7xl px-6 lg:px-8">
-        <h2 className="text-4xl text-center font-semibold tracking-tight text-white sm:text-5xl">Featured Projects</h2>
-        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mx-auto mt-24 mb-24 max-w-6xl px-5 lg:px-6">
+        <h2 className="text-center text-2xl font-semibold tracking-tight text-white sm:text-3xl">Featured Projects</h2>
+        <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
           {featuredProjects.map((project) => (
-            <HomePageCard key={project.id} project={project} />
+            <ProjectsCard key={project.id} project={project} />
           ))}
         </div>
-        <div className="grid grid-cols-5 mt-12">
+        <div className="mt-10 grid grid-cols-5">
           <div className="border-t mt-6 col-span-2 border-white/10"></div>
           <button
             type="button"
@@ -159,16 +159,16 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
 
 
       {/* Buy me a Coffee Section */}
-      <div className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">
-        <div className="grid items-center gap-10 lg:grid-cols-2">
+      <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24 lg:px-6">
+        <div className="grid items-center gap-8 lg:grid-cols-2">
           <div>
-            <h2 className="max-w-2xl text-4xl font-semibold tracking-tight text-balance text-white sm:text-5xl">
+            <h2 className="max-w-xl text-2xl font-semibold tracking-tight text-balance text-white sm:text-3xl">
               Liked what you saw? 
-              <p className="mt-8 max-w-xl text-lg font-medium text-pretty text-gray-400 sm:text-xl/8">
+              <p className="mt-5 max-w-lg text-sm font-medium text-pretty text-gray-400 sm:text-base/7">
               Contact me to hire, or buy me a coffee!
               </p>
             </h2>
-            <div className="mt-10 flex items-center gap-x-6">
+            <div className="mt-8 flex items-center gap-x-5">
               <a
                 href="/about"
                 onClick={(event) => handleNavigate(event, '/about')}

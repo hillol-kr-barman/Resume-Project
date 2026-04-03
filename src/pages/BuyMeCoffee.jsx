@@ -76,15 +76,15 @@ export default function BuyMeCoffee({ onNavigate, currentUser, onLogout, current
     <div>
       <SiteHeader onNavigate={onNavigate} currentUser={currentUser} onLogout={onLogout} currentPath={currentPath} />
 
-      <main className="mx-auto max-w-7xl px-6 pb-24 pt-36 lg:px-8">
+      <main className="mx-auto max-w-6xl px-5 pb-20 pt-28 lg:px-6">
         <section className="overflow-hidden rounded-3xl border border-white/10 bg-card">
           <div className="grid gap-0 lg:grid-cols-[minmax(0,1.1fr)_24rem]">
-            <div className="px-8 py-10 sm:px-10 sm:py-12">
-              <p className="text-sm uppercase tracking-[0.32em] text-accent/70">Support My Work</p>
-              <h1 className="mt-5 max-w-3xl text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+            <div className="px-6 py-8 sm:px-8 sm:py-10">
+              <p className="text-xs uppercase tracking-[0.28em] text-accent/70">Support My Work</p>
+              <h1 className="mt-4 max-w-2xl text-2xl font-semibold tracking-tight text-white sm:text-3xl">
                 Buy me a coffee while I build the next thing.
               </h1>
-              <p className="mt-6 max-w-2xl text-base/8 text-body">
+              <p className="mt-5 max-w-2xl text-sm/7 text-body">
                 Choose a support tier and you will be redirected to secure Stripe Checkout.
               </p>
 
@@ -106,7 +106,7 @@ export default function BuyMeCoffee({ onNavigate, currentUser, onLogout, current
                 </div>
               ) : null}
 
-              <div className="mt-10 flex flex-wrap gap-4">
+              <div className="mt-8 flex flex-wrap gap-3">
                 <a
                   href="/about"
                   onClick={(event) => handleNavigate(event, '/about')}
@@ -123,14 +123,14 @@ export default function BuyMeCoffee({ onNavigate, currentUser, onLogout, current
               </div>
             </div>
 
-            <div className="border-t border-white/10 bg-background/40 px-8 py-10 sm:px-10 sm:py-12 lg:border-t-0 lg:border-l">
-              <div className="rounded-2xl border border-accent/20 bg-black/40 p-6">
-                <p className="text-sm font-medium uppercase tracking-[0.28em] text-accent/70">Next Step</p>
-                <h2 className="mt-4 text-2xl font-semibold text-white">Stripe checkout goes here</h2>
-                <p className="mt-4 text-sm/7 text-body">
+            <div className="border-t border-white/10 bg-background/40 px-6 py-8 sm:px-8 sm:py-10 lg:border-t-0 lg:border-l">
+              <div className="rounded-2xl border border-accent/20 bg-black/40 p-5">
+                <p className="text-xs font-medium uppercase tracking-[0.24em] text-accent/70">Next Step</p>
+                <h2 className="mt-3 text-lg font-semibold text-white">Stripe checkout goes here</h2>
+                <p className="mt-3 text-sm/7 text-body">
                   Select a tier below to create a Checkout Session on the backend and continue with Stripe.
                 </p>
-                <div id="stripe-placeholder" className="mt-6 rounded-2xl border border-dashed border-white/15 bg-white/3 p-5">
+                <div id="stripe-placeholder" className="mt-5 rounded-2xl border border-dashed border-white/15 bg-white/3 p-4">
                   <p className="text-sm font-medium text-white">Secure payment via Stripe Checkout</p>
                   <p className="mt-2 text-sm/6 text-gray-400">
                     Your card details stay on Stripe. This page only requests a checkout session from your FastAPI backend.
@@ -149,13 +149,13 @@ export default function BuyMeCoffee({ onNavigate, currentUser, onLogout, current
           </div>
         </section>
 
-        <section className="mt-10">
-          <div className="grid gap-6 md:grid-cols-3">
+        <section className="mt-8">
+          <div className="grid gap-5 md:grid-cols-3">
             {supportTiers.map((tier) => (
-              <article key={tier.amount} className="rounded-2xl border border-white/10 bg-card p-6">
-                <p className="text-sm uppercase tracking-[0.3em] text-accent/70">{tier.label}</p>
-                <p className="mt-4 text-4xl font-semibold text-white">{tier.amount}</p>
-                <p className="mt-4 text-sm/7 text-body">{tier.description}</p>
+              <article key={tier.amount} className="rounded-2xl border border-white/10 bg-card p-5">
+                <p className="text-xs uppercase tracking-[0.24em] text-accent/70">{tier.label}</p>
+                <p className="mt-3 text-2xl font-semibold text-white">{tier.amount}</p>
+                <p className="mt-3 text-sm/7 text-body">{tier.description}</p>
                 <button
                   type="button"
                   onClick={() => startCheckout(tier.id)}

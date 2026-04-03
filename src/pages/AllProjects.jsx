@@ -3,7 +3,7 @@ import { projects } from './pageData/homePageData'
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/react/20/solid'
 import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
-import HomePageCard from '../components/HomePageCard'
+import ProjectsCard from '../components/ProjectsCard'
 
 export default function AllProjects({ onNavigate, currentUser, onLogout, currentPath = '/projects' }) {
     const [currentPage, setCurrentPage] = useState(1)
@@ -21,20 +21,20 @@ export default function AllProjects({ onNavigate, currentUser, onLogout, current
         <div>
             <SiteHeader onNavigate={onNavigate} currentUser={currentUser} onLogout={onLogout} currentPath={currentPath} />
 
-            <main className="mx-auto max-w-7xl px-6 pt-32 pb-28 lg:px-8">
-                <h1 className="text-4xl text-center font-semibold tracking-tight text-white sm:text-5xl">All Projects</h1>
-                <p className="mx-auto mt-4 max-w-2xl text-center text-base/7 text-body">
+            <main className="mx-auto max-w-6xl px-5 pt-28 pb-20 lg:px-6">
+                <h1 className="text-center text-2xl font-semibold tracking-tight text-white sm:text-3xl">All Projects</h1>
+                <p className="mx-auto mt-3 max-w-2xl text-center text-sm/7 text-body">
                     A complete list of projects from my portfolio.
                 </p>
 
-                <div className="mt-12 grid grid-cols-1 gap-6">
+                <div className="mt-10 grid grid-cols-1 gap-5">
                     {currentProjects.map((project) => (
-                        <HomePageCard key={project.id} project={project} variant="list" />
+                        <ProjectsCard key={project.id} project={project} variant="list" />
                     ))}
                 </div>
 
                 {/* Pagination */}
-                <nav className="mt-18 flex items-center justify-between border-t border-white/10 px-4 sm:px-0">
+                <nav className="mt-12 flex items-center justify-between border-t border-white/10 px-4 sm:px-0">
                     <div className="-mt-px flex w-0 flex-1">
                         <a
                             href="#"
@@ -85,7 +85,7 @@ export default function AllProjects({ onNavigate, currentUser, onLogout, current
                         </a>
                     </div>
                 </nav>
-                <div className='mx-auto mt-4 max-w-7xl px-6 py-28 lg:px-8'>
+                <div className='mx-auto mt-4 max-w-6xl px-5 py-16 lg:px-6'>
                     <h4 className='text-center text-body'>Page {currentPage} of {totalPages}</h4>
                 </div>
             </main>

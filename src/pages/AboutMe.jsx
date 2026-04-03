@@ -51,16 +51,16 @@ export default function AboutMe({ onNavigate, currentUser, onLogout, currentPath
     <div>
       <SiteHeader onNavigate={onNavigate} currentUser={currentUser} onLogout={onLogout} currentPath={currentPath} />
 
-      <main className="mx-auto max-w-7xl px-6 pb-24 pt-36 lg:px-8">
-        <section className="rounded-2xl border border-white/10 bg-card p-8">
-          <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
+      <main className="mx-auto max-w-6xl px-5 pb-20 pt-28 lg:px-6">
+        <section className="rounded-2xl border border-white/10 bg-card p-6 sm:p-7">
+          <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]">
             <div>
-              <h1 className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">About Me</h1>
-              <h2 className="mt-8 text-2xl font-semibold text-white">Short Intro</h2>
-              <p className="mt-4 max-w-4xl text-base/7 text-body">
+              <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">About Me</h1>
+              <h2 className="mt-6 text-lg font-semibold text-white">Short Intro</h2>
+              <p className="mt-3 max-w-4xl text-sm/7 text-body">
                 A fast-learning, tech-enthusiastic full-stack engineer focused on building optimized, scalable systems and delivering meaningful contributions to modern development teams.
               </p>
-              <div className="mt-6 flex flex-wrap gap-4 text-sm text-gray-300">
+              <div className="mt-5 flex flex-wrap gap-3 text-sm text-gray-300">
                 <a className="hover:text-accent" href="mailto:hillolbarman@yahoo.com">hillolbarman@yahoo.com</a>
                 <span className="text-white/30">|</span>
                 <span>0481 440 299</span>
@@ -76,17 +76,17 @@ export default function AboutMe({ onNavigate, currentUser, onLogout, currentPath
           </div>
         </section>
 
-        <section className="mt-10 rounded-2xl border border-white/10 bg-card p-8">
-          <h2 className="text-2xl font-semibold text-white">Employment</h2>
-          <div className="mt-6 space-y-6">
+        <section className="mt-8 rounded-2xl border border-white/10 bg-card p-6 sm:p-7">
+          <h2 className="text-lg font-semibold text-white">Employment</h2>
+          <div className="mt-5 space-y-5">
             {employment.map((job) => (
               <article key={job.company}>
                 <div className="flex flex-wrap items-baseline justify-between gap-3">
-                  <h3 className="text-xl font-semibold text-white">{job.role}</h3>
+                  <h3 className="text-base font-semibold text-white">{job.role}</h3>
                   <p className="text-sm text-gray-400">{job.duration}</p>
                 </div>
                 <p className="mt-1 text-sm font-medium text-accent">{job.company} • {job.location}</p>
-                <ul className="mt-4 list-disc space-y-2 pl-6 text-base/7 text-body">
+                <ul className="mt-4 list-disc space-y-2 pl-6 text-sm/7 text-body">
                   {job.highlights.map((point) => (
                     <li key={point}>{point}</li>
                   ))}
@@ -96,12 +96,12 @@ export default function AboutMe({ onNavigate, currentUser, onLogout, currentPath
           </div>
         </section>
 
-        <section className="mt-10 rounded-2xl border border-white/10 bg-card p-8">
-          <h2 className="text-2xl font-semibold text-white">Education</h2>
-          <div className="mt-6 grid gap-5 md:grid-cols-2">
+        <section className="mt-8 rounded-2xl border border-white/10 bg-card p-6 sm:p-7">
+          <h2 className="text-lg font-semibold text-white">Education</h2>
+          <div className="mt-5 grid gap-4 md:grid-cols-2">
             {education.map((item) => (
-              <article key={item.institution} className="rounded-xl border border-white/10 bg-background/40 p-5">
-                <h3 className="text-lg font-semibold text-white">{item.degree}</h3>
+              <article key={item.institution} className="rounded-xl border border-white/10 bg-background/40 p-4.5">
+                <h3 className="text-base font-semibold text-white">{item.degree}</h3>
                 <p className="mt-1 text-sm text-accent">{item.institution}</p>
                 <p className="mt-2 text-sm text-gray-400">{item.duration}</p>
                 <p className="mt-2 text-sm text-body">{item.notes}</p>
@@ -110,30 +110,30 @@ export default function AboutMe({ onNavigate, currentUser, onLogout, currentPath
           </div>
         </section>
 
-        <section className="mt-10 rounded-2xl border border-white/10 bg-card p-8">
-          <h2 className="text-2xl font-semibold text-white">Achievements</h2>
-          <ul className="mt-5 list-disc space-y-2 pl-6 text-base/7 text-body">
+        <section className="mt-8 rounded-2xl border border-white/10 bg-card p-6 sm:p-7">
+          <h2 className="text-lg font-semibold text-white">Achievements</h2>
+          <ul className="mt-4 list-disc space-y-2 pl-6 text-sm/7 text-body">
             {achievements.map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>
         </section>
 
-        <section className="mt-10 rounded-2xl border border-white/10 bg-card p-8">
-          <h2 className="text-2xl font-semibold text-white">Timeline</h2>
-          <div className="mt-6 space-y-4">
+        <section className="mt-8 rounded-2xl border border-white/10 bg-card p-6 sm:p-7">
+          <h2 className="text-lg font-semibold text-white">Timeline</h2>
+          <div className="mt-5 space-y-4">
             {timeline.map((item) => (
               <div key={item.period} className="grid gap-2 border-l-2 border-accent/60 pl-5 md:grid-cols-[14rem_minmax(0,1fr)]">
                 <p className="text-sm font-semibold text-accent">{item.period}</p>
-                <p className="text-base/7 text-body">{item.event}</p>
+                <p className="text-sm/7 text-body">{item.event}</p>
               </div>
             ))}
           </div>
         </section>
 
-        <section className="mt-10 rounded-2xl border border-white/10 bg-card p-8">
-          <h2 className="text-2xl font-semibold text-white">Download CV</h2>
-          <p className="mt-3 text-base/7 text-body">
+        <section className="mt-8 rounded-2xl border border-white/10 bg-card p-6 sm:p-7">
+          <h2 className="text-lg font-semibold text-white">Download CV</h2>
+          <p className="mt-3 text-sm/7 text-body">
             Download a PDF copy of my complete curriculum vitae.
           </p>
           <a

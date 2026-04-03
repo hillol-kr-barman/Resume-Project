@@ -7,9 +7,9 @@ import AboutMe from './pages/AboutMe'
 import Playground from './pages/Playground'
 import BuyMeCoffee from './pages/BuyMeCoffee'
 import Preloader from './components/Preloader'
-import LayoutDebugPanel from './components/LayoutDebugPanel'
+import UnderConstruction from './pages/UnderConstruction'
+import NotFound from './pages/NotFound'
 import { getCurrentUser, logoutUser } from './lib/playgroundStore'
-import { isLayoutDebugEnabled } from './lib/isLayoutDebugEnabled'
 
 function normalizePath(pathname) {
   if (!pathname || pathname === '/') return '/'
@@ -17,14 +17,16 @@ function normalizePath(pathname) {
 }
 
 export default function App() {
-  const debugLayout = isLayoutDebugEnabled()
-  const [isPreloading, setIsPreloading] = useState(true)
+  const isSiteUnderConstruction = false
+  const isPreloaderEnabled = true
   const [isPageVisible, setIsPageVisible] = useState(false)
   const [route, setRoute] = useState(() => ({
     path: normalizePath(window.location.pathname),
     search: window.location.search,
   }))
   const [currentUser, setCurrentUser] = useState(() => getCurrentUser())
+  const shouldRunPreloader = isPreloaderEnabled && !isSiteUnderConstruction
+  const [isPreloading, setIsPreloading] = useState(shouldRunPreloader)
 
   useEffect(() => {
     const handlePopState = () => {
@@ -49,6 +51,24 @@ export default function App() {
       window.history.scrollRestoration = previousScrollRestoration
     }
   }, [])
+
+  useEffect(() => {
+    if (!isSiteUnderConstruction || route.path === '/') return
+
+    window.history.replaceState({}, '', '/')
+    setRoute({
+      path: '/',
+      search: '',
+    })
+  }, [isSiteUnderConstruction, route.path])
+
+  useEffect(() => {
+    if (!shouldRunPreloader) {
+      setIsPreloading(false)
+      return
+    }
+    setIsPreloading(true)
+  }, [shouldRunPreloader])
 
   useEffect(() => {
     if (isPreloading) return
@@ -86,6 +106,10 @@ export default function App() {
   }
 
   const page = useMemo(() => {
+    if (isSiteUnderConstruction) {
+      return <UnderConstruction />
+    }
+
     if (route.path === '/login' || route.path === '/register') {
       return (
         <AuthPage
@@ -119,8 +143,11 @@ export default function App() {
     if (route.path === '/coffee') {
       return <BuyMeCoffee onNavigate={navigate} currentUser={currentUser} onLogout={handleLogout} currentPath={route.path} />
     }
-    return <HomePage onNavigate={navigate} currentUser={currentUser} onLogout={handleLogout} currentPath={route.path} />
-  }, [currentUser, route])
+    if (route.path === '/') {
+      return <HomePage onNavigate={navigate} currentUser={currentUser} onLogout={handleLogout} currentPath={route.path} />
+    }
+    return <NotFound onNavigate={navigate} currentUser={currentUser} onLogout={handleLogout} currentPath={route.path} />
+  }, [currentUser, isSiteUnderConstruction, route])
 
   if (isPreloading) {
     return <Preloader onComplete={() => setIsPreloading(false)} />
@@ -129,7 +156,6 @@ export default function App() {
   return (
     <div className={`app-shell${isPageVisible ? ' app-shell--visible' : ''}`}>
       {page}
-      {debugLayout ? <LayoutDebugPanel /> : null}
     </div>
   )
 }
