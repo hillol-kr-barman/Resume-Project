@@ -52,41 +52,79 @@ export default function AboutMe({ onNavigate, currentUser, onLogout, currentPath
       <SiteHeader onNavigate={onNavigate} currentUser={currentUser} onLogout={onLogout} currentPath={currentPath} />
 
       <main className="mx-auto max-w-6xl px-5 pb-20 pt-28 lg:px-6">
-        <section className="rounded-2xl border border-white/10 bg-card p-6 sm:p-7">
-          <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]">
-            <div>
-              <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">About Me</h1>
-              <h2 className="mt-6 text-lg font-semibold text-white">Short Intro</h2>
-              <p className="mt-3 max-w-4xl text-sm/7 text-body">
-                A fast-learning, tech-enthusiastic full-stack engineer focused on building optimized, scalable systems and delivering meaningful contributions to modern development teams.
-              </p>
-              <div className="mt-5 flex flex-wrap gap-3 text-sm text-gray-300">
-                <a className="hover:text-accent" href="mailto:hillolbarman@yahoo.com">hillolbarman@yahoo.com</a>
-                <span className="text-white/30">|</span>
-                <span>0481 440 299</span>
-                <span className="text-white/30">|</span>
-                <a className="hover:text-accent" href="https://github.com/hillol-kr-barman" target="_blank" rel="noreferrer">github.com/hillol-kr-barman</a>
+        <section className="overflow-hidden rounded-3xl border border-white/10 bg-card/95 p-5 sm:p-6">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(16rem,22rem)] lg:items-center lg:gap-8">
+            <div className="order-2 lg:order-1">
+              <p className="type-eyebrow">About Me</p>
+              <h1 className="type-page-title mt-4">A Bit About Me</h1>
+              <div className="type-body mt-5 max-w-3xl space-y-3">
+                <p>
+                  Engineer by training, builder by habit. I design and develop scalable web apps and systems with a strong eye for clean architecture and user experiences that feel easy from the first click.
+                </p>
+                <p>
+                  I enjoy unpacking messy problems, sketching out dependable systems, and turning half-formed ideas into practical products. Across the full build cycle, I aim for solutions that are technically solid and a breeze for people to use.
+                </p>
+                <p>
+                  My background is in computer science, and I am always looking for better ways to build efficient systems that stay tidy as they grow.
+                </p>
+              </div>
+              <div className="mt-5 flex flex-wrap gap-3 text-sm/7 text-gray-300">
+                <a
+                  className="rounded-full border border-white/10 bg-background/40 px-4 py-2 transition-colors hover:border-accent/40 hover:text-accent"
+                  href="mailto:hillolbarman@yahoo.com"
+                >
+                  hillolbarman@yahoo.com
+                </a>
+                <span className="rounded-full border border-white/10 bg-background/40 px-4 py-2">0481 440 299</span>
+                <a
+                  className="rounded-full border border-white/10 bg-background/40 px-4 py-2 transition-colors hover:border-accent/40 hover:text-accent"
+                  href="https://github.com/hillol-kr-barman"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  github.com/hillol-kr-barman
+                </a>
               </div>
             </div>
-            <img
-              src={aboutMeImage}
-              alt="Hillol Barman portrait"
-              className="mx-auto w-full max-w-xs rounded-2xl border border-white/10 object-cover"
-            />
+
+            <div className="order-1 flex justify-center lg:order-2 lg:justify-end">
+              <div className="w-full max-w-xs border border-white/10 bg-background/40 p-2.5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+                <img
+                  src={aboutMeImage}
+                  alt="Hillol Barman portrait"
+                  className="w-full object-cover"
+                />
+              </div>
+            </div>
           </div>
         </section>
 
-        <section className="mt-8 rounded-2xl border border-white/10 bg-card p-6 sm:p-7">
-          <h2 className="text-lg font-semibold text-white">Employment</h2>
-          <div className="mt-5 space-y-5">
+        <section className='mt-8 grid w-full gap-3 rounded-3xl border border-white/10 bg-card/70 p-4 text-left sm:grid-cols-3 sm:p-5'>
+          <div>
+            <p className="type-eyebrow">Focus</p>
+            <p className="type-body mt-2">Scalable web apps with clean architecture and user journeys that feel properly sorted.</p>
+          </div>
+          <div>
+            <p className="type-eyebrow">Approach</p>
+            <p className="type-body mt-2">Thoughtful product design, practical engineering, and less unnecessary faff.</p>
+          </div>
+          <div>
+            <p className="type-eyebrow">Outcome</p>
+            <p className="type-body mt-2">Products that feel tidy, responsive, and ready for real people to get stuck into.</p>
+          </div>
+        </section>
+
+        <section className="card-panel mt-8">
+          <h2 className="type-card-title">Work</h2>
+          <div className="mt-4 space-y-4">
             {employment.map((job) => (
               <article key={job.company}>
-                <div className="flex flex-wrap items-baseline justify-between gap-3">
-                  <h3 className="text-base font-semibold text-white">{job.role}</h3>
-                  <p className="text-sm text-gray-400">{job.duration}</p>
+                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                  <h3 className="type-card-title">{job.role}</h3>
+                  <p className="text-sm/7 text-gray-400">{job.duration}</p>
                 </div>
-                <p className="mt-1 text-sm font-medium text-accent">{job.company} • {job.location}</p>
-                <ul className="mt-4 list-disc space-y-2 pl-6 text-sm/7 text-body">
+                <p className="mt-1 text-sm/7 font-medium text-accent">{job.company} • {job.location}</p>
+                <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm/7 text-body">
                   {job.highlights.map((point) => (
                     <li key={point}>{point}</li>
                   ))}
@@ -96,45 +134,45 @@ export default function AboutMe({ onNavigate, currentUser, onLogout, currentPath
           </div>
         </section>
 
-        <section className="mt-8 rounded-2xl border border-white/10 bg-card p-6 sm:p-7">
-          <h2 className="text-lg font-semibold text-white">Education</h2>
-          <div className="mt-5 grid gap-4 md:grid-cols-2">
+        <section className="card-panel mt-8">
+          <h2 className="type-card-title">Education</h2>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
             {education.map((item) => (
-              <article key={item.institution} className="rounded-xl border border-white/10 bg-background/40 p-4.5">
-                <h3 className="text-base font-semibold text-white">{item.degree}</h3>
-                <p className="mt-1 text-sm text-accent">{item.institution}</p>
-                <p className="mt-2 text-sm text-gray-400">{item.duration}</p>
-                <p className="mt-2 text-sm text-body">{item.notes}</p>
+              <article key={item.institution} className="card-panel-tight">
+                <h3 className="type-card-title">{item.degree}</h3>
+                <p className="mt-1 text-sm/7 text-accent">{item.institution}</p>
+                <p className="mt-2 text-sm/7 text-gray-400">{item.duration}</p>
+                <p className="mt-2 text-sm/7 text-body">{item.notes}</p>
               </article>
             ))}
           </div>
         </section>
 
-        <section className="mt-8 rounded-2xl border border-white/10 bg-card p-6 sm:p-7">
-          <h2 className="text-lg font-semibold text-white">Achievements</h2>
-          <ul className="mt-4 list-disc space-y-2 pl-6 text-sm/7 text-body">
+        <section className="card-panel mt-8">
+          <h2 className="type-card-title">A Few Wins</h2>
+          <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm/7 text-body">
             {achievements.map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>
         </section>
 
-        <section className="mt-8 rounded-2xl border border-white/10 bg-card p-6 sm:p-7">
-          <h2 className="text-lg font-semibold text-white">Timeline</h2>
-          <div className="mt-5 space-y-4">
+        <section className="card-panel mt-8">
+          <h2 className="type-card-title">Timeline</h2>
+          <div className="mt-4 space-y-3">
             {timeline.map((item) => (
-              <div key={item.period} className="grid gap-2 border-l-2 border-accent/60 pl-5 md:grid-cols-[14rem_minmax(0,1fr)]">
-                <p className="text-sm font-semibold text-accent">{item.period}</p>
+              <div key={item.period} className="grid gap-2 border-l-2 border-accent/60 pl-4 md:grid-cols-[14rem_minmax(0,1fr)]">
+                <p className="text-sm/7 font-semibold text-accent">{item.period}</p>
                 <p className="text-sm/7 text-body">{item.event}</p>
               </div>
             ))}
           </div>
         </section>
 
-        <section className="mt-8 rounded-2xl border border-white/10 bg-card p-6 sm:p-7">
-          <h2 className="text-lg font-semibold text-white">Download CV</h2>
-          <p className="mt-3 text-sm/7 text-body">
-            Download a PDF copy of my complete curriculum vitae.
+        <section className="card-panel mt-8">
+          <h2 className="type-card-title">Download CV</h2>
+          <p className="type-body mt-3">
+            Grab a PDF copy of the full CV if you want the complete rundown.
           </p>
           <a
             href="/HillolBarman_Resume.pdf"

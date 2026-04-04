@@ -22,9 +22,9 @@ export default function AllProjects({ onNavigate, currentUser, onLogout, current
             <SiteHeader onNavigate={onNavigate} currentUser={currentUser} onLogout={onLogout} currentPath={currentPath} />
 
             <main className="mx-auto max-w-6xl px-5 pt-28 pb-20 lg:px-6">
-                <h1 className="text-center text-2xl font-semibold tracking-tight text-white sm:text-3xl">All Projects</h1>
+                <h1 className="text-center text-xl font-semibold tracking-tight text-white sm:text-2xl">All Projects</h1>
                 <p className="mx-auto mt-3 max-w-2xl text-center text-sm/7 text-body">
-                    A complete list of projects from my portfolio.
+                    The full lineup of builds from the portfolio, all in one spot.
                 </p>
 
                 <div className="mt-10 grid grid-cols-1 gap-5">
@@ -45,7 +45,7 @@ export default function AllProjects({ onNavigate, currentUser, onLogout, current
                             className={`inline-flex items-center border-t-2 border-transparent pt-4 pr-1 text-sm font-medium ${currentPage === 1 ? 'pointer-events-none text-gray-600' : 'text-gray-400 hover:border-white/20 hover:text-gray-200'}`}
                         >
                             <ArrowLongLeftIcon aria-hidden="true" className="mr-3 size-5 text-gray-500" />
-                            Previous
+                            Back
                         </a>
                     </div>
                     <div className="hidden md:-mt-px md:flex">
@@ -80,7 +80,7 @@ export default function AllProjects({ onNavigate, currentUser, onLogout, current
                             }}
                             className={`inline-flex items-center border-t-2 border-transparent pt-4 pl-1 text-sm font-medium ${currentPage === totalPages ? 'pointer-events-none text-gray-600' : 'text-gray-400 hover:border-white/20 hover:text-gray-200'}`}
                         >
-                            Next
+                            Next up
                             <ArrowLongRightIcon aria-hidden="true" className="ml-3 size-5 text-gray-500" />
                         </a>
                     </div>

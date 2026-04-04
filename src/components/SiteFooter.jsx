@@ -19,7 +19,7 @@ export default function SiteFooter() {
             </a>
           ))}
         </div>
-        <p className="mt-8 text-center text-xs text-gray-400">&copy; {new Date().getFullYear()} Hillol Barman Portfolio. All rights reserved.</p>
+        <p className="mt-8 text-center text-xs text-gray-400">&copy; {new Date().getFullYear()} Lazymate by Hillol Barman. Built with care, no nonsense.</p>
       </div>
     </footer>
   )

@@ -6,23 +6,23 @@ const supportTiers = [
   {
     id: 'espresso',
     amount: '$5',
-    label: 'Quick espresso',
+    label: 'Quick flat white',
     cta: 'Support with $5',
-    description: 'A small thank-you for the work and ideas shared here.',
+    description: 'A small cheers for the work, ideas, and bits and pieces shared here.',
   },
   {
     id: 'double',
     amount: '$10',
     label: 'Double shot',
     cta: 'Support with $10',
-    description: 'A little extra support while I keep building and improving projects.',
+    description: 'A little extra support while I keep building, polishing, and shipping new things.',
   },
   {
     id: 'snacks',
     amount: '$20',
-    label: 'Coffee and snacks',
+    label: 'Coffee and a feed',
     cta: 'Support with $20',
-    description: 'A generous boost toward more experiments, polish, and late-night debugging.',
+    description: 'A generous boost for more experiments, proper polish, and the occasional late-night bug hunt.',
   },
 ]
 
@@ -110,27 +110,27 @@ export default function BuyMeCoffee({ onNavigate, currentUser, onLogout, current
       <main className="mx-auto max-w-6xl px-5 pb-20 pt-28 lg:px-6">
         <section className="overflow-hidden rounded-3xl border border-white/10 bg-card">
           <div className='flex flex-col items-center text-center'>
-            <div className="px-6 py-8 sm:px-8 sm:py-10">
-              <p className="text-xs uppercase tracking-[0.28em] text-accent/70">Support My Work</p>
-              <h1 className="mt-4 max-w-2xl text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-                Buy me a coffee while I build the next thing.
+            <div className="px-5 py-6 sm:px-6 sm:py-7">
+              <p className="type-eyebrow">Support My Work</p>
+              <h1 className="type-section-title mt-4 max-w-2xl">
+                Shout me a coffee while I build the next thing.
               </h1>
               {shouldShowDefaultMessage ? (
-                <p className="mt-5 max-w-2xl text-sm/7 text-body">
-                  Choose a support tier and you will be redirected to secure Stripe Checkout.
+                <p className="type-body mt-4 max-w-2xl">
+                  Pick a support tier and you will head over to secure Stripe Checkout in a tick.
                 </p>
               ) : null}
 
 
               {checkoutStatus === 'success' ? (
                 <div className="mt-6 rounded-2xl border border-accent/30 bg-accent/10 px-4 py-3 text-sm text-white">
-                  Payment successful. Thank you for the support.
+                  Payment sorted. Thanks a bunch for backing the work.
                 </div>
               ) : null}
 
               {checkoutStatus === 'cancelled' ? (
                 <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white">
-                  Checkout was cancelled. You can try again any time.
+                  Checkout was cancelled. No stress, you can try again any time.
                 </div>
               ) : null}
 
@@ -141,28 +141,28 @@ export default function BuyMeCoffee({ onNavigate, currentUser, onLogout, current
               ) : null}
             </div>
           </div>
-          <section className="m-8">
-            <div className='grid gap-5 md:grid-cols-1'>
-              <div className="grid gap-5 md:grid-cols-3">
+          <section className="m-5 sm:m-6">
+            <div className='grid gap-4 md:grid-cols-1'>
+              <div className="grid gap-4 md:grid-cols-3">
                 {supportTiers.map((tier) => (
-                  <article key={tier.amount} className="flex h-full flex-col rounded-2xl border border-white/10 bg-card p-5">
-                    <p className="text-xs uppercase tracking-[0.24em] text-accent/70">{tier.label}</p>
-                    <p className="mt-3 text-2xl font-semibold text-white">{tier.amount}</p>
-                    <p className="mt-3 flex-1 text-sm/7 text-body">{tier.description}</p>
+                  <article key={tier.amount} className="card-panel flex h-full flex-col">
+                    <p className="type-eyebrow">{tier.label}</p>
+                    <p className="mt-2 text-xl font-semibold text-white">{tier.amount}</p>
+                    <p className="type-body mt-2 flex-1">{tier.description}</p>
                     <button
                       type="button"
                       onClick={() => startCheckout({ tier: tier.id })}
                       disabled={isSubmittingTier !== null}
-                      className="mt-6 inline-flex w-full justify-center rounded-md border border-white/10 px-4 py-2.5 text-sm font-semibold text-white transition hover:border-accent/60 hover:text-accent disabled:cursor-wait disabled:opacity-80"
+                      className="mt-4 inline-flex w-full justify-center rounded-md border border-white/10 px-4 py-2.5 text-sm font-semibold text-white transition hover:border-accent/60 hover:text-accent disabled:cursor-wait disabled:opacity-80"
                     >
                       {isSubmittingTier === tier.id ? 'Redirecting...' : tier.cta}
                     </button>
                   </article>
                 ))}
               </div>
-              <div className='rounded-2xl border border-white/10 bg-card p-5'>
-                <p className="text-xs uppercase tracking-[0.24em] text-accent/70">A Coffee Factory</p>
-                <div className="mt-3">
+              <div className='card-panel'>
+                <p className="type-eyebrow">Go Big</p>
+                <div className="mt-2">
                   <input
                     id="custom_amount"
                     name="custom_amount"
@@ -174,17 +174,17 @@ export default function BuyMeCoffee({ onNavigate, currentUser, onLogout, current
                     aria-describedby="custom_amount"
                     value={customAmount}
                     onChange={(event) => setCustomAmount(event.target.value)}
-                    className="block w-full rounded-md border border-white/10 bg-white/5 px-4 py-3 text-base text-white placeholder:text-gray-500 focus:border-accent/60 focus:outline-none"
+                    className="block w-full rounded-md border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-accent/60 focus:outline-none"
                   />
                 </div>
-                <p className="mt-3 text-sm/7 text-body">Do your magic, I want that coffee bean roastering plant</p>
+                <p className="type-body mt-2">If you are feeling extra generous, name your own amount and help fund more late-night builds.</p>
                 <button
                   type="button"
                   onClick={() => startCheckout({ customAmount })}
                   disabled={isSubmittingTier !== null}
-                  className="mt-6 inline-flex w-full justify-center rounded-md border border-white/10 px-4 py-2.5 text-sm font-semibold text-white transition hover:border-accent/60 hover:text-accent disabled:cursor-wait disabled:opacity-80"
+                  className="mt-4 inline-flex w-full justify-center rounded-md border border-white/10 px-4 py-2.5 text-sm font-semibold text-white transition hover:border-accent/60 hover:text-accent disabled:cursor-wait disabled:opacity-80"
                 >
-                  {isSubmittingTier === 'custom' ? 'Redirecting...' : 'Support with custom amount'}
+                  {isSubmittingTier === 'custom' ? 'Redirecting...' : 'Support with a custom amount'}
                 </button></div>
             </div>
           </section>
