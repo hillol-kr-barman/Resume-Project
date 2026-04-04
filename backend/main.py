@@ -48,6 +48,7 @@ class SignUpRequest(BaseModel):
 class NewsletterSubscribeRequest(BaseModel):
     email: str
 
+
 def load_env_file() -> None:
     env_candidates = [
         Path(__file__).resolve().parent / ".env",
