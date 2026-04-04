@@ -19,10 +19,10 @@ const languageOptions = [
 ]
 
 const starterSnippet = `function greet(name) {
-  return \`Hello, \${name}.\`
+  return \`G'day, \${name}.\`
 }
 
-console.log(greet('world'))
+console.log(greet('mate'))
 `
 
 export default function Playground({ onNavigate, routeSearch = '', currentUser, onLogout }) {
@@ -55,7 +55,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
             setTitle(sharedDocument.title)
             setLanguage(sharedDocument.language)
             setCode(sharedDocument.content)
-            setNotice(`Loaded shared document: ${sharedDocument.title}`)
+            setNotice(`Loaded shared doc: ${sharedDocument.title}`)
             return
         }
 
@@ -81,7 +81,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
         setTitle('Untitled snippet')
         setLanguage('javascript')
         setCode(starterSnippet)
-        setNotice('Ready for a new snippet.')
+        setNotice('Fresh snippet, ready to go.')
     }
 
     const handleSave = () => {
@@ -97,8 +97,8 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
         refreshDocuments()
         setNotice(
             currentUser
-                ? 'Document saved to your account.'
-                : 'Temporary draft saved for 24 hours. Log in to keep it permanently.',
+                ? 'Document saved to your account, all sorted.'
+                : 'Temporary draft saved for 24 hours. Log in to hang onto it for good.',
         )
     }
 
@@ -117,16 +117,16 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
 
         try {
             await navigator.clipboard.writeText(shareUrl)
-            setNotice('Share link copied to clipboard.')
+            setNotice('Share link copied to the clipboard.')
         } catch {
-            setNotice(`Share this link: ${shareUrl}`)
+            setNotice(`Share this link around: ${shareUrl}`)
         }
     }
 
     const savedLabel = currentUser ? 'Saved documents' : 'Temporary drafts'
     const storageMessage = currentUser
-        ? `${currentUser.name} is signed in. Documents saved here stay attached to this account.`
-        : 'Guest mode stores drafts temporarily for 24 hours. Log in to keep documents permanently.'
+        ? `${currentUser.name} is signed in. Anything saved here stays tucked into this account.`
+        : 'Guest mode keeps drafts around for 24 hours. Log in if you want to hang onto them properly.'
 
     return (
         <div>
@@ -134,18 +134,18 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
 
             <main className="mx-auto max-w-7xl px-6 pt-32 pb-20 lg:px-8">
                 <div className="mx-auto max-w-3xl text-center">
-                    <h1 className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">Code Playground</h1>
-                    <p className="mx-auto mt-4 max-w-2xl text-base/7 text-body">
-                        Build with CodeMirror next, but ship the storage flow now. Guests can paste code, save temporary drafts, and share them. Logged-in users keep their documents.
+                    <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Code Playground</h1>
+                    <p className="mx-auto mt-4 max-w-2xl text-sm/7 text-body">
+                        A handy place to muck around with snippets, save drafts, and share what you are working on. Logged-in users keep their docs, and guests can still have a decent fiddle.
                     </p>
                 </div>
 
-                <div className="mt-10 grid gap-6 lg:grid-cols-[20rem_minmax(0,1fr)]">
-                    <aside className="rounded-3xl bg-card p-5 outline -outline-offset-1 outline-white/10">
+                <div className="mt-10 grid gap-5 lg:grid-cols-[19rem_minmax(0,1fr)]">
+                    <aside className="rounded-3xl bg-card p-4 outline -outline-offset-1 outline-white/10">
                         <div className="flex items-center justify-between gap-3">
                             <div>
-                                <h2 className="text-lg font-semibold text-white">{savedLabel}</h2>
-                                <p className="mt-1 text-sm/6 text-body">{storageMessage}</p>
+                                <h2 className="text-base font-semibold text-white">{savedLabel}</h2>
+                                <p className="type-body mt-1">{storageMessage}</p>
                             </div>
                             <button
                                 type="button"
@@ -166,10 +166,10 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
                             </button>
                         ) : null}
 
-                        <div className="mt-5 space-y-3">
+                        <div className="mt-4 space-y-2.5">
                             {documents.length === 0 ? (
-                                <div className="rounded-2xl border border-dashed border-white/10 px-4 py-5 text-sm text-body">
-                                    No documents yet. Save the snippet on the right to create the first one.
+                                <div className="rounded-2xl border border-dashed border-white/10 px-4 py-4 text-sm text-body">
+                                    Nothing saved yet. Save the snippet on the right to get the first one going.
                                 </div>
                             ) : (
                                 documents.map((document) => (
@@ -177,7 +177,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
                                         key={document.id}
                                         type="button"
                                         onClick={() => openDocument(document)}
-                                        className={`w-full rounded-2xl border px-4 py-3 text-left transition ${activeDocumentId === document.id
+                                        className={`w-full rounded-2xl border px-4 py-2.5 text-left transition ${activeDocumentId === document.id
                                             ? 'border-accent bg-accent/10'
                                             : 'border-white/10 bg-black/20 hover:border-white/30'
                                             }`}
@@ -193,10 +193,10 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
                         </div>
                     </aside>
 
-                    <section className="rounded-3xl bg-card p-5 outline -outline-offset-1 outline-white/10">
+                    <section className="rounded-3xl bg-card p-4 outline -outline-offset-1 outline-white/10">
                         <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_12rem]">
                             <div>
-                                <label htmlFor="snippet-title" className="block text-sm font-medium text-white">
+                                <label htmlFor="snippet-title" className="block text-xs font-medium text-white">
                                     Document title
                                 </label>
                                 <input
@@ -208,7 +208,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
                             </div>
 
                             <div>
-                                <label htmlFor="language" className="block text-sm font-medium text-white">
+                                <label htmlFor="language" className="block text-xs font-medium text-white">
                                     Language
                                 </label>
                                 <select
@@ -226,7 +226,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
                             </div>
                         </div>
 
-                        <div className="mt-5 rounded-2xl border border-white/10 bg-black/40 p-3">
+                        <div className="mt-4 rounded-2xl border border-white/10 bg-black/40 p-3">
                             <div className="mb-3 flex items-center justify-between gap-3 border-b border-white/10 pb-3">
                                 <div className="flex gap-2">
                                     <button
@@ -261,19 +261,19 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
                             </div>
                         </div>
 
-                        <div className="mt-5 grid gap-4 xl:grid-cols-[minmax(0,1fr)_18rem]">
-                            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                                <p className="text-sm font-semibold text-white">Storage rules</p>
+                        <div className="mt-4 grid gap-3 xl:grid-cols-[minmax(0,1fr)_18rem]">
+                            <div className="rounded-2xl border border-white/10 bg-black/20 p-3.5">
+                                <p className="text-base font-semibold text-white">Storage rules</p>
                                 <ul className="mt-3 space-y-2 text-sm/6 text-body">
                                     <li>Guest saves are temporary and expire after 24 hours.</li>
-                                    <li>Signed-in saves are attached to the user account.</li>
+                                    <li>Signed-in saves stay attached to the user account.</li>
                                     <li>Shared links reopen the last saved version of a snippet.</li>
                                 </ul>
                             </div>
 
-                            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                                <p className="text-sm font-semibold text-white">Status</p>
-                                <p className="mt-3 text-sm/6 text-body">{notice || 'No recent actions yet.'}</p>
+                            <div className="rounded-2xl border border-white/10 bg-black/20 p-3.5">
+                                <p className="text-base font-semibold text-white">Status</p>
+                                <p className="mt-3 text-sm/6 text-body">{notice || 'No action yet. Give it a nudge.'}</p>
                             </div>
                         </div>
                     </section>

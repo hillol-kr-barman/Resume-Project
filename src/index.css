@@ -35,6 +35,52 @@ h6 {
   min-height: 100vh;
 }
 
+@layer components {
+  .type-eyebrow {
+    @apply text-xs uppercase tracking-[0.28em] text-accent/70;
+  }
+
+  .type-hero {
+    @apply text-3xl font-semibold tracking-tight text-white sm:text-5xl;
+  }
+
+  .type-page-title {
+    @apply text-2xl font-semibold tracking-tight text-white sm:text-3xl;
+  }
+
+  .type-section-title {
+    @apply text-xl font-semibold tracking-tight text-white sm:text-2xl;
+  }
+
+  .type-card-title {
+    @apply text-base font-semibold text-white;
+  }
+
+  .type-body {
+    @apply text-sm/6 text-body;
+  }
+
+  .type-body-strong {
+    @apply text-sm/6 font-medium text-gray-300;
+  }
+
+  .type-label {
+    @apply text-xs font-medium text-white;
+  }
+
+  .card-panel {
+    @apply rounded-2xl border border-white/10 bg-card p-4 sm:p-5;
+  }
+
+  .card-panel-soft {
+    @apply rounded-2xl border border-white/10 bg-card/80 p-4 sm:p-5;
+  }
+
+  .card-panel-tight {
+    @apply rounded-xl border border-white/10 bg-background/40 p-4;
+  }
+}
+
 .preloader {
   position: fixed;
   inset: 0;

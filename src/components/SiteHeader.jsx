@@ -77,7 +77,7 @@ export default function SiteHeader({ onNavigate, currentUser, onLogout, currentP
               href={item.href}
               onClick={(event) => handleNavigate(event, item.href)}
               aria-current={currentPath === item.href ? 'page' : undefined}
-              className={`group text-sm/6 font-medium transition duration-300 ${currentPath === item.href ? 'text-accent' : 'text-white'}`}
+              className={`group text-xs/6 font-medium transition duration-300 ${currentPath === item.href ? 'text-accent' : 'text-white'}`}
             >
               {item.name}
               <span
@@ -99,9 +99,9 @@ export default function SiteHeader({ onNavigate, currentUser, onLogout, currentP
                 </div>
                 <div className="ml-3">
                   <a href="#" className="group block shrink-0">
-                    <p className="text-sm font-medium text-gray-300 group-hover:text-white">{firstName}</p>
+                    <p className="text-xs font-medium text-gray-300 group-hover:text-white">{firstName}</p>
                   </a>
-                  <button type="button" onClick={openLogoutDialog} className="text-sm/6 font-semibold text-white">
+                  <button type="button" onClick={openLogoutDialog} className="text-xs/6 font-semibold text-white">
                     Log out <span aria-hidden="true">&rarr;</span>
                   </button>
                 </div>
@@ -112,7 +112,7 @@ export default function SiteHeader({ onNavigate, currentUser, onLogout, currentP
             <a
               href={loginPath}
               onClick={(event) => handleNavigate(event, loginPath, { closeMobileMenu: true })}
-              className="text-sm/6 font-semibold text-white"
+              className="text-xs/6 font-semibold text-white"
             >
               Log in <span aria-hidden="true">&rarr;</span>
             </a>
@@ -147,7 +147,7 @@ export default function SiteHeader({ onNavigate, currentUser, onLogout, currentP
                     href={item.href}
                     onClick={(event) => handleNavigate(event, item.href, { closeMobileMenu: true })}
                     aria-current={currentPath === item.href ? 'page' : undefined}
-                    className={`-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold ${currentPath === item.href ? 'bg-accent/10 text-accent' : 'text-white hover:bg-white/5'}`}
+                    className={`-mx-3 block rounded-lg px-3 py-2 text-sm/7 font-semibold ${currentPath === item.href ? 'bg-accent/10 text-accent' : 'text-white hover:bg-white/5'}`}
                   >
                     {item.name}
                   </a>
@@ -158,7 +158,7 @@ export default function SiteHeader({ onNavigate, currentUser, onLogout, currentP
                   <button
                     type="button"
                     onClick={openLogoutDialog}
-                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-white hover:bg-white/5"
+                    className="-mx-3 block rounded-lg px-3 py-2.5 text-sm/7 font-semibold text-white hover:bg-white/5"
                   >
                     Log out
                   </button>
@@ -166,7 +166,7 @@ export default function SiteHeader({ onNavigate, currentUser, onLogout, currentP
                   <a
                     href={loginPath}
                     onClick={(event) => handleNavigate(event, loginPath, { closeMobileMenu: true })}
-                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-white hover:bg-white/5"
+                    className="-mx-3 block rounded-lg px-3 py-2.5 text-sm/7 font-semibold text-white hover:bg-white/5"
                   >
                     Log in
                   </a>
@@ -182,7 +182,7 @@ export default function SiteHeader({ onNavigate, currentUser, onLogout, currentP
         onClose={closeLogoutDialog}
         onConfirm={handleConfirmLogout}
         title="Log out?"
-        description="Your current session will end on this device. You can sign back in at any time."
+        description="Your session on this device will wrap up. You can hop back in whenever you like."
         confirmLabel="Log out"
         cancelLabel="Cancel"
       />

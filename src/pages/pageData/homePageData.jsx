@@ -18,48 +18,48 @@ export const techStackLogos = [
 export const projects = [
   {
     id: 1,
-    title: 'Example 1',
-    content: 'Demo content of the project goes here. Lorem ipsum dolor init sel.',
+    title: 'Project One',
+    content: 'A tidy demo build showing how I structure responsive UI and practical app flows without making a meal of it.',
     projectTechstack : "React, Tailwind, Postgres",
     imageSrc: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
     gitLink: 'https://github.com/hillol-kr-barman/Resume-Project/'
   },
   {
     id: 2,
-    title: 'Example 2',
-    content: 'Demo content of the project goes here. Lorem ipsum dolor init sel.',
+    title: 'Project Two',
+    content: 'A practical product concept with clean components, clear information flow, and enough polish to feel properly finished.',
     projectTechstack : "React, Tailwind, Postgres",
     imageSrc: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
     gitLink: 'https://github.com/hillol-kr-barman/Resume-Project/'
   },
   {
     id: 3,
-    title: 'Example 3',
-    content: 'Demo content of the project goes here. Lorem ipsum dolor init sel.',
+    title: 'Project Three',
+    content: 'An interface-focused build where the goal was to keep the experience fast, friendly, and easy to navigate.',
     projectTechstack : "React, Tailwind, Postgres",
     imageSrc: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
     gitLink: 'https://github.com/hillol-kr-barman/Resume-Project/'
   },
   {
     id: 4,
-    title: 'Example 4',
-    content: 'Demo content of the project goes here. Lorem ipsum dolor init sel.',
+    title: 'Project Four',
+    content: 'A full-stack experiment built to test ideas quickly, trim the fluff, and land on something useful.',
     projectTechstack : "React, Tailwind, Postgres",
     imageSrc: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
     gitLink: 'https://github.com/hillol-kr-barman/Resume-Project/'
   },
   {
     id: 5,
-    title: 'Example 5',
-    content: 'Demo content of the project goes here. Lorem ipsum dolor init sel.',
+    title: 'Project Five',
+    content: 'A build focused on dependable structure, reusable UI, and keeping the developer experience neat and manageable.',
     projectTechstack : "React, Tailwind, Postgres",
     imageSrc: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
     gitLink: 'https://github.com/hillol-kr-barman/Resume-Project/'
   },
   {
     id: 6,
-    title: 'Example 6',
-    content: 'Demo content of the project goes here. Lorem ipsum dolor init sel.',
+    title: 'Project Six',
+    content: 'Another handy concept piece, built to explore clean interactions, sensible architecture, and a smoother user journey.',
     projectTechstack : "React, Tailwind, Postgres",
     imageSrc: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
     gitLink: 'https://github.com/hillol-kr-barman/Resume-Project/'

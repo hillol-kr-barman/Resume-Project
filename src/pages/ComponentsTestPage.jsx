@@ -11,20 +11,20 @@ export default function ComponentsTestPage({ onNavigate }) {
 
 
   return (
-    <main className="min-h-screen bg-background px-5 py-8 text-white">
+    <main className="min-h-screen bg-background px-5 py-8 text-sm text-white">
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
         <button
           type="button"
           onClick={() => onNavigate('/')}
-          className="inline-flex w-fit items-center gap-2 rounded-md border border-white/20 px-3 py-2 text-sm font-semibold hover:bg-white/10"
+          className="inline-flex w-fit items-center gap-2 rounded-md border border-white/20 px-3 py-2 text-xs font-semibold hover:bg-white/10"
         >
           <ArrowLongLeftIcon className="size-5" />
           Back to Home
         </button>
 
         <header>
-          <h1 className="text-xl font-bold">Components Test Page</h1>
-          <p className="mt-2 text-sm text-gray-300">
+          <h1 className="text-lg font-bold">Components Test Page</h1>
+          <p className="mt-2 text-xs text-gray-300">
             this page is used to test new components before adding to the website 
           </p>
 
@@ -32,10 +32,10 @@ export default function ComponentsTestPage({ onNavigate }) {
             <BackgroundBeams />
             <div className="relative px-5 py-10 sm:px-8">
               <p className="text-xs uppercase tracking-[0.28em] text-accent/70">Background Test</p>
-              <h2 className="mt-3 max-w-2xl text-2xl font-semibold tracking-tight text-white">
+              <h2 className="mt-3 max-w-2xl text-xl font-semibold tracking-tight text-white">
                 Beams background preview using the site accent palette.
               </h2>
-              <p className="mt-4 max-w-2xl text-sm/7 text-body">
+              <p className="mt-4 max-w-2xl text-xs/6 text-body">
                 This replaces the particles experiment and the old grid rectangle pattern with a single shared
                 background system.
               </p>
