@@ -7,16 +7,19 @@ import SiteFooter from '../components/SiteFooter'
 import ProjectsCard from '../components/ProjectsCard'
 import BackgroundBeams from '../components/BackgroundBeams'
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000'
+
 export default function HomePage({ onNavigate, currentUser, onLogout, currentPath = '/' }) {
   const [newsletterEmail, setNewsletterEmail] = useState('')
   const [newsletterMessage, setNewsletterMessage] = useState('')
+  const [isNewsletterSubmitting, setIsNewsletterSubmitting] = useState(false)
 
   const handleNavigate = (event, to, { closeMobileMenu = false } = {}) => {
     event.preventDefault()
     onNavigate(to)
   }
 
-  const handleNewsletterSubmit = (event) => {
+  const handleNewsletterSubmit = async (event) => {
     event.preventDefault()
 
     const trimmedEmail = newsletterEmail.trim()
@@ -27,8 +30,44 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
       return
     }
 
-    setNewsletterMessage(`Too easy. ${trimmedEmail} is now on the list.`)
-    setNewsletterEmail('')
+    setIsNewsletterSubmitting(true)
+    setNewsletterMessage('')
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/newsletter/subscribe`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: trimmedEmail.toLowerCase(),
+        }),
+      })
+
+      let payload = null
+
+      try {
+        payload = await response.json()
+      } catch {
+        payload = null
+      }
+
+      if (!response.ok) {
+        const detail = typeof payload?.detail === 'string' ? payload.detail : 'Could not join the newsletter right now.'
+        throw new Error(detail)
+      }
+
+      setNewsletterMessage(payload?.message || `Too easy. ${trimmedEmail} is now on the list.`)
+      setNewsletterEmail('')
+    } catch (error) {
+      setNewsletterMessage(
+        error instanceof Error
+          ? error.message
+          : 'Could not join the newsletter right now.',
+      )
+    } finally {
+      setIsNewsletterSubmitting(false)
+    }
   }
 
   const featuredProjects = featuredProjectIds
@@ -108,16 +147,16 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
             <ProjectsCard key={project.id} project={project} />
           ))}
         </div>
-        <div className="mt-8 grid grid-cols-5 gap-4">
-          <div className="border-t mt-6 col-span-2 border-white/10"></div>
+        <div className="mt-8 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4">
+          <div className="border-t border-white/10"></div>
           <button
             type="button"
-            className="inline-flex items-center justify-center gap-x-2 rounded-md bg-accent px-3.5 py-2.5 text-sm font-semibold text-black transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            className="inline-flex shrink-0 items-center justify-center gap-x-2 rounded-md bg-accent px-3.5 py-2.5 text-sm font-semibold text-black transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             onClick={(event) => handleNavigate(event, '/projects')}>
             See the lot
             <ArrowRightIcon aria-hidden="true" className="-mr-0.5 size-5" />
           </button>
-          <div className="border-t mt-6 col-span-2 border-white/10"></div>
+          <div className="border-t border-white/10"></div>
         </div>
 
       </div>
@@ -148,6 +187,7 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
                   name="newsletter-email"
                   type="email"
                   value={newsletterEmail}
+                  disabled={isNewsletterSubmitting}
                   onChange={(event) => {
                     setNewsletterEmail(event.target.value)
                     if (newsletterMessage) setNewsletterMessage('')
@@ -157,9 +197,10 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
                 />
                 <button
                   type="submit"
+                  disabled={isNewsletterSubmitting}
                   className="mt-3 inline-flex w-full items-center justify-center rounded-md border border-accent bg-accent px-4 py-2.5 text-sm font-semibold text-black transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                 >
-                  Subscribe
+                  {isNewsletterSubmitting ? 'Subscribing...' : 'Subscribe'}
                 </button>
                 <p className="type-body mt-3 min-h-9 text-gray-400">
                   {newsletterMessage || 'Pop your email in and I will keep you in the loop.'}

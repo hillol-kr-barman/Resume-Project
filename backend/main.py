@@ -45,6 +45,9 @@ class SignUpRequest(BaseModel):
     name: str | None = None
 
 
+class NewsletterSubscribeRequest(BaseModel):
+    email: str
+
 def load_env_file() -> None:
     env_candidates = [
         Path(__file__).resolve().parent / ".env",
@@ -85,6 +88,22 @@ def get_supabase_config() -> tuple[str, str]:
                 "SUPABASE_ANON_KEY, or provide VITE_SUPABASE_URL with "
                 "VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY or VITE_SUPABASE_ANON_KEY "
                 "in .env.local."
+            ),
+        )
+
+    return supabase_url.rstrip("/"), supabase_key
+
+
+def get_supabase_rest_config() -> tuple[str, str]:
+    supabase_url = os.getenv("SUPABASE_URL") or os.getenv("VITE_SUPABASE_URL")
+    supabase_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+
+    if not supabase_url or not supabase_key:
+        raise HTTPException(
+            status_code=500,
+            detail=(
+                "Supabase REST credentials are missing. Set SUPABASE_URL and "
+                "SUPABASE_SERVICE_ROLE_KEY in backend/.env or .env.local."
             ),
         )
 
@@ -160,6 +179,54 @@ def supabase_sign_up(payload: SignUpRequest) -> dict:
         ) from exc
 
 
+def subscribe_to_newsletter(payload: NewsletterSubscribeRequest) -> dict:
+    supabase_url, supabase_key = get_supabase_rest_config()
+    normalized_email = payload.email.strip().lower()
+
+    if "@" not in normalized_email:
+        raise HTTPException(status_code=422, detail="A valid email address is required.")
+
+    request_body = {"email": normalized_email}
+
+    req = request.Request(
+        f"{supabase_url}/rest/v1/newsletter_subscribers",
+        data=json.dumps(request_body).encode("utf-8"),
+        headers={
+            "apikey": supabase_key,
+            "Authorization": f"Bearer {supabase_key}",
+            "Content-Type": "application/json",
+            "Prefer": "return=representation,resolution=ignore-duplicates",
+        },
+        method="POST",
+    )
+
+    try:
+        with request.urlopen(req, context=get_ssl_context()) as response:
+            raw_body = response.read().decode("utf-8")
+            rows = json.loads(raw_body) if raw_body else []
+    except error.HTTPError as exc:
+        raw_error = exc.read().decode("utf-8")
+
+        try:
+            parsed_error = json.loads(raw_error)
+            detail = parsed_error.get("message") or parsed_error.get("hint") or parsed_error
+        except json.JSONDecodeError:
+            detail = raw_error or "Newsletter signup failed."
+
+        raise HTTPException(status_code=exc.code, detail=detail) from exc
+    except error.URLError as exc:
+        raise HTTPException(
+            status_code=502,
+            detail=f"Could not reach Supabase: {exc.reason}",
+        ) from exc
+
+    created_row = rows[0] if rows else None
+
+    return {
+        "email": normalized_email,
+        "created": created_row is not None,
+    }
+
 @app.get("/")
 def read_root() -> dict[str, str]:
     return {"status": "ok"}
@@ -180,6 +247,22 @@ def signup(payload: SignUpRequest) -> dict:
             "email": user.get("email"),
         },
         "session": signup_response.get("session"),
+    }
+
+
+@app.post("/newsletter/subscribe")
+def newsletter_subscribe(payload: NewsletterSubscribeRequest) -> dict:
+    result = subscribe_to_newsletter(payload)
+    message = (
+        "Too easy. You are now on the list."
+        if result["created"]
+        else "You are already on the list."
+    )
+
+    return {
+        "message": message,
+        "email": result["email"],
+        "created": result["created"],
     }
 
 @app.post("/create-checkout-session")
