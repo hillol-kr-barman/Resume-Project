@@ -1,13 +1,16 @@
-import { useEffect, useState } from 'react'
-import Editor from '@monaco-editor/react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import {
+  deleteDocument,
   getDocumentByShareToken,
   listDocumentsForUser,
   saveDocument,
 } from '../lib/playgroundStore'
 import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
+import AlertDialogBox from '../components/AlertDialogBox'
 import ShareDocumentModal from '../components/ShareDocumentModal'
+
+const Editor = lazy(() => import('@monaco-editor/react'))
 
 const languageOptions = [
   { value: 'javascript', label: 'JavaScript' },
@@ -81,6 +84,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
   const [notice, setNotice] = useState('')
   const [shareModalOpen, setShareModalOpen] = useState(false)
   const [shareUrl, setShareUrl] = useState('')
+  const [documentPendingDelete, setDocumentPendingDelete] = useState(null)
 
   const refreshDocuments = async () => {
     const nextDocuments = currentUser ? await listDocumentsForUser(currentUser.id) : []
@@ -256,6 +260,41 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
     await handleShare(document)
   }
 
+  const handleDeleteDocument = async (event, document) => {
+    event.stopPropagation()
+    setDocumentPendingDelete(document)
+  }
+
+  const closeDeleteDialog = () => {
+    setDocumentPendingDelete(null)
+  }
+
+  const confirmDeleteDocument = async () => {
+    if (!documentPendingDelete) return
+
+    try {
+      await deleteDocument(documentPendingDelete.id)
+
+      const remainingDocuments = documents.filter((item) => item.id !== documentPendingDelete.id)
+      setDocuments(remainingDocuments)
+
+      if (activeDocumentId === documentPendingDelete.id) {
+        const [nextDocument] = remainingDocuments
+
+        if (nextDocument) {
+          openDocument(nextDocument)
+        } else {
+          handleNewDocument()
+        }
+      }
+
+      setNotice(`Deleted ${documentPendingDelete.title}.`)
+      setDocumentPendingDelete(null)
+    } catch (error) {
+      setNotice(error.message)
+    }
+  }
+
   const storageMessage = currentUser
     ? `${currentUser.name} is signed in. Anything saved here stays tucked into your account.`
     : 'Sign in to save snippets and keep them synced off this device.'
@@ -272,7 +311,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
           </p>
         </div>
 
-        <div className="mt-10 grid gap-5 lg:grid-cols-[19rem_minmax(0,1fr)]">
+        <div className="mt-10 grid gap-5 lg:grid-cols-[21rem_minmax(0,1fr)]">
           <aside className="rounded-3xl bg-card p-4 outline -outline-offset-1 outline-white/10">
             <div className="flex items-center justify-between gap-3">
               <div>
@@ -304,7 +343,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
                     key={document.id}
                     className={`flex items-stretch gap-2 rounded-2xl border p-2 transition ${
                       activeDocumentId === document.id
-                        ? 'border-accent bg-accent/10'
+                        ? 'border-accent bg-accent/10 shadow-[0_0_0_1px_rgba(158,255,31,0.35)]'
                         : 'border-white/10 bg-black/20 hover:border-white/30'
                     }`}
                   >
@@ -313,26 +352,42 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
                       onClick={() => openDocument(document)}
                       className="min-w-0 flex-1 rounded-xl px-2 py-1.5 text-left"
                     >
-                      <p className="truncate text-sm font-semibold text-white">{document.title}</p>
+                      <div className="flex items-start justify-between gap-3">
+                        <p className="truncate text-sm font-semibold text-white">{document.title}</p>
+                        {activeDocumentId === document.id ? (
+                          <span className="shrink-0 rounded-full bg-accent/20 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-accent">
+                            Open
+                          </span>
+                        ) : null}
+                      </div>
                       <p className="mt-1 text-xs uppercase tracking-[0.2em] text-body">{document.language}</p>
                       <p className="mt-2 text-xs text-body">
                         Updated {new Date(document.updatedAt).toLocaleString()}
                       </p>
                     </button>
-                    <button
-                      type="button"
-                      onClick={(event) => handleShareSavedDocument(event, document)}
-                      className="self-center rounded-xl border border-white/10 px-3 py-2 text-xs font-semibold text-white transition hover:border-accent hover:text-accent"
-                    >
-                      Share
-                    </button>
+                    <div className="flex shrink-0 flex-col gap-2">
+                      <button
+                        type="button"
+                        onClick={(event) => handleShareSavedDocument(event, document)}
+                        className="rounded-xl border border-white/10 px-3 py-2 text-xs font-semibold text-white transition hover:border-accent hover:text-accent"
+                      >
+                        Share
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(event) => handleDeleteDocument(event, document)}
+                        className="rounded-xl border border-red-400/25 px-3 py-2 text-xs font-semibold text-red-200 transition hover:border-red-300/50 hover:text-red-100"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 ))
               )}
             </div>
           </aside>
 
-          <section className="rounded-3xl bg-card p-4 outline -outline-offset-1 outline-white/10">
+          <section className="min-w-0 rounded-3xl bg-card p-4 outline -outline-offset-1 outline-white/10">
             <div className="flex flex-col gap-3 xl:flex-row xl:items-end">
               <div className="min-w-0 flex-1">
                 <label htmlFor="snippet-title" className="mb-2 block text-xs font-medium text-white">
@@ -394,18 +449,26 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
 
             <div className="mt-4 rounded-2xl border border-white/10 bg-black/40 p-3">
               <div className="min-h-28rem w-full resize-none rounded-xl bg-transparent p-4 font-mono text-sm leading-7 text-white outline-none">
-                <Editor
-                  height="70vh"
-                  theme="vs-dark"
-                  language={language}
-                  value={code}
-                  onChange={(value) => setCode(value ?? '')}
-                  options={{
-                    minimap: { enabled: false },
-                    fontSize: 14,
-                    automaticLayout: true,
-                  }}
-                />
+                <Suspense
+                  fallback={(
+                    <div className="flex h-[70vh] items-center justify-center rounded-xl border border-white/10 bg-black/30 text-sm text-gray-400">
+                      Loading editor...
+                    </div>
+                  )}
+                >
+                  <Editor
+                    height="70vh"
+                    theme="vs-dark"
+                    language={language}
+                    value={code}
+                    onChange={(value) => setCode(value ?? '')}
+                    options={{
+                      minimap: { enabled: false },
+                      fontSize: 14,
+                      automaticLayout: true,
+                    }}
+                  />
+                </Suspense>
               </div>
             </div>
 
@@ -429,6 +492,19 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
       </main>
 
       <SiteFooter />
+      <AlertDialogBox
+        open={Boolean(documentPendingDelete)}
+        onClose={closeDeleteDialog}
+        onConfirm={confirmDeleteDocument}
+        title="Delete document?"
+        description={
+          documentPendingDelete
+            ? `"${documentPendingDelete.title}" will be removed from your saved documents. This can't be undone.`
+            : ''
+        }
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+      />
       <ShareDocumentModal open={shareModalOpen} onClose={() => setShareModalOpen(false)} shareUrl={shareUrl} />
     </div>
   )

@@ -148,3 +148,18 @@ export async function saveDocument({ id, title, content, language, ownerId, isSh
 
   return mapDocument(data)
 }
+
+export async function deleteDocument(id) {
+  if (!id) {
+    throw new Error('Missing document id.')
+  }
+
+  const { error } = await supabase
+    .from('playground_documents')
+    .delete()
+    .eq('id', id)
+
+  if (error) {
+    throw error
+  }
+}

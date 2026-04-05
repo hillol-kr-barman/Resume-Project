@@ -1,15 +1,10 @@
 import { ArrowLongLeftIcon } from '@heroicons/react/20/solid'
 import BackgroundBeams from '../components/BackgroundBeams'
 import ProjectsCard from '../components/ProjectsCard'
-import { projects, featuredProjectIds } from '../pages/pageData/homePageData'
+import { projects } from '../pages/pageData/homePageData'
 
 
 export default function ComponentsTestPage({ onNavigate }) {
-  const featuredProjects = featuredProjectIds
-  .map((id) => projects.find((project) => project.id === id))
-  .filter(Boolean)
-
-
   return (
     <main className="min-h-screen bg-background px-5 py-8 text-sm text-white">
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
@@ -43,7 +38,7 @@ export default function ComponentsTestPage({ onNavigate }) {
           </section>
 
           <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {featuredProjects.map((project) => (
+            {projects.slice(0, 3).map((project) => (
               <ProjectsCard key={project.id} project={project} />
             ))}
           </div>

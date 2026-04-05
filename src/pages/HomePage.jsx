@@ -158,7 +158,6 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
           </button>
           <div className="border-t border-white/10"></div>
         </div>
-
       </div>
 
       {/* Newsletter Section */}
