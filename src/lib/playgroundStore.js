@@ -1,141 +1,150 @@
-const USERS_KEY = 'resume-users'
-const SESSION_KEY = 'resume-session'
-const DOCUMENTS_KEY = 'resume-playground-documents'
-const TEMP_DOCUMENT_TTL_MS = 1000 * 60 * 60 * 24
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000'
+import { supabase } from './supabaseClient'
 
-function readJson(key, fallback) {
-  try {
-    const raw = window.localStorage.getItem(key)
-    return raw ? JSON.parse(raw) : fallback
-  } catch {
-    return fallback
+function mapUser(user) {
+  if (!user) return null
+
+  const fullName =
+    user.user_metadata?.name ||
+    user.user_metadata?.full_name ||
+    user.email?.split('@')[0] ||
+    'Mate'
+
+  return {
+    id: user.id,
+    name: fullName,
+    email: user.email ?? '',
   }
 }
 
-function writeJson(key, value) {
-  window.localStorage.setItem(key, JSON.stringify(value))
+function mapDocument(row) {
+  if (!row) return null
+
+  return {
+    id: row.id,
+    title: row.title,
+    content: row.content,
+    language: row.language,
+    ownerId: row.owner_id,
+    shareToken: row.share_token,
+    isShared: row.is_shared,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  }
 }
 
-function createId(prefix) {
-  return `${prefix}_${Math.random().toString(36).slice(2, 10)}`
-}
+export async function getCurrentUser() {
+  const { data, error } = await supabase.auth.getUser()
 
-function cleanupExpiredDocuments(documents) {
-  const now = Date.now()
-  return documents.filter((document) => {
-    if (!document.expiresAt) return true
-    return document.expiresAt > now
-  })
-}
+  if (error) {
+    throw error
+  }
 
-export function getCurrentUser() {
-  return readJson(SESSION_KEY, null)
+  return mapUser(data.user)
 }
 
 export async function registerUser({ name, email, password }) {
-  const response = await fetch(`${API_BASE_URL}/signup`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+  const { data, error } = await supabase.auth.signUp({
+    email: email.trim().toLowerCase(),
+    password,
+    options: {
+      data: {
+        name: name.trim(),
+      },
     },
-    body: JSON.stringify({
-      name: name.trim(),
-      email: email.trim().toLowerCase(),
-      password,
-    }),
   })
 
-  let payload = null
-
-  try {
-    payload = await response.json()
-  } catch {
-    payload = null
+  if (error) {
+    throw error
   }
 
-  if (!response.ok) {
-    const detail = typeof payload?.detail === 'string' ? payload.detail : 'Could not create your account.'
-    throw new Error(detail)
+  if (!data.user) {
+    throw new Error('Could not create your account.')
   }
 
-  const sessionUser = {
-    id: payload?.user?.id ?? createId('user'),
-    name: name.trim(),
-    email: payload?.user?.email ?? email.trim().toLowerCase(),
+  return mapUser(data.user)
+}
+
+export async function loginUser({ email, password }) {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: email.trim().toLowerCase(),
+    password,
+  })
+
+  if (error) {
+    throw error
   }
 
-  writeJson(SESSION_KEY, sessionUser)
-  return sessionUser
+  return mapUser(data.user)
 }
 
-export function loginUser({ email, password }) {
-  const users = readJson(USERS_KEY, [])
-  const normalizedEmail = email.trim().toLowerCase()
-  const user = users.find((item) => item.email === normalizedEmail && item.password === password)
+export async function logoutUser() {
+  const { error } = await supabase.auth.signOut()
 
-  if (!user) {
-    throw new Error('Invalid email or password.')
+  if (error) {
+    throw error
+  }
+}
+
+export async function listDocumentsForUser(userId) {
+  const { data, error } = await supabase
+    .from('playground_documents')
+    .select('id, title, content, language, owner_id, share_token, is_shared, created_at, updated_at')
+    .eq('owner_id', userId)
+    .order('updated_at', { ascending: false })
+
+  if (error) {
+    throw error
   }
 
-  const sessionUser = { id: user.id, name: user.name, email: user.email }
-  writeJson(SESSION_KEY, sessionUser)
-  return sessionUser
+  return (data ?? []).map(mapDocument)
 }
 
-export function logoutUser() {
-  window.localStorage.removeItem(SESSION_KEY)
-}
-
-export function getDocuments() {
-  const documents = cleanupExpiredDocuments(readJson(DOCUMENTS_KEY, []))
-  writeJson(DOCUMENTS_KEY, documents)
-  return documents
-}
-
-export function listDocumentsForUser(userId) {
-  return getDocuments()
-    .filter((document) => document.ownerId === userId)
-    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-}
-
-export function listTemporaryDocuments() {
-  return getDocuments()
-    .filter((document) => !document.ownerId)
-    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-}
-
-export function getDocumentById(documentId) {
-  return getDocuments().find((document) => document.id === documentId) ?? null
-}
-
-export function getDocumentByShareToken(shareToken) {
+export async function getDocumentByShareToken(shareToken) {
   if (!shareToken) return null
-  return getDocuments().find((document) => document.shareToken === shareToken) ?? null
+
+  const { data, error } = await supabase
+    .from('playground_documents')
+    .select('id, title, content, language, owner_id, share_token, is_shared, created_at, updated_at')
+    .eq('share_token', shareToken)
+    .eq('is_shared', true)
+    .maybeSingle()
+
+  if (error) {
+    throw error
+  }
+
+  return mapDocument(data)
 }
 
-export function saveDocument({ id, title, content, language, ownerId, shareToken }) {
-  const documents = getDocuments()
-  const now = new Date().toISOString()
-  const documentId = id ?? createId('doc')
-  const existingDocument = documents.find((document) => document.id === documentId)
+export async function saveDocument({ id, title, content, language, ownerId, isShared = false }) {
+  if (!ownerId) {
+    throw new Error('Please log in to save documents.')
+  }
 
-  const document = {
-    id: documentId,
+  const payload = {
+    owner_id: ownerId,
     title: title.trim() || 'Untitled snippet',
     content,
     language,
-    ownerId: ownerId ?? null,
-    shareToken: shareToken ?? existingDocument?.shareToken ?? createId('share'),
-    createdAt: existingDocument?.createdAt ?? now,
-    updatedAt: now,
-    expiresAt: ownerId ? null : new Date(Date.now() + TEMP_DOCUMENT_TTL_MS).toISOString(),
+    is_shared: isShared,
   }
 
-  const nextDocuments = existingDocument
-    ? documents.map((item) => (item.id === documentId ? document : item))
-    : [document, ...documents]
+  const query = id
+    ? supabase
+        .from('playground_documents')
+        .update(payload)
+        .eq('id', id)
+    : supabase
+        .from('playground_documents')
+        .insert(payload)
 
-  writeJson(DOCUMENTS_KEY, nextDocuments)
-  return document
+  const { data, error } = await query
+    .select('id, title, content, language, owner_id, share_token, is_shared, created_at, updated_at')
+    .single()
+
+  if (error) {
+    throw error
+  }
+
+  return mapDocument(data)
 }

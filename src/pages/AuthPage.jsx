@@ -51,7 +51,7 @@ export default function AuthPage({ mode = 'login', onNavigate, routeSearch = '',
     setIsSubmitting(true)
 
     try {
-      const user = isRegistered ? await registerUser(formState) : loginUser(formState)
+      const user = isRegistered ? await registerUser(formState) : await loginUser(formState)
       onAuthChange(user)
       onNavigate(redirectPath)
     } catch (error) {
