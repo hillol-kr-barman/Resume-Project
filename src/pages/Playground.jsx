@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import {
+  deleteAllDocumentsForUser,
   deleteDocument,
   getDocumentByShareToken,
   listDocumentsForUser,
@@ -8,7 +9,9 @@ import {
 import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
 import AlertDialogBox from '../components/AlertDialogBox'
+import ConfirmationMessage from '../components/ConfirmationMessage'
 import ShareDocumentModal from '../components/ShareDocumentModal'
+import { CloudArrowUpIcon } from '@heroicons/react/24/solid'
 
 const Editor = lazy(() => import('@monaco-editor/react'))
 
@@ -82,9 +85,11 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
   const [language, setLanguage] = useState('javascript')
   const [code, setCode] = useState(getStarterSnippet('javascript'))
   const [notice, setNotice] = useState('')
+  const [showSaveConfirmation, setShowSaveConfirmation] = useState(false)
   const [shareModalOpen, setShareModalOpen] = useState(false)
   const [shareUrl, setShareUrl] = useState('')
   const [documentPendingDelete, setDocumentPendingDelete] = useState(null)
+  const [deleteMode, setDeleteMode] = useState(null)
 
   const refreshDocuments = async () => {
     const nextDocuments = currentUser ? await listDocumentsForUser(currentUser.id) : []
@@ -160,6 +165,16 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
     }
   }, [activeDocumentId, currentUser?.id, documents, isCreatingNew, routeSearch])
 
+  useEffect(() => {
+    if (!showSaveConfirmation) return undefined
+
+    const timer = window.setTimeout(() => {
+      setShowSaveConfirmation(false)
+    }, 2500)
+
+    return () => window.clearTimeout(timer)
+  }, [showSaveConfirmation])
+
   const openDocument = (document) => {
     setActiveDocumentId(document.id)
     setIsCreatingNew(false)
@@ -210,7 +225,8 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
       setActiveDocumentId(document.id)
       setIsCreatingNew(false)
       await refreshDocuments()
-      setNotice('Document saved to your Supabase account, all sorted.')
+      setNotice('Document saved, all sorted.')
+      setShowSaveConfirmation(true)
     } catch (error) {
       setNotice(error.message)
     }
@@ -262,10 +278,17 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
 
   const handleDeleteDocument = async (event, document) => {
     event.stopPropagation()
+    setDeleteMode('single')
     setDocumentPendingDelete(document)
   }
 
+  const handleDeleteAllDocuments = () => {
+    setDeleteMode('all')
+    setDocumentPendingDelete({ id: 'all-documents', title: 'all saved documents' })
+  }
+
   const closeDeleteDialog = () => {
+    setDeleteMode(null)
     setDocumentPendingDelete(null)
   }
 
@@ -273,6 +296,16 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
     if (!documentPendingDelete) return
 
     try {
+      if (deleteMode === 'all') {
+        await deleteAllDocumentsForUser(currentUser?.id)
+        setDocuments([])
+        handleNewDocument()
+        setNotice('All saved documents deleted.')
+        setDocumentPendingDelete(null)
+        setDeleteMode(null)
+        return
+      }
+
       await deleteDocument(documentPendingDelete.id)
 
       const remainingDocuments = documents.filter((item) => item.id !== documentPendingDelete.id)
@@ -290,13 +323,18 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
 
       setNotice(`Deleted ${documentPendingDelete.title}.`)
       setDocumentPendingDelete(null)
+      setDeleteMode(null)
     } catch (error) {
       setNotice(error.message)
     }
   }
 
   const storageMessage = currentUser
-    ? `${currentUser.name} is signed in. Anything saved here stays tucked into your account.`
+    ? (
+        <>
+          Showing all <span className="font-semibold text-accent"><a>{currentUser.name}</a></span> 's documents. All saved files appear here.
+        </>
+      )
     : 'Sign in to save snippets and keep them synced off this device.'
 
   return (
@@ -312,8 +350,8 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
         </div>
 
         <div className="mt-10 grid gap-5 lg:grid-cols-[21rem_minmax(0,1fr)]">
-          <aside className="rounded-3xl bg-card p-4 outline -outline-offset-1 outline-white/10">
-            <div className="flex items-center justify-between gap-3">
+          <aside className="flex min-h-200 flex-col overflow-hidden rounded-3xl bg-card p-4 outline -outline-offset-1 outline-white/10 lg:h-[calc(100vh-9rem)]">
+            <div className="mt-3 flex items-center justify-between gap-3">
               <div>
                 <h2 className="text-base font-semibold text-white">Saved documents</h2>
                 <p className="type-body mt-1">{storageMessage}</p>
@@ -330,61 +368,73 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
               </button>
             ) : null}
 
-            <div className="mt-4 space-y-2.5">
-              {documents.length === 0 ? (
-                <div className="rounded-2xl border border-dashed border-white/10 px-4 py-4 text-sm text-body">
-                  {currentUser
-                    ? 'Nothing saved yet. Save the snippet on the right to get the first one going.'
-                    : 'Sign in to start saving snippets.'}
-                </div>
-              ) : (
-                documents.map((document) => (
-                  <div
-                    key={document.id}
-                    className={`flex items-stretch gap-2 rounded-2xl border p-2 transition ${
-                      activeDocumentId === document.id
-                        ? 'border-accent bg-accent/10 shadow-[0_0_0_1px_rgba(158,255,31,0.35)]'
-                        : 'border-white/10 bg-black/20 hover:border-white/30'
-                    }`}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => openDocument(document)}
-                      className="min-w-0 flex-1 rounded-xl px-2 py-1.5 text-left"
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <p className="truncate text-sm font-semibold text-white">{document.title}</p>
-                        {activeDocumentId === document.id ? (
-                          <span className="shrink-0 rounded-full bg-accent/20 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-accent">
-                            Open
-                          </span>
-                        ) : null}
-                      </div>
-                      <p className="mt-1 text-xs uppercase tracking-[0.2em] text-body">{document.language}</p>
-                      <p className="mt-2 text-xs text-body">
-                        Updated {new Date(document.updatedAt).toLocaleString()}
-                      </p>
-                    </button>
-                    <div className="flex shrink-0 flex-col gap-2">
-                      <button
-                        type="button"
-                        onClick={(event) => handleShareSavedDocument(event, document)}
-                        className="rounded-xl border border-white/10 px-3 py-2 text-xs font-semibold text-white transition hover:border-accent hover:text-accent"
-                      >
-                        Share
-                      </button>
-                      <button
-                        type="button"
-                        onClick={(event) => handleDeleteDocument(event, document)}
-                        className="rounded-xl border border-red-400/25 px-3 py-2 text-xs font-semibold text-red-200 transition hover:border-red-300/50 hover:text-red-100"
-                      >
-                        Delete
-                      </button>
-                    </div>
+            <div className="mt-4 flex-1 overflow-hidden">
+              <div className="h-full space-y-2.5 overflow-y-auto pr-1">
+                {documents.length === 0 ? (
+                  <div className="rounded-2xl border border-dashed border-white/10 px-4 py-4 text-sm text-body">
+                    {currentUser
+                      ? 'Nothing saved yet. Save the snippet on the right to get the first one going.'
+                      : 'Sign in to start saving snippets.'}
                   </div>
-                ))
-              )}
+                ) : (
+                  documents.map((document) => (
+                    <div
+                      key={document.id}
+                      className={`flex items-stretch gap-2 rounded-2xl border p-2 transition ${
+                        activeDocumentId === document.id
+                          ? 'border-accent bg-accent/10 shadow-[0_0_0_1px_rgba(158,255,31,0.35)]'
+                          : 'border-white/10 bg-black/20 hover:border-white/30'
+                      }`}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => openDocument(document)}
+                        className="min-w-0 flex-1 rounded-xl px-2 py-1.5 text-left"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <p className="truncate text-sm font-semibold text-white">{document.title}</p>
+                          {activeDocumentId === document.id ? (
+                            <span className="shrink-0 rounded-full bg-accent/20 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-accent">
+                              Open
+                            </span>
+                          ) : null}
+                        </div>
+                        <p className="mt-1 text-xs uppercase tracking-[0.2em] text-body">{document.language}</p>
+                        <p className="mt-2 text-xs text-body">
+                          Updated {new Date(document.updatedAt).toLocaleString()}
+                        </p>
+                      </button>
+                      <div className="flex shrink-0 flex-col gap-2">
+                        <button
+                          type="button"
+                          onClick={(event) => handleShareSavedDocument(event, document)}
+                          className="rounded-xl border border-white/10 px-3 py-2 text-xs font-semibold text-white transition hover:border-accent hover:text-accent"
+                        >
+                          Share
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(event) => handleDeleteDocument(event, document)}
+                          className="rounded-xl border border-red-500/30 px-3 py-2 text-xs font-semibold text-white transition hover:border-red-500 hover:bg-red-500 hover:text-white"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
+
+            {currentUser && documents.length > 0 ? (
+              <button
+                type="button"
+                onClick={handleDeleteAllDocuments}
+                className="mt-5 w-full rounded-xl border border-red-500 px-4 py-3 text-sm font-semibold text-red-400 transition hover:border-red-600 hover:bg-red-500 hover:text-white"
+              >
+                Delete all
+              </button>
+            ) : null}
           </aside>
 
           <section className="min-w-0 rounded-3xl bg-card p-4 outline -outline-offset-1 outline-white/10">
@@ -433,9 +483,11 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
               <button
                 type="button"
                 onClick={handleSave}
-                className="rounded-md border border-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:border-accent hover:text-accent"
+                className="inline-flex shrink-0 items-center justify-center gap-x-2 rounded-md border  bg-accent border-accent/10 px-4 py-3 text-sm font-semibold text-black shadow-none transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)]"
               >
+                <CloudArrowUpIcon aria-hidden="true" className="size-5"/>
                 Save
+
               </button>
 
               <button
@@ -492,17 +544,20 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
       </main>
 
       <SiteFooter />
+      <ConfirmationMessage open={showSaveConfirmation} message="Document saved, all sorted." />
       <AlertDialogBox
         open={Boolean(documentPendingDelete)}
         onClose={closeDeleteDialog}
         onConfirm={confirmDeleteDocument}
-        title="Delete document?"
+        title={deleteMode === 'all' ? 'Delete all documents?' : 'Delete document?'}
         description={
-          documentPendingDelete
-            ? `"${documentPendingDelete.title}" will be removed from your saved documents. This can't be undone.`
-            : ''
+          deleteMode === 'all'
+            ? 'All saved documents will be removed from your account. This cannot be undone.'
+            : documentPendingDelete
+              ? `"${documentPendingDelete.title}" will be removed from your saved documents. This can't be undone.`
+              : ''
         }
-        confirmLabel="Delete"
+        confirmLabel={deleteMode === 'all' ? 'Delete all' : 'Delete'}
         cancelLabel="Cancel"
       />
       <ShareDocumentModal open={shareModalOpen} onClose={() => setShareModalOpen(false)} shareUrl={shareUrl} />
