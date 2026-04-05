@@ -1,4 +1,7 @@
-import aboutMeImage from '../assets/aboutMeImage.png'
+import about400Webp from '../assets/about-400.webp'
+import about800Webp from '../assets/about-800.webp'
+import about1200Webp from '../assets/about-1200.webp'
+import { ArrowDownTrayIcon } from '@heroicons/react/20/solid'
 import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
 
@@ -55,8 +58,8 @@ export default function AboutMe({ onNavigate, currentUser, onLogout, currentPath
         <section className="overflow-hidden rounded-3xl border border-white/10 bg-card/95 p-5 sm:p-6">
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(16rem,22rem)] lg:items-center lg:gap-8">
             <div className="order-2 lg:order-1">
-              <p className="type-eyebrow">About Me</p>
-              <h1 className="type-page-title mt-4">A Bit About Me</h1>
+              <p className="type-eyebrow">A Bit About Me</p>
+              <h1 className="type-page-title mt-4">Whoami</h1>
               <div className="type-body mt-5 max-w-3xl space-y-3">
                 <p>
                   Engineer by training, builder by habit. I design and develop scalable web apps and systems with a strong eye for clean architecture and user experiences that feel easy from the first click.
@@ -90,9 +93,14 @@ export default function AboutMe({ onNavigate, currentUser, onLogout, currentPath
             <div className="order-1 flex justify-center lg:order-2 lg:justify-end">
               <div className="w-full max-w-xs border border-white/10 bg-background/40 p-2.5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
                 <img
-                  src={aboutMeImage}
-                  alt="Hillol Barman portrait"
-                  className="w-full object-cover"
+                  src={about800Webp}
+                  srcSet={`${about400Webp} 400w, ${about800Webp} 800w, ${about1200Webp} 1200w`}
+                  sizes="(max-width: 768px) 90vw, 400px"
+                  width="400"
+                  height="500"
+                  alt="Portrait of Hillol"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
             </div>
@@ -177,8 +185,9 @@ export default function AboutMe({ onNavigate, currentUser, onLogout, currentPath
           <a
             href="/HillolBarman_Resume.pdf"
             download
-            className="mt-6 inline-flex rounded-md bg-accent px-4 py-2.5 text-sm font-semibold text-black transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            className="mt-6 inline-flex items-center gap-2 rounded-md bg-accent px-4 py-2.5 text-sm font-semibold text-black transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           >
+            <ArrowDownTrayIcon aria-hidden="true" className="size-5" />
             Download CV
           </a>
         </section>

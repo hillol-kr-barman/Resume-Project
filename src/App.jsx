@@ -1,16 +1,14 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import HomePage from './pages/HomePage'
-import AuthPage from './pages/AuthPage'
-import ComponentsTestPage from './pages/ComponentsTestPage'
-import AllProjects from './pages/AllProjects'
-import AboutMe from './pages/AboutMe'
-import Playground from './pages/Playground'
-import BuyMeCoffee from './pages/BuyMeCoffee'
-import Preloader from './components/Preloader'
-import UnderConstruction from './pages/UnderConstruction'
-import NotFound from './pages/NotFound'
-import { getCurrentUser, logoutUser } from './lib/playgroundStore'
-import { supabase } from './lib/supabaseClient'
+
+const AuthPage = lazy(() => import('./pages/AuthPage'))
+const ComponentsTestPage = lazy(() => import('./pages/ComponentsTestPage'))
+const AllProjects = lazy(() => import('./pages/AllProjects'))
+const AboutMe = lazy(() => import('./pages/AboutMe'))
+const Playground = lazy(() => import('./pages/Playground'))
+const BuyMeCoffee = lazy(() => import('./pages/BuyMeCoffee'))
+const UnderConstruction = lazy(() => import('./pages/UnderConstruction'))
+const NotFound = lazy(() => import('./pages/NotFound'))
 
 function normalizePath(pathname) {
   if (!pathname || pathname === '/') return '/'
@@ -35,41 +33,61 @@ function mapSessionUser(user) {
 
 export default function App() {
   const isSiteUnderConstruction = false
-  const isPreloaderEnabled = true
-  const [isPageVisible, setIsPageVisible] = useState(false)
   const [route, setRoute] = useState(() => ({
     path: normalizePath(window.location.pathname),
     search: window.location.search,
   }))
   const [currentUser, setCurrentUser] = useState(null)
-  const shouldRunPreloader = isPreloaderEnabled && !isSiteUnderConstruction
-  const [isPreloading, setIsPreloading] = useState(shouldRunPreloader)
 
   useEffect(() => {
     let isMounted = true
+    let unsubscribe = () => {}
+    let idleHandle = null
 
-    const syncCurrentUser = async () => {
+    const bootstrapAuth = async () => {
       try {
+        const [{ getCurrentUser }, { supabase }] = await Promise.all([
+          import('./lib/playgroundStore'),
+          import('./lib/supabaseClient'),
+        ])
+
         const user = await getCurrentUser()
-        if (isMounted) setCurrentUser(user)
+        if (!isMounted) return
+
+        setCurrentUser(user)
+
+        const {
+          data: { subscription },
+        } = supabase.auth.onAuthStateChange((_event, session) => {
+          if (isMounted) {
+            setCurrentUser(mapSessionUser(session?.user ?? null))
+          }
+        })
+
+        unsubscribe = () => subscription.unsubscribe()
       } catch {
         if (isMounted) setCurrentUser(null)
       }
     }
 
-    syncCurrentUser()
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (isMounted) {
-        setCurrentUser(mapSessionUser(session?.user ?? null))
-      }
-    })
+    if ('requestIdleCallback' in window) {
+      idleHandle = window.requestIdleCallback(() => {
+        bootstrapAuth()
+      })
+    } else {
+      idleHandle = window.setTimeout(() => {
+        bootstrapAuth()
+      }, 1)
+    }
 
     return () => {
       isMounted = false
-      subscription.unsubscribe()
+      if (typeof idleHandle === 'number') {
+        window.clearTimeout(idleHandle)
+      } else if (idleHandle !== null && 'cancelIdleCallback' in window) {
+        window.cancelIdleCallback(idleHandle)
+      }
+      unsubscribe()
     }
   }, [])
 
@@ -107,27 +125,8 @@ export default function App() {
   }, [isSiteUnderConstruction, route.path])
 
   useEffect(() => {
-    if (!shouldRunPreloader) {
-      setIsPreloading(false)
-      return
-    }
-    setIsPreloading(true)
-  }, [shouldRunPreloader])
-
-  useEffect(() => {
-    if (isPreloading) return
-
-    const timer = window.setTimeout(() => {
-      setIsPageVisible(true)
-    }, 40)
-
-    return () => window.clearTimeout(timer)
-  }, [isPreloading])
-
-  useEffect(() => {
-    if (isPreloading) return
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
-  }, [isPreloading, route.path, route.search])
+  }, [route.path, route.search])
 
   const navigate = (to) => {
     const nextUrl = new URL(to, window.location.origin)
@@ -145,16 +144,23 @@ export default function App() {
   }
 
   const handleLogout = async () => {
+    const { logoutUser } = await import('./lib/playgroundStore')
     await logoutUser()
     setCurrentUser(null)
   }
 
+  const renderLazyPage = (node) => (
+    <Suspense fallback={null}>
+      {node}
+    </Suspense>
+  )
+
   let page = null
 
   if (isSiteUnderConstruction) {
-    page = <UnderConstruction />
+    page = renderLazyPage(<UnderConstruction />)
   } else if (route.path === '/login' || route.path === '/register') {
-    page = (
+    page = renderLazyPage(
       <AuthPage
         mode={route.path === '/register' ? 'register' : 'login'}
         onNavigate={navigate}
@@ -164,11 +170,13 @@ export default function App() {
       />
     )
   } else if (route.path === '/components-test') {
-    page = <ComponentsTestPage onNavigate={navigate} />
+    page = renderLazyPage(<ComponentsTestPage onNavigate={navigate} />)
   } else if (route.path === '/projects') {
-    page = <AllProjects onNavigate={navigate} currentUser={currentUser} onLogout={handleLogout} currentPath={route.path} />
+    page = renderLazyPage(
+      <AllProjects onNavigate={navigate} currentUser={currentUser} onLogout={handleLogout} currentPath={route.path} />,
+    )
   } else if (route.path === '/playground') {
-    page = (
+    page = renderLazyPage(
       <Playground
         onNavigate={navigate}
         routeSearch={route.search}
@@ -177,22 +185,20 @@ export default function App() {
       />
     )
   } else if (route.path === '/about') {
-    page = <AboutMe onNavigate={navigate} currentUser={currentUser} onLogout={handleLogout} currentPath={route.path} />
+    page = renderLazyPage(
+      <AboutMe onNavigate={navigate} currentUser={currentUser} onLogout={handleLogout} currentPath={route.path} />,
+    )
   } else if (route.path === '/coffee') {
-    page = <BuyMeCoffee onNavigate={navigate} currentUser={currentUser} onLogout={handleLogout} currentPath={route.path} />
+    page = renderLazyPage(
+      <BuyMeCoffee onNavigate={navigate} currentUser={currentUser} onLogout={handleLogout} currentPath={route.path} />,
+    )
   } else if (route.path === '/') {
     page = <HomePage onNavigate={navigate} currentUser={currentUser} onLogout={handleLogout} currentPath={route.path} />
   } else {
-    page = <NotFound onNavigate={navigate} currentUser={currentUser} onLogout={handleLogout} currentPath={route.path} />
+    page = renderLazyPage(
+      <NotFound onNavigate={navigate} currentUser={currentUser} onLogout={handleLogout} currentPath={route.path} />,
+    )
   }
 
-  if (isPreloading) {
-    return <Preloader onComplete={() => setIsPreloading(false)} />
-  }
-
-  return (
-    <div className={`app-shell${isPageVisible ? ' app-shell--visible' : ''}`}>
-      {page}
-    </div>
-  )
+  return page
 }
