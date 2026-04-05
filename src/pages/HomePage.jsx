@@ -98,7 +98,7 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
                 className="inline-flex items-center justify-center gap-x-2 rounded-md bg-accent px-4 py-2.5 text-sm font-semibold text-black transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 Browse Projects
-                <ArrowRightIcon aria-hidden="true" className="size-5" />
+                <ArrowRightIcon aria-hidden="true" className="size-4" />
               </a>
             </div>
           </div>
@@ -154,7 +154,7 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
             className="inline-flex shrink-0 items-center justify-center gap-x-2 rounded-md bg-accent px-3.5 py-2.5 text-sm font-semibold text-black transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             onClick={(event) => handleNavigate(event, '/projects')}>
             See the lot
-            <ArrowRightIcon aria-hidden="true" className="-mr-0.5 size-5" />
+            <ArrowRightIcon aria-hidden="true" className="size-4" />
           </button>
           <div className="border-t border-white/10"></div>
         </div>

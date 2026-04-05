@@ -163,3 +163,18 @@ export async function deleteDocument(id) {
     throw error
   }
 }
+
+export async function deleteAllDocumentsForUser(ownerId) {
+  if (!ownerId) {
+    throw new Error('Missing user id.')
+  }
+
+  const { error } = await supabase
+    .from('playground_documents')
+    .delete()
+    .eq('owner_id', ownerId)
+
+  if (error) {
+    throw error
+  }
+}
