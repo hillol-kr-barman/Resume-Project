@@ -201,7 +201,7 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
                 >
                   {isNewsletterSubmitting ? 'Subscribing...' : 'Subscribe'}
                 </button>
-                <p className="type-body mt-3 min-h-9 text-gray-400">
+                <p className="type-label mt-3 min-h-9 text-gray-400">
                   {newsletterMessage || 'Pop your email in and I will keep you in the loop.'}
                 </p>
               </form>
