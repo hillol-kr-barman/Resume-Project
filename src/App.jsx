@@ -15,6 +15,8 @@ function normalizePath(pathname) {
   return pathname.replace(/\/+$/, '')
 }
 
+const PASSWORD_RECOVERY_FLAG = 'resume-password-recovery'
+
 function mapSessionUser(user) {
   if (!user) return null
 
@@ -38,6 +40,9 @@ export default function App() {
     search: window.location.search,
   }))
   const [currentUser, setCurrentUser] = useState(null)
+  const [isPasswordRecoveryActive, setIsPasswordRecoveryActive] = useState(() => {
+    return window.sessionStorage.getItem(PASSWORD_RECOVERY_FLAG) === 'true'
+  })
 
   useEffect(() => {
     let isMounted = true
@@ -58,9 +63,20 @@ export default function App() {
 
         const {
           data: { subscription },
-        } = supabase.auth.onAuthStateChange((_event, session) => {
+        } = supabase.auth.onAuthStateChange((event, session) => {
           if (isMounted) {
             setCurrentUser(mapSessionUser(session?.user ?? null))
+            const isRecovery = event === 'PASSWORD_RECOVERY'
+
+            if (isRecovery) {
+              window.sessionStorage.setItem(PASSWORD_RECOVERY_FLAG, 'true')
+            }
+
+            if (event === 'SIGNED_OUT') {
+              window.sessionStorage.removeItem(PASSWORD_RECOVERY_FLAG)
+            }
+
+            setIsPasswordRecoveryActive(isRecovery || window.sessionStorage.getItem(PASSWORD_RECOVERY_FLAG) === 'true')
           }
         })
 
@@ -159,14 +175,32 @@ export default function App() {
 
   if (isSiteUnderConstruction) {
     page = renderLazyPage(<UnderConstruction />)
-  } else if (route.path === '/login' || route.path === '/register') {
+  } else if (
+    route.path === '/login' ||
+    route.path === '/register' ||
+    route.path === '/forgot-password' ||
+    route.path === '/reset-password'
+  ) {
     page = renderLazyPage(
       <AuthPage
-        mode={route.path === '/register' ? 'register' : 'login'}
+        mode={
+          route.path === '/register'
+            ? 'register'
+            : route.path === '/forgot-password'
+              ? 'forgot-password'
+              : route.path === '/reset-password'
+                ? 'reset-password'
+                : 'login'
+        }
         onNavigate={navigate}
         routeSearch={route.search}
         currentUser={currentUser}
         onAuthChange={handleAuthChange}
+        isPasswordRecoveryActive={isPasswordRecoveryActive}
+        onPasswordRecoveryConsumed={() => {
+          window.sessionStorage.removeItem(PASSWORD_RECOVERY_FLAG)
+          setIsPasswordRecoveryActive(false)
+        }}
       />
     )
   } else if (route.path === '/components-test') {
