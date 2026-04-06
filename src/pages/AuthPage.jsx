@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { ArrowLongLeftIcon } from '@heroicons/react/20/solid'
 import logo from '../assets/logo_green.svg'
 import BackgroundBeams from '../components/BackgroundBeams'
-import { loginUser, registerUser, requestPasswordReset, updatePassword } from '../lib/playgroundStore'
+import { loginUser, logoutUser, registerUser, requestPasswordReset, updatePassword } from '../lib/playgroundStore'
 
 export default function AuthPage({
   mode = 'login',
@@ -26,6 +26,8 @@ export default function AuthPage({
   const [successMessage, setSuccessMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [hasCheckedRecovery, setHasCheckedRecovery] = useState(!isResetPassword)
+  const recoveryHashPresent = window.location.hash.includes('type=recovery')
+  const canResetPassword = isPasswordRecoveryActive || recoveryHashPresent || Boolean(currentUser)
 
   const redirectPath = useMemo(() => {
     const params = new URLSearchParams(routeSearch)
@@ -56,9 +58,7 @@ export default function AuthPage({
   useEffect(() => {
     if (!isResetPassword) return
 
-    const recoveryHashPresent = window.location.hash.includes('type=recovery')
-
-    if (isPasswordRecoveryActive || recoveryHashPresent) {
+    if (canResetPassword) {
       setHasCheckedRecovery(true)
       setErrorMessage('')
       return
@@ -66,11 +66,30 @@ export default function AuthPage({
 
     setHasCheckedRecovery(true)
     setErrorMessage('That reset link is invalid or has expired. Request a fresh password reset email.')
-  }, [isPasswordRecoveryActive, isResetPassword])
+  }, [canResetPassword, isResetPassword])
 
   const handleRouteChange = (event, to) => {
     event.preventDefault()
     onNavigate(to)
+  }
+
+  const handleHeadBack = async (event) => {
+    event.preventDefault()
+
+    if (isResetPassword) {
+      try {
+        await logoutUser()
+      } catch {
+        // Ignore logout errors here and still move the user out of the recovery flow.
+      }
+
+      onPasswordRecoveryConsumed()
+      onAuthChange(null)
+      onNavigate('/login')
+      return
+    }
+
+    onNavigate(redirectPath === '/playground' ? '/playground' : '/')
   }
 
   const handleChange = (event) => {
@@ -92,7 +111,7 @@ export default function AuthPage({
       }
 
       if (isResetPassword) {
-        if (!isPasswordRecoveryActive && !window.location.hash.includes('type=recovery')) {
+        if (!canResetPassword) {
           throw new Error('That reset link is invalid or has expired. Request a fresh password reset email.')
         }
 
@@ -125,7 +144,7 @@ export default function AuthPage({
         <div className="justify-self-start px-1 py-1 sm:px-3.5">
           <button
             type="button"
-            onClick={(event) => handleRouteChange(event, redirectPath === '/playground' ? '/playground' : '/')}
+            onClick={handleHeadBack}
             className="inline-flex items-center gap-x-2 rounded-md bg-accent/20 px-2.5 py-1.5 text-xs font-semibold text-accent shadow-none transition-shadow duration-300 hover:shadow-[0_0_18px_rgba(158,255,31,0.45)]"
           >
             <ArrowLongLeftIcon aria-hidden="true" className="-ml-0.5 size-5" />
@@ -195,7 +214,7 @@ export default function AuthPage({
                     name="password"
                     type="password"
                     required
-                    disabled={isSubmitting || (isResetPassword && !isPasswordRecoveryActive && !window.location.hash.includes('type=recovery'))}
+                    disabled={isSubmitting || (isResetPassword && !canResetPassword)}
                     autoComplete={isRegistered ? 'new-password' : 'current-password'}
                     value={formState.password}
                     onChange={handleChange}
@@ -216,7 +235,7 @@ export default function AuthPage({
                     name="confirmPassword"
                     type="password"
                     required
-                    disabled={isSubmitting || (isResetPassword && !isPasswordRecoveryActive && !window.location.hash.includes('type=recovery'))}
+                    disabled={isSubmitting || (isResetPassword && !canResetPassword)}
                     autoComplete="new-password"
                     value={formState.confirmPassword}
                     onChange={handleChange}
@@ -253,7 +272,7 @@ export default function AuthPage({
             <div>
               <button
                 type="submit"
-                disabled={isSubmitting || (isResetPassword && hasCheckedRecovery && !isPasswordRecoveryActive && !window.location.hash.includes('type=recovery'))}
+                disabled={isSubmitting || (isResetPassword && hasCheckedRecovery && !canResetPassword)}
                 className="flex w-full justify-center rounded-md bg-accent px-3 py-1.5 text-sm/6 font-semibold text-black shadow-none transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 {isSubmitting
