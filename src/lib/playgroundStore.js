@@ -77,6 +77,40 @@ export async function loginUser({ email, password }) {
   return mapUser(data.user)
 }
 
+export async function requestPasswordReset(email) {
+  const normalizedEmail = email.trim().toLowerCase()
+
+  if (!normalizedEmail) {
+    throw new Error('Enter your email address first.')
+  }
+
+  const { error } = await supabase.auth.resetPasswordForEmail(normalizedEmail, {
+    redirectTo: `${window.location.origin}/reset-password`,
+  })
+
+  if (error) {
+    throw error
+  }
+}
+
+export async function updatePassword(password) {
+  const trimmedPassword = password.trim()
+
+  if (trimmedPassword.length < 6) {
+    throw new Error('Password must be at least 6 characters long.')
+  }
+
+  const { data, error } = await supabase.auth.updateUser({
+    password: trimmedPassword,
+  })
+
+  if (error) {
+    throw error
+  }
+
+  return mapUser(data.user)
+}
+
 export async function logoutUser() {
   const { error } = await supabase.auth.signOut()
 
