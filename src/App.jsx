@@ -56,11 +56,6 @@ export default function App() {
           import('./lib/supabaseClient'),
         ])
 
-        const user = await getCurrentUser()
-        if (!isMounted) return
-
-        setCurrentUser(user)
-
         const {
           data: { subscription },
         } = supabase.auth.onAuthStateChange((event, session) => {
@@ -81,6 +76,11 @@ export default function App() {
         })
 
         unsubscribe = () => subscription.unsubscribe()
+
+        const user = await getCurrentUser()
+        if (!isMounted) return
+
+        setCurrentUser(user)
       } catch {
         if (isMounted) setCurrentUser(null)
       }
