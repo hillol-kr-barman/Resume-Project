@@ -6,23 +6,23 @@ const supportTiers = [
   {
     id: 'espresso',
     amount: '$5',
-    label: 'Quick flat white',
+    label: 'Basic Support',
     cta: 'Support with $5',
-    description: 'A small cheers for the work, ideas, and bits and pieces shared here.',
+    description: 'A small contribution toward maintaining this portfolio and its related project work.',
   },
   {
     id: 'double',
     amount: '$10',
-    label: 'Double shot',
+    label: 'Standard Support',
     cta: 'Support with $10',
-    description: 'A little extra support while I keep building, polishing, and shipping new things.',
+    description: 'Additional support for continued development, hosting, and professional project improvements.',
   },
   {
     id: 'snacks',
     amount: '$20',
-    label: 'Coffee and a feed',
+    label: 'Extended Support',
     cta: 'Support with $20',
-    description: 'A generous boost for more experiments, proper polish, and the occasional late-night bug hunt.',
+    description: 'A generous contribution toward ongoing technical experiments and portfolio enhancements.',
   },
 ]
 
@@ -30,10 +30,6 @@ export default function BuyMeCoffee({ onNavigate, currentUser, onLogout, current
   const [isSubmittingTier, setIsSubmittingTier] = useState(null)
   const [checkoutError, setCheckoutError] = useState('')
   const [customAmount, setCustomAmount] = useState('')
-  const handleNavigate = (event, to) => {
-    event.preventDefault()
-    onNavigate(to)
-  }
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000'
   const checkoutStatus = useMemo(() => new URLSearchParams(window.location.search).get('status'), [])
@@ -57,7 +53,7 @@ export default function BuyMeCoffee({ onNavigate, currentUser, onLogout, current
       }
 
       if (parsedAmount <= 25) {
-        setCheckoutError('Mate it must be at least $26.00.')
+        setCheckoutError('Custom support amounts must be at least $26.00.')
         setIsSubmittingTier(null)
         return
       }
@@ -113,24 +109,24 @@ export default function BuyMeCoffee({ onNavigate, currentUser, onLogout, current
             <div className="px-5 py-6 sm:px-6 sm:py-7">
               <p className="type-eyebrow">Support My Work</p>
               <h1 className="type-section-title mt-4 max-w-2xl">
-                Shout me a coffee while I build the next thing.
+                Support continued portfolio development.
               </h1>
               {shouldShowDefaultMessage ? (
                 <p className="type-body mt-4 max-w-2xl">
-                  Pick a support tier and you will head over to secure Stripe Checkout in a tick.
+                  Select a support tier to continue to secure Stripe Checkout.
                 </p>
               ) : null}
 
 
               {checkoutStatus === 'success' ? (
                 <div className="mt-6 rounded-2xl border border-accent/30 bg-accent/10 px-4 py-3 text-sm text-white">
-                  Payment sorted. Thanks a bunch for backing the work.
+                  Payment completed. Thank you for supporting the work.
                 </div>
               ) : null}
 
               {checkoutStatus === 'cancelled' ? (
                 <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white">
-                  Checkout was cancelled. No stress, you can try again any time.
+                  Checkout was cancelled. You can try again at any time.
                 </div>
               ) : null}
 
@@ -161,7 +157,7 @@ export default function BuyMeCoffee({ onNavigate, currentUser, onLogout, current
                 ))}
               </div>
               <div className='card-panel'>
-                <p className="type-eyebrow">Go Big</p>
+                <p className="type-eyebrow">Custom Support</p>
                 <div className="mt-2">
                   <input
                     id="custom_amount"
@@ -177,7 +173,7 @@ export default function BuyMeCoffee({ onNavigate, currentUser, onLogout, current
                     className="block w-full rounded-md border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-accent/60 focus:outline-none"
                   />
                 </div>
-                <p className="type-body mt-2">If you are feeling extra generous, name your own amount and help fund more late-night builds.</p>
+                <p className="type-body mt-2">Enter a custom amount to support ongoing portfolio development and technical work.</p>
                 <button
                   type="button"
                   onClick={() => startCheckout({ customAmount })}

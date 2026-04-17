@@ -14,7 +14,7 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
   const [newsletterMessage, setNewsletterMessage] = useState('')
   const [isNewsletterSubmitting, setIsNewsletterSubmitting] = useState(false)
 
-  const handleNavigate = (event, to, { closeMobileMenu = false } = {}) => {
+  const handleNavigate = (event, to) => {
     event.preventDefault()
     onNavigate(to)
   }
@@ -26,7 +26,7 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
     const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)
 
     if (!isValidEmail) {
-      setNewsletterMessage('Chuck in a valid email and I will keep you posted.')
+      setNewsletterMessage('Please enter a valid email address.')
       return
     }
 
@@ -57,7 +57,7 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
         throw new Error(detail)
       }
 
-      setNewsletterMessage(payload?.message || `Too easy. ${trimmedEmail} is now on the list.`)
+      setNewsletterMessage(payload?.message || `${trimmedEmail} has been added to the mailing list.`)
       setNewsletterEmail('')
     } catch (error) {
       setNewsletterMessage(
@@ -83,13 +83,13 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
         <BackgroundBeams className="-z-10" />
         <div className="mx-auto max-w-6xl px-5 pb-18 pt-10 sm:pb-22 lg:px-6 lg:pb-24 lg:pt-18">
           <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
-            <p className="type-eyebrow">Lazymate for polished web builds</p>
+            <p className="type-eyebrow">Software Engineer and Web Developer</p>
             <h1 className="type-hero mt-5 max-w-3xl text-balance">
-              Build proper digital gear.
-              <span className="mt-3 block text-accent">Leave the chaos at the door.</span>
+              Building reliable, user-focused web applications.
+              <span className="mt-3 block text-accent">Clean architecture. Practical delivery.</span>
             </h1>
             <p className="type-body mt-6 max-w-2xl text-pretty">
-              Lazymate is where I design and build sharp web apps without the usual carry-on. Clean systems, tidy UI, and practical engineering that gets the job sorted.
+              I design and develop responsive web products with a focus on maintainable code, clear user journeys, and dependable full-stack implementation.
             </p>
             <div className="mt-7 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-center">
               <a
@@ -97,7 +97,7 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
                 onClick={(event) => handleNavigate(event, '/projects')}
                 className="inline-flex items-center justify-center gap-x-2 rounded-md bg-accent px-4 py-2.5 text-sm font-semibold text-black transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
-                Browse Projects
+                View Project
                 <ArrowRightIcon aria-hidden="true" className="size-4" />
               </a>
             </div>
@@ -110,11 +110,11 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
       <div className="mx-auto mt-24 max-w-6xl sm:mt-28 sm:px-5 lg:px-6">
         <div className="relative isolate overflow-hidden bg-card px-5 py-14 text-center after:pointer-events-none after:absolute after:inset-0 after:inset-ring after:inset-ring-white/10 sm:rounded-3xl sm:px-10 after:sm:rounded-3xl">
           <h4 className="type-section-title mx-auto max-w-2xl">
-            Tech I Reach For Most
+            Primary Technologies
           </h4>
           <p className="type-body mx-auto mt-4 max-w-3xl">
-            These are the tools I keep coming back to when a build needs to be fast, reliable, and easy to live with.
-            I stay current, pinch the best ideas, and use the stack that makes the product feel right.
+            These are the technologies I use to build performant interfaces, reliable APIs, and maintainable product foundations.
+            I choose tools based on product requirements, scalability, and long-term maintainability.
           </p>
           <div className="mx-auto mt-12 grid max-w-4xl grid-cols-2 items-center justify-items-center gap-x-8 gap-y-8 opacity-60 sm:grid-cols-3 lg:max-w-none lg:grid-cols-7">
             {techStackLogos.map((logo) => (
@@ -141,8 +141,8 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
 
       {/* Featured Projects */}
       <div className="mx-auto mt-32 mb-24 max-w-6xl px-5 lg:px-6">
-        <h2 className="type-section-title text-center">Featured Builds</h2>
-        <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <h2 className="type-section-title text-center">Featured Project</h2>
+        <div className="mx-auto mt-8 grid max-w-md grid-cols-1 gap-4">
           {featuredProjects.map((project) => (
             <ProjectsCard key={project.id} project={project} />
           ))}
@@ -153,7 +153,7 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
             type="button"
             className="inline-flex shrink-0 items-center justify-center gap-x-2 rounded-md bg-accent px-3.5 py-2.5 text-sm font-semibold text-black transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             onClick={(event) => handleNavigate(event, '/projects')}>
-            See the lot
+            View Project Details
             <ArrowRightIcon aria-hidden="true" className="size-4" />
           </button>
           <div className="border-t border-white/10"></div>
@@ -168,10 +168,10 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
               <div className="max-w-2xl text-center lg:text-left">
               <p className="type-eyebrow">Newsletter</p>
               <h2 className="type-section-title mt-3">
-                Want the latest builds without the fluff?
+                Receive Professional Updates
               </h2>
               <p className="type-body mt-3 max-w-xl">
-                I send occasional short, practical, and no nonsense news. You stay lazy. I got ya.
+                I share occasional updates about projects, technical work, and professional availability.
               </p>
               </div>
             </div>
@@ -191,7 +191,7 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
                     setNewsletterEmail(event.target.value)
                     if (newsletterMessage) setNewsletterMessage('')
                   }}
-                  placeholder="you@properemail.com"
+                  placeholder="you@example.com"
                   className="mt-3 block w-full rounded-md border border-white/10 bg-background/60 px-4 py-2.5 text-sm text-white placeholder:text-gray-500 focus:border-accent/60 focus:outline-none"
                 />
                 <button
@@ -202,7 +202,7 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
                   {isNewsletterSubmitting ? 'Subscribing...' : 'Subscribe'}
                 </button>
                 <p className="type-label mt-3 min-h-9 text-gray-400">
-                  {newsletterMessage || 'Pop your email in and I will keep you in the loop.'}
+                  {newsletterMessage || 'Enter your email to receive occasional updates.'}
                 </p>
               </form>
             </div>
@@ -216,12 +216,12 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
         <div className="rounded-3xl border border-dashed border-white/15 bg-background/30 px-5 py-6 sm:px-6 sm:py-6">
           <div className="grid items-center gap-5 lg:grid-cols-4">
             <div className="max-w-2xl col-span-3">
-              <p className="type-eyebrow">Small shout, big thanks</p>
+              <p className="type-eyebrow">Professional Availability</p>
               <h2 className="type-section-title mt-3 max-w-xl text-balance">
-                Enjoyed the work?
+                Interested in discussing an opportunity?
               </h2>
               <p className="type-body mt-3 max-w-xl">
-                If you&apos;re keen to work together, sing out. If you just want to back the work, a coffee helps keep the late-night tinkering rolling.
+                I am available to discuss software engineering roles, freelance projects, and collaborative product work.
               </p>
               <div className="mt-5 flex flex-wrap items-center gap-4">
                 <a
@@ -232,11 +232,11 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
                   Contact Me
                 </a>
                 <a
-                href="/coffee"
-                onClick={(event) => handleNavigate(event, '/coffee')}
+                href="/HillolBarman_Resume.pdf"
+                download
                 className="inline-flex items-center gap-2 text-sm font-semibold text-gray-300 transition-colors hover:text-white"
                 >
-                  Shout me a coffee <span aria-hidden="true">→</span>
+                  Download CV <span aria-hidden="true">→</span>
                 </a>
               </div>
             </div>

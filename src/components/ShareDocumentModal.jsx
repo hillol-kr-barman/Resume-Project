@@ -1,15 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
 import { ClipboardDocumentIcon, LinkIcon } from '@heroicons/react/24/outline'
 
 export default function ShareDocumentModal({ open, onClose, shareUrl = '' }) {
   const [copyNotice, setCopyNotice] = useState('')
 
-  useEffect(() => {
-    if (!open) {
-      setCopyNotice('')
-    }
-  }, [open])
+  const handleClose = () => {
+    setCopyNotice('')
+    onClose()
+  }
 
   const handleCopy = async () => {
     try {
@@ -21,7 +20,7 @@ export default function ShareDocumentModal({ open, onClose, shareUrl = '' }) {
   }
 
   return (
-    <Dialog open={open} onClose={onClose} className="relative z-60">
+    <Dialog open={open} onClose={handleClose} className="relative z-60">
       <DialogBackdrop
         transition
         className="fixed inset-0 bg-card/50 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"
@@ -62,7 +61,7 @@ export default function ShareDocumentModal({ open, onClose, shareUrl = '' }) {
             <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:justify-end">
               <button
                 type="button"
-                onClick={onClose}
+                onClick={handleClose}
                 className="inline-flex justify-center rounded-md bg-white/10 px-4 py-2.5 text-sm font-semibold text-white inset-ring-1 inset-ring-white/5 hover:bg-white/20"
               >
                 Close

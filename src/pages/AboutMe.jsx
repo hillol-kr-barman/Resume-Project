@@ -38,9 +38,9 @@ export default function AboutMe({ onNavigate, currentUser, onLogout, currentPath
 
   const achievements = [
     'Microsoft Technology Associate in Java',
-    'Served as Technical Head in tech events during Bachelor studies',
-    'Regional Math Olympiad Champion (2006)',
-    'Intermediate football and badminton player',
+    'Graduated with Distinction from the Master of Computer Science program at the University of Wollongong',
+    'Served as Technical Head for technology events during Bachelor studies',
+    'Regional Math Olympiad Champion',
   ]
 
   const timeline = [
@@ -58,17 +58,17 @@ export default function AboutMe({ onNavigate, currentUser, onLogout, currentPath
         <section className="overflow-hidden rounded-3xl border border-white/10 bg-card/95 p-5 sm:p-6">
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(16rem,22rem)] lg:items-center lg:gap-8">
             <div className="order-2 lg:order-1">
-              <p className="type-eyebrow">A Bit About Me</p>
-              <h1 className="type-page-title mt-4">Whoami</h1>
+              <p className="type-eyebrow">Professional Profile</p>
+              <h1 className="type-page-title mt-4">About Hillol Barman</h1>
               <div className="type-body mt-5 max-w-3xl space-y-3">
                 <p>
-                  Engineer by training, builder by habit. I design and develop scalable web apps and systems with a strong eye for clean architecture and user experiences that feel easy from the first click.
+                  I am a software engineer with a Master of Computer Science in Software Engineering from the University of Wollongong and experience building web applications across frontend, backend, and product design responsibilities.
                 </p>
                 <p>
-                  I enjoy unpacking messy problems, sketching out dependable systems, and turning half-formed ideas into practical products. Across the full build cycle, I aim for solutions that are technically solid and a breeze for people to use.
+                  My work focuses on responsive interfaces, reusable components, RESTful APIs, and maintainable application architecture. I aim to turn product requirements into reliable software that is clear for users and practical for teams to extend.
                 </p>
                 <p>
-                  My background is in computer science, and I am always looking for better ways to build efficient systems that stay tidy as they grow.
+                  I am seeking opportunities where I can contribute strong engineering fundamentals, thoughtful problem solving, and a steady focus on quality delivery.
                 </p>
               </div>
               <div className="mt-5 flex flex-wrap gap-3 text-sm/7 text-gray-300">
@@ -86,6 +86,14 @@ export default function AboutMe({ onNavigate, currentUser, onLogout, currentPath
                   rel="noreferrer"
                 >
                   github.com/hillol-kr-barman
+                </a>
+                <a
+                  className="rounded-full border border-white/10 bg-background/40 px-4 py-2 transition-colors hover:border-accent/40 hover:text-accent"
+                  href="https://www.linkedin.com/in/hillolbarman/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  linkedin.com/in/hillolbarman
                 </a>
               </div>
             </div>
@@ -110,15 +118,15 @@ export default function AboutMe({ onNavigate, currentUser, onLogout, currentPath
         <section className='mt-8 grid w-full gap-3 rounded-3xl border border-white/10 bg-card/70 p-4 text-left sm:grid-cols-3 sm:p-5'>
           <div>
             <p className="type-eyebrow">Focus</p>
-            <p className="type-body mt-2">Scalable web apps with clean architecture and user journeys that feel properly sorted.</p>
+            <p className="type-body mt-2">Scalable web applications with clean architecture, accessible interfaces, and clear user flows.</p>
           </div>
           <div>
             <p className="type-eyebrow">Approach</p>
-            <p className="type-body mt-2">Thoughtful product design, practical engineering, and less unnecessary faff.</p>
+            <p className="type-body mt-2">Structured problem solving, practical engineering decisions, and close attention to product requirements.</p>
           </div>
           <div>
             <p className="type-eyebrow">Outcome</p>
-            <p className="type-body mt-2">Products that feel tidy, responsive, and ready for real people to get stuck into.</p>
+            <p className="type-body mt-2">Reliable software that is responsive, maintainable, and ready for real users.</p>
           </div>
         </section>
 
@@ -157,7 +165,7 @@ export default function AboutMe({ onNavigate, currentUser, onLogout, currentPath
         </section>
 
         <section className="card-panel mt-8">
-          <h2 className="type-card-title">A Few Wins</h2>
+          <h2 className="type-card-title">Achievements</h2>
           <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm/7 text-body">
             {achievements.map((item) => (
               <li key={item}>{item}</li>
@@ -180,7 +188,7 @@ export default function AboutMe({ onNavigate, currentUser, onLogout, currentPath
         <section className="card-panel mt-8">
           <h2 className="type-card-title">Download CV</h2>
           <p className="type-body mt-3">
-            Grab a PDF copy of the full CV if you want the complete rundown.
+            Download a PDF copy of my CV for a complete summary of my experience, education, and technical skills.
           </p>
           <a
             href="/HillolBarman_Resume.pdf"
