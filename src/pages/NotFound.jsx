@@ -19,7 +19,7 @@ export default function NotFound({ onNavigate, currentUser, onLogout, currentPat
             <p className="text-xs uppercase tracking-[0.28em] text-accent/70">Error 404</p>
             <h1 className="mt-4 text-2xl font-semibold tracking-tight text-white sm:text-3xl">Page not found</h1>
             <p className="mx-auto mt-5 max-w-2xl text-sm/7 text-body">
-              The page you are looking for does not exist, may have moved, or is taking a smoko. Let&apos;s get you back somewhere useful.
+              The page you are looking for does not exist or may have moved. Use one of the links below to continue browsing.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <a

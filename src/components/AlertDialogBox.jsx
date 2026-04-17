@@ -10,10 +10,12 @@ export default function AlertDialogBox({
   confirmLabel = 'Confirm',
   cancelLabel = 'Cancel',
   confirmButtonClassName = 'bg-red-500 hover:bg-red-400',
-  icon: Icon = ExclamationTriangleIcon,
+  icon = ExclamationTriangleIcon,
   iconWrapperClassName = 'bg-red-500/10',
   iconClassName = 'text-red-400',
 }) {
+  const DialogIcon = icon
+
   return (
     <Dialog open={open} onClose={onClose} className="relative z-60">
       <DialogBackdrop
@@ -29,7 +31,7 @@ export default function AlertDialogBox({
           >
             <div className="sm:flex sm:items-start">
               <div className={`mx-auto flex size-12 shrink-0 items-center justify-center rounded-full sm:mx-0 sm:size-10 ${iconWrapperClassName}`}>
-                <Icon aria-hidden="true" className={`size-6 ${iconClassName}`} />
+                <DialogIcon aria-hidden="true" className={`size-6 ${iconClassName}`} />
               </div>
               <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                 <DialogTitle as="h3" className="text-sm font-semibold text-white">

@@ -26,22 +26,22 @@ const languageOptions = [
 
 const starterSnippets = {
   javascript: `function greet(name) {
-  return \`G'day, \${name}.\`
+  return \`Hello, \${name}.\`
 }
 
-console.log(greet('mate'))
+console.log(greet('developer'))
 `,
   typescript: `function greet(name: string): string {
-  return \`G'day, \${name}.\`
+  return \`Hello, \${name}.\`
 }
 
-console.log(greet('mate'))
+console.log(greet('developer'))
 `,
   python: `def greet(name):
-    return f"G'day, {name}."
+    return f"Hello, {name}."
 
 
-print(greet("mate"))
+print(greet("developer"))
 `,
   html: `<!DOCTYPE html>
 <html lang="en">
@@ -51,7 +51,7 @@ print(greet("mate"))
     <title>Playground</title>
   </head>
   <body>
-    <h1>G'day, mate.</h1>
+    <h1>Hello, developer.</h1>
   </body>
 </html>
 `,
@@ -67,7 +67,7 @@ h1 {
 }
 `,
   json: `{
-  "message": "G'day, mate.",
+  "message": "Hello, developer.",
   "language": "json"
 }
 `,
@@ -191,7 +191,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
     setLanguage('javascript')
     setCode(getStarterSnippet('javascript'))
     setShareUrl('')
-    setNotice('Fresh snippet, ready to go.')
+    setNotice('New snippet created.')
   }
 
   const handleLanguageChange = (nextLanguage) => {
@@ -225,7 +225,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
       setActiveDocumentId(document.id)
       setIsCreatingNew(false)
       await refreshDocuments()
-      setNotice('Document saved, all sorted.')
+      setNotice('Document saved successfully.')
       setShowSaveConfirmation(true)
     } catch (error) {
       setNotice(error.message)
@@ -253,7 +253,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
       await refreshDocuments()
       setShareUrl(`${window.location.origin}/playground?share=${document.shareToken}`)
       setShareModalOpen(true)
-      setNotice('Share link ready to go.')
+      setNotice('Share link created.')
     } catch (error) {
       setNotice(error.message)
     }
@@ -332,7 +332,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
   const storageMessage = currentUser
     ? (
         <>
-          Showing all <span className="font-semibold text-accent"><a>{currentUser.name}</a></span> 's documents. All saved files appear here.
+          Showing all documents for <span className="font-semibold text-accent"><a>{currentUser.name}</a></span>. Saved files appear here.
         </>
       )
     : 'Sign in to save snippets and keep them synced off this device.'
@@ -345,7 +345,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Code Playground</h1>
           <p className="mx-auto mt-4 max-w-2xl text-sm/7 text-body">
-            A handy place to muck around with snippets, save drafts, and share what you are working on.
+            Create, save, and share code snippets from a browser-based development workspace.
           </p>
         </div>
 
@@ -373,7 +373,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
                 {documents.length === 0 ? (
                   <div className="rounded-2xl border border-dashed border-white/10 px-4 py-4 text-sm text-body">
                     {currentUser
-                      ? 'Nothing saved yet. Save the snippet on the right to get the first one going.'
+                      ? 'No saved documents yet. Save the current snippet to create your first document.'
                       : 'Sign in to start saving snippets.'}
                   </div>
                 ) : (
@@ -536,7 +536,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
 
               <div className="rounded-2xl border border-white/10 bg-black/20 p-3.5">
                 <p className="text-base font-semibold text-white">Status</p>
-                <p className="mt-3 text-sm/6 text-body">{notice || 'No action yet. Give it a nudge.'}</p>
+                <p className="mt-3 text-sm/6 text-body">{notice || 'No recent activity.'}</p>
               </div>
             </div>
           </section>
@@ -544,7 +544,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
       </main>
 
       <SiteFooter />
-      <ConfirmationMessage open={showSaveConfirmation} message="Document saved, all sorted." />
+      <ConfirmationMessage open={showSaveConfirmation} message="Document saved successfully." />
       <AlertDialogBox
         open={Boolean(documentPendingDelete)}
         onClose={closeDeleteDialog}

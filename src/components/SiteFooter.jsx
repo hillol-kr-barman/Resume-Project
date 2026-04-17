@@ -13,13 +13,13 @@ export default function SiteFooter() {
         </nav>
         <div className="mt-12 flex justify-center gap-x-8">
           {socials.map((item) => (
-            <a key={item.name} href={item.href} className="text-gray-400 hover:text-white">
+            <a key={item.name} href={item.href} target="_blank" rel="noreferrer" className="text-gray-400 hover:text-white">
               <span className="sr-only">{item.name}</span>
               <item.icon aria-hidden="true" className="size-5" />
             </a>
           ))}
         </div>
-        <p className="mt-8 text-center text-xs text-gray-400">&copy; {new Date().getFullYear()} Lazymate by Hillol Barman. Built with care, no nonsense.</p>
+        <p className="mt-8 text-center text-xs text-gray-400">&copy; {new Date().getFullYear()} Hillol Barman. Software engineering portfolio.</p>
       </div>
     </footer>
   )

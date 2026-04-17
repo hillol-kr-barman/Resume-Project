@@ -18,7 +18,7 @@ export default function ProjectsCard({ project, variant = 'featured' }) {
             className="mt-3 inline-flex items-center justify-center gap-2 text-sm font-semibold text-accent hover:text-accent/80"
           >
             <img src="https://cdn.simpleicons.org/github/ffffff" alt="GitHub icon" className="h-5 w-5" />
-            Have a squiz on GitHub
+            View Repository
           </a>
           <div className="mt-2 border-t border-white/10" />
         </div>
@@ -29,7 +29,7 @@ export default function ProjectsCard({ project, variant = 'featured' }) {
           <img
             src={project.imageSrc}
             alt={`${project.title} thumbnail`}
-            className="h-36 w-full rounded-xl object-cover"
+            className="h-36 w-full rounded-xl bg-black/20 p-10 object-contain"
           />
         </div>
       </article>
@@ -43,7 +43,7 @@ export default function ProjectsCard({ project, variant = 'featured' }) {
       <img
         src={project.imageSrc}
         alt={`${project.title} thumbnail`}
-        className="mt-4 h-36 w-full rounded-xl object-cover"
+        className="mt-4 h-36 w-full rounded-xl bg-black/20 p-10 object-contain"
       />
       <a
         href={project.gitLink}
@@ -52,7 +52,7 @@ export default function ProjectsCard({ project, variant = 'featured' }) {
         className="mt-4 inline-flex items-center justify-center gap-2 text-sm font-semibold text-accent hover:text-accent/80"
       >
         <img src="https://cdn.simpleicons.org/github/ffffff" alt="GitHub icon" className="h-5 w-5" />
-        Show me more
+        View Repository
       </a>
     </article>
   )

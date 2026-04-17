@@ -38,13 +38,13 @@ export default function AuthPage({
     if (isRegistered) return 'Set up your account'
     if (isForgotPassword) return 'Reset your password'
     if (isResetPassword) return 'Choose a new password'
-    return 'Welcome back, mate'
+    return 'Welcome back'
   }, [isForgotPassword, isRegistered, isResetPassword])
 
   const subtitle = useMemo(() => {
-    if (isRegistered) return 'Sign up to keep your playground docs tucked away for later.'
-    if (isForgotPassword) return 'Enter your email and I will send over a password reset link.'
-    if (isResetPassword) return 'Set a fresh password for your account and jump back in.'
+    if (isRegistered) return 'Create an account to save and manage your playground documents.'
+    if (isForgotPassword) return 'Enter your email address to receive a password reset link.'
+    if (isResetPassword) return 'Set a new password for your account.'
     return 'Log in to move your playground drafts into saved documents.'
   }, [isForgotPassword, isRegistered, isResetPassword])
 
@@ -148,7 +148,7 @@ export default function AuthPage({
             className="inline-flex items-center gap-x-2 rounded-md bg-accent/20 px-2.5 py-1.5 text-xs font-semibold text-accent shadow-none transition-shadow duration-300 hover:shadow-[0_0_18px_rgba(158,255,31,0.45)]"
           >
             <ArrowLongLeftIcon aria-hidden="true" className="-ml-0.5 size-5" />
-            Head back
+            Back
           </button>
         </div>
 
@@ -308,7 +308,7 @@ export default function AuthPage({
             </>
           ) : (
             <>
-              {isRegistered ? 'Already sorted with an account?' : 'Need an account?'}{' '}
+              {isRegistered ? 'Already have an account?' : 'Need an account?'}{' '}
               <a
                 href={isRegistered ? `/login?redirect=${encodeURIComponent(redirectPath)}` : `/register?redirect=${encodeURIComponent(redirectPath)}`}
                 onClick={(event) =>
