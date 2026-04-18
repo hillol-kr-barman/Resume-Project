@@ -374,7 +374,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
                   <div className="rounded-2xl border border-dashed border-white/10 px-4 py-4 text-sm text-body">
                     {currentUser
                       ? 'No saved documents yet. Save the current snippet to create your first document.'
-                      : 'Sign in to start saving snippets.'}
+                      : 'Saved snippets will stack here.'}
                   </div>
                 ) : (
                   documents.map((document) => (
@@ -440,7 +440,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
           <section className="min-w-0 rounded-3xl bg-card p-4 outline -outline-offset-1 outline-white/10">
             <div className="flex flex-col gap-3 xl:flex-row xl:items-end">
               <div className="min-w-0 flex-1">
-                <label htmlFor="snippet-title" className="mb-2 block text-xs font-medium text-white">
+                <label htmlFor="snippet-title" className="mb-2 font-mono block text-s text-base font-semibold text-white">
                   Document title
                 </label>
                 <input
@@ -452,7 +452,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
               </div>
 
               <div className="xl:w-52">
-                <label htmlFor="language" className="mb-2 block text-xs font-medium text-white">
+                <label htmlFor="language" className="mb-2 mt-2 font-mono block text-s text-base font-semibold text-white">
                   Language
                 </label>
                 <div className="relative">
@@ -499,13 +499,13 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
               </button>
             </div>
 
-            <div className="mt-4 rounded-2xl border border-white/10 bg-black/40 p-3">
+            <div className="mt-4 rounded-2xl border border-white/10   bg-[#1e1e1e] p-3">
               <div className="min-h-28rem w-full resize-none rounded-xl bg-transparent p-4 font-mono text-sm leading-7 text-white outline-none">
                 <Suspense
                   fallback={(
                     <div className="flex h-[70vh] items-center justify-center rounded-xl border border-white/10 bg-black/30 text-sm text-gray-400">
                       Loading editor...
-                    </div>
+                    </div>  
                   )}
                 >
                   <Editor
@@ -527,7 +527,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
             <div className="mt-4 grid gap-3 xl:grid-cols-[minmax(0,1fr)_18rem]">
               <div className="rounded-2xl border border-white/10 bg-black/20 p-3.5">
                 <p className="text-base font-semibold text-white">Storage rules</p>
-                <ul className="mt-3 space-y-2 text-sm/6 text-body">
+                <ul className="mt-3 space-y-1.5 pl-5 text-body text-sm/6 list-disc marker:text-accent">
                   <li>Saved snippets stay attached to your account.</li>
                   <li>You need to be signed in to save or share a snippet.</li>
                   <li>Shared links reopen the last saved version of a shared snippet.</li>
