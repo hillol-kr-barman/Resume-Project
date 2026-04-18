@@ -49,6 +49,7 @@ export default function App() {
     let unsubscribe = () => {}
     let idleHandle = null
 
+    // Auth is bootstrapped after the first paint so public pages do not wait on Supabase.
     const bootstrapAuth = async () => {
       try {
         const [{ getCurrentUser }, { supabase }] = await Promise.all([
@@ -141,6 +142,7 @@ export default function App() {
   }, [isSiteUnderConstruction, route.path])
 
   useEffect(() => {
+    // Route changes are handled without a router package, so scroll reset has to be explicit.
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
   }, [route.path, route.search])
 

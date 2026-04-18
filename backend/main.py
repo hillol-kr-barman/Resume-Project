@@ -50,6 +50,7 @@ class NewsletterSubscribeRequest(BaseModel):
 
 
 def load_env_file() -> None:
+    # Local runs may start from either the backend folder or the Vite project root.
     env_candidates = [
         Path(__file__).resolve().parent / ".env",
         Path(__file__).resolve().parent.parent / ".env.local",
@@ -189,6 +190,7 @@ def subscribe_to_newsletter(payload: NewsletterSubscribeRequest) -> dict:
 
     request_body = {"email": normalized_email}
 
+    # Newsletter writes need the service role key because public clients should not insert directly.
     req = request.Request(
         f"{supabase_url}/rest/v1/newsletter_subscribers",
         data=json.dumps(request_body).encode("utf-8"),

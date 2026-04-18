@@ -132,6 +132,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
         if (!isActive) return
 
         if (sharedDocument) {
+          // Non-owners see shared snippets as a new draft so they cannot overwrite the source document.
           const isOwnerViewingSharedDoc = currentUser?.id === sharedDocument.ownerId
           setActiveDocumentId(isOwnerViewingSharedDoc ? sharedDocument.id : null)
           setIsCreatingNew(!isOwnerViewingSharedDoc)
@@ -197,6 +198,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
   const handleLanguageChange = (nextLanguage) => {
     const nextStarterSnippet = getStarterSnippet(nextLanguage)
     const currentStarterSnippet = getStarterSnippet(language)
+    // Preserve user edits; only swap starter code while the editor still contains starter content.
     const shouldReplaceWithStarter = !activeDocumentId || code === currentStarterSnippet
 
     setLanguage(nextLanguage)
