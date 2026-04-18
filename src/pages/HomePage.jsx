@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ArrowRightIcon } from '@heroicons/react/24/solid'
 import coffeeCup from '../assets/coffeeCup.svg'
 import { techStackLogos, projects, featuredProjectIds } from './pageData/homePageData'
@@ -8,11 +8,47 @@ import ProjectsCard from '../components/ProjectsCard'
 import BackgroundBeams from '../components/BackgroundBeams'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000'
+const heroRevealWords = ['Think.', 'Plan.', 'Build.', 'Ship.']
+const heroFinalSlideIndex = heroRevealWords.length
+const heroSublineSlideIndex = heroFinalSlideIndex + 1
+const heroIntroCopySlideIndex = heroSublineSlideIndex + 1
+const heroButtonSlideIndex = heroIntroCopySlideIndex + 1
+const heroRevealDelays = [720, 720, 720, 940, 780, 520, 360]
+
+const getRevealState = (slideIndex, activeIndex) => {
+  if (slideIndex === activeIndex) {
+    return 'present'
+  }
+
+  return slideIndex < activeIndex ? 'past' : 'future'
+}
 
 export default function HomePage({ onNavigate, currentUser, onLogout, currentPath = '/' }) {
   const [newsletterEmail, setNewsletterEmail] = useState('')
   const [newsletterMessage, setNewsletterMessage] = useState('')
   const [isNewsletterSubmitting, setIsNewsletterSubmitting] = useState(false)
+  const [heroRevealIndex, setHeroRevealIndex] = useState(0)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return undefined
+    }
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setHeroRevealIndex(heroButtonSlideIndex)
+      return undefined
+    }
+
+    if (heroRevealIndex >= heroButtonSlideIndex) {
+      return undefined
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setHeroRevealIndex((currentIndex) => Math.min(currentIndex + 1, heroButtonSlideIndex))
+    }, heroRevealDelays[heroRevealIndex] ?? 720)
+
+    return () => window.clearTimeout(timeoutId)
+  }, [heroRevealIndex])
 
   const handleNavigate = (event, to) => {
     event.preventDefault()
@@ -83,15 +119,57 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
         <BackgroundBeams className="-z-10" />
         <div className="mx-auto max-w-6xl px-5 pb-18 pt-10 sm:pb-22 lg:px-6 lg:pb-24 lg:pt-18">
           <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
-            <p className="type-eyebrow">Software Engineer and Web Developer</p>
-            <h1 className="type-hero mt-5 max-w-3xl text-balance">
-              Building reliable, user-focused web applications.
-              <span className="mt-3 block text-accent">Clean architecture. Practical delivery.</span>
+            <p
+              className="type-eyebrow hero-copy-reveal"
+              data-reveal-state={heroRevealIndex >= heroIntroCopySlideIndex ? 'present' : 'future'}
+            >
+              Backend Focused Full Stack Software Engineer
+            </p>
+            <h1
+              className="type-hero hero-reveal-deck mt-5 max-w-3xl text-balance"
+              aria-label="Think. Plan. Build. Ship. Clean architecture. Practical delivery."
+            >
+              <span className="hero-title-stage" aria-hidden="true">
+                <span className="hero-word-stage" data-reveal-axis="vertical">
+                  {heroRevealWords.map((word, index) => (
+                    <span
+                      key={word}
+                      className="hero-reveal-slide"
+                      data-reveal-state={getRevealState(index, heroRevealIndex)}
+                    >
+                      {word}
+                    </span>
+                  ))}
+                </span>
+                <span
+                  className="hero-reveal-slide hero-final-line"
+                  data-reveal-state={heroRevealIndex >= heroFinalSlideIndex ? 'present' : 'future'}
+                >
+                  Think. Plan. Build. Ship.
+                </span>
+              </span>
+              <span className="hero-subline-stage mt-3 block text-accent" aria-hidden="true">
+                <span
+                  className="hero-reveal-slide hero-subline text-2xl sm:text-4xl"
+                  data-reveal-state={heroRevealIndex >= heroSublineSlideIndex ? 'present' : 'future'}
+                  data-reveal-direction="from-top"
+                >
+                  Clean architecture. Practical delivery.
+                </span>
+              </span>
             </h1>
-            <p className="type-body mt-6 max-w-2xl text-pretty">
+            <p
+              className="type-body hero-copy-reveal mt-6 max-w-2xl text-pretty"
+              data-reveal-state={heroRevealIndex >= heroIntroCopySlideIndex ? 'present' : 'future'}
+              data-reveal-direction="from-top"
+            >
               I design and develop responsive web products with a focus on maintainable code, clear user journeys, and dependable full-stack implementation.
             </p>
-            <div className="mt-7 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-center">
+            <div
+              className="hero-copy-reveal mt-7 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-center"
+              data-reveal-state={heroRevealIndex >= heroButtonSlideIndex ? 'present' : 'future'}
+              data-reveal-direction="from-top"
+            >
               <a
                 href="/projects"
                 onClick={(event) => handleNavigate(event, '/projects')}
