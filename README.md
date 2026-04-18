@@ -58,8 +58,6 @@ Most portfolio copy and project card data is in `src/pages/pageData/homePageData
 
 The backend lives in `backend/`. It exposes a health check, signup helper, newsletter subscription endpoint, and Stripe checkout endpoint.
 
-There is also a `react/` folder in the repo. That looks like an older or separate Vite starter workspace and is not the main app described here. The main project runs from the repository root.
-
 ## Backend API
 
 The FastAPI app currently exposes:
@@ -199,8 +197,6 @@ It also supports a custom amount, with validation in both the frontend and backe
 |   |-- App.jsx
 |   |-- main.jsx
 |   `-- index.css
-|-- react/
-|   `-- older/separate Vite starter workspace
 |-- package.json
 |-- vite.config.js
 |-- vercel.json

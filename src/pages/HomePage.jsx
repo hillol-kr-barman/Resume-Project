@@ -13,8 +13,9 @@ const heroFinalSlideIndex = heroRevealWords.length
 const heroSublineSlideIndex = heroFinalSlideIndex + 1
 const heroIntroCopySlideIndex = heroSublineSlideIndex + 1
 const heroButtonSlideIndex = heroIntroCopySlideIndex + 1
-const heroRevealDelays = [720, 720, 720, 940, 780, 520, 360]
+const heroRevealDelays = [720, 720, 720, 720, 720, 720, 720]
 
+// Mirrors Reveal.js slide states so the hero can move through staged panels instead of a keyframe timeline.
 const getRevealState = (slideIndex, activeIndex) => {
   if (slideIndex === activeIndex) {
     return 'present'
