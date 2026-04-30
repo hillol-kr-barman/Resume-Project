@@ -1,17 +1,17 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react'
+import { CloudArrowUpIcon } from '@heroicons/react/24/solid'
+import type { AuthUser } from '@hillolbarman/ui'
+import { AlertDialogBox, ConfirmationMessage, ShareDocumentModal } from '@hillolbarman/ui'
 import {
   deleteAllDocumentsForUser,
   deleteDocument,
   getDocumentByShareToken,
   listDocumentsForUser,
   saveDocument,
+  type PlaygroundDocument,
 } from '../lib/playgroundStore'
-import SiteHeader from '../components/SiteHeader'
-import SiteFooter from '../components/SiteFooter'
-import AlertDialogBox from '../components/AlertDialogBox'
-import ConfirmationMessage from '../components/ConfirmationMessage'
-import ShareDocumentModal from '../components/ShareDocumentModal'
-import { CloudArrowUpIcon } from '@heroicons/react/24/solid'
+import AppHeader from '../components/AppHeader'
+import AppFooter from '../components/AppFooter'
 
 const Editor = lazy(() => import('@monaco-editor/react'))
 
@@ -24,7 +24,7 @@ const languageOptions = [
   { value: 'json', label: 'JSON' },
 ]
 
-const starterSnippets = {
+const starterSnippets: Record<string, string> = {
   javascript: `function greet(name) {
   return \`Hello, \${name}.\`
 }
@@ -73,13 +73,20 @@ h1 {
 `,
 }
 
-function getStarterSnippet(language) {
-  return starterSnippets[language] ?? starterSnippets.javascript
+function getStarterSnippet(language: string): string {
+  return starterSnippets[language] ?? starterSnippets['javascript']!
 }
 
-export default function Playground({ onNavigate, routeSearch = '', currentUser, onLogout }) {
-  const [documents, setDocuments] = useState([])
-  const [activeDocumentId, setActiveDocumentId] = useState(null)
+interface PlaygroundProps {
+  onNavigate: (to: string) => void
+  routeSearch?: string
+  currentUser?: AuthUser | null
+  onLogout?: () => void
+}
+
+export default function Playground({ onNavigate, routeSearch = '', currentUser, onLogout }: PlaygroundProps) {
+  const [documents, setDocuments] = useState<PlaygroundDocument[]>([])
+  const [activeDocumentId, setActiveDocumentId] = useState<string | null>(null)
   const [isCreatingNew, setIsCreatingNew] = useState(true)
   const [title, setTitle] = useState('Untitled snippet')
   const [language, setLanguage] = useState('javascript')
@@ -88,13 +95,13 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
   const [showSaveConfirmation, setShowSaveConfirmation] = useState(false)
   const [shareModalOpen, setShareModalOpen] = useState(false)
   const [shareUrl, setShareUrl] = useState('')
-  const [documentPendingDelete, setDocumentPendingDelete] = useState(null)
-  const [deleteMode, setDeleteMode] = useState(null)
+  const [documentPendingDelete, setDocumentPendingDelete] = useState<PlaygroundDocument | null>(null)
+  const [deleteMode, setDeleteMode] = useState<'single' | 'all' | null>(null)
 
-  const refreshDocuments = async () => {
+  const refreshDocuments = useCallback(async () => {
     const nextDocuments = currentUser ? await listDocumentsForUser(currentUser.id) : []
     setDocuments(nextDocuments)
-  }
+  }, [currentUser])
 
   useEffect(() => {
     let isActive = true
@@ -102,21 +109,14 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
     const loadDocuments = async () => {
       try {
         const nextDocuments = currentUser ? await listDocumentsForUser(currentUser.id) : []
-        if (isActive) {
-          setDocuments(nextDocuments)
-        }
+        if (isActive) setDocuments(nextDocuments)
       } catch (error) {
-        if (isActive) {
-          setNotice(error.message)
-        }
+        if (isActive && error instanceof Error) setNotice(error.message)
       }
     }
 
     loadDocuments()
-
-    return () => {
-      isActive = false
-    }
+    return () => { isActive = false }
   }, [currentUser])
 
   useEffect(() => {
@@ -127,62 +127,54 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
       const shareToken = params.get('share')
 
       if (shareToken) {
-        const sharedDocument = await getDocumentByShareToken(shareToken)
-
+        const sharedDoc = await getDocumentByShareToken(shareToken)
         if (!isActive) return
 
-        if (sharedDocument) {
-          // Non-owners see shared snippets as a new draft so they cannot overwrite the source document.
-          const isOwnerViewingSharedDoc = currentUser?.id === sharedDocument.ownerId
-          setActiveDocumentId(isOwnerViewingSharedDoc ? sharedDocument.id : null)
+        if (sharedDoc) {
+          const isOwnerViewingSharedDoc = currentUser?.id === sharedDoc.ownerId
+          setActiveDocumentId(isOwnerViewingSharedDoc ? sharedDoc.id : null)
           setIsCreatingNew(!isOwnerViewingSharedDoc)
-          setTitle(sharedDocument.title)
-          setLanguage(sharedDocument.language)
-          setCode(sharedDocument.content)
-          setNotice(`Loaded shared doc: ${sharedDocument.title}`)
+          setTitle(sharedDoc.title)
+          setLanguage(sharedDoc.language)
+          setCode(sharedDoc.content)
+          setNotice(`Loaded shared doc: ${sharedDoc.title}`)
         }
-
         return
       }
 
       if (documents.length > 0 && !activeDocumentId && !isCreatingNew) {
-        const [firstDocument] = documents
-        setActiveDocumentId(firstDocument.id)
-        setIsCreatingNew(false)
-        setTitle(firstDocument.title)
-        setLanguage(firstDocument.language)
-        setCode(firstDocument.content)
+        const [firstDoc] = documents
+        if (firstDoc) {
+          setActiveDocumentId(firstDoc.id)
+          setIsCreatingNew(false)
+          setTitle(firstDoc.title)
+          setLanguage(firstDoc.language)
+          setCode(firstDoc.content)
+        }
       }
     }
 
     loadDocument().catch((error) => {
-      if (isActive) {
-        setNotice(error.message)
-      }
+      if (isActive && error instanceof Error) setNotice(error.message)
     })
 
-    return () => {
-      isActive = false
-    }
+    return () => { isActive = false }
   }, [activeDocumentId, currentUser?.id, documents, isCreatingNew, routeSearch])
 
   useEffect(() => {
-    if (!showSaveConfirmation) return undefined
+    if (!showSaveConfirmation) return
 
-    const timer = window.setTimeout(() => {
-      setShowSaveConfirmation(false)
-    }, 2500)
-
+    const timer = window.setTimeout(() => setShowSaveConfirmation(false), 2500)
     return () => window.clearTimeout(timer)
   }, [showSaveConfirmation])
 
-  const openDocument = (document) => {
-    setActiveDocumentId(document.id)
+  const openDocument = (doc: PlaygroundDocument) => {
+    setActiveDocumentId(doc.id)
     setIsCreatingNew(false)
-    setTitle(document.title)
-    setLanguage(document.language)
-    setCode(document.content)
-    setNotice(`Opened ${document.title}`)
+    setTitle(doc.title)
+    setLanguage(doc.language)
+    setCode(doc.content)
+    setNotice(`Opened ${doc.title}`)
   }
 
   const handleNewDocument = () => {
@@ -195,17 +187,13 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
     setNotice('New snippet created.')
   }
 
-  const handleLanguageChange = (nextLanguage) => {
-    const nextStarterSnippet = getStarterSnippet(nextLanguage)
-    const currentStarterSnippet = getStarterSnippet(language)
-    // Preserve user edits; only swap starter code while the editor still contains starter content.
-    const shouldReplaceWithStarter = !activeDocumentId || code === currentStarterSnippet
+  const handleLanguageChange = (nextLanguage: string) => {
+    const nextStarter = getStarterSnippet(nextLanguage)
+    const currentStarter = getStarterSnippet(language)
+    const shouldReplaceWithStarter = !activeDocumentId || code === currentStarter
 
     setLanguage(nextLanguage)
-
-    if (shouldReplaceWithStarter) {
-      setCode(nextStarterSnippet)
-    }
+    if (shouldReplaceWithStarter) setCode(nextStarter)
   }
 
   const handleSave = async () => {
@@ -215,7 +203,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
     }
 
     try {
-      const document = await saveDocument({
+      const savedDoc = await saveDocument({
         id: activeDocumentId,
         title,
         content: code,
@@ -224,69 +212,68 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
         isShared: documents.find((item) => item.id === activeDocumentId)?.isShared ?? false,
       })
 
-      setActiveDocumentId(document.id)
+      setActiveDocumentId(savedDoc.id)
       setIsCreatingNew(false)
       await refreshDocuments()
       setNotice('Document saved successfully.')
       setShowSaveConfirmation(true)
     } catch (error) {
-      setNotice(error.message)
+      if (error instanceof Error) setNotice(error.message)
     }
   }
 
-  const handleShare = async (documentToShare = null) => {
+  const handleShare = async (docToShare?: PlaygroundDocument) => {
     try {
-      const nextId = documentToShare?.id ?? activeDocumentId
-      const nextTitle = documentToShare?.title ?? title
-      const nextContent = documentToShare?.content ?? code
-      const nextLanguage = documentToShare?.language ?? language
+      const nextId = docToShare?.id ?? activeDocumentId
+      const nextTitle = docToShare?.title ?? title
+      const nextContent = docToShare?.content ?? code
+      const nextLanguage = docToShare?.language ?? language
 
-      const document = await saveDocument({
+      const savedDoc = await saveDocument({
         id: nextId,
         title: nextTitle,
         content: nextContent,
         language: nextLanguage,
-        ownerId: currentUser?.id,
+        ownerId: currentUser?.id ?? '',
         isShared: true,
       })
 
-      setActiveDocumentId(document.id)
+      setActiveDocumentId(savedDoc.id)
       setIsCreatingNew(false)
       await refreshDocuments()
-      setShareUrl(`${window.location.origin}/playground?share=${document.shareToken}`)
+      setShareUrl(`${window.location.origin}/playground?share=${savedDoc.shareToken ?? ''}`)
       setShareModalOpen(true)
       setNotice('Share link created.')
     } catch (error) {
-      setNotice(error.message)
+      if (error instanceof Error) setNotice(error.message)
     }
   }
 
-  const handleShareSavedDocument = async (event, document) => {
+  const handleShareSavedDocument = async (event: React.MouseEvent, doc: PlaygroundDocument) => {
     event.stopPropagation()
+    setActiveDocumentId(doc.id)
+    setTitle(doc.title)
+    setLanguage(doc.language)
+    setCode(doc.content)
 
-    setActiveDocumentId(document.id)
-    setTitle(document.title)
-    setLanguage(document.language)
-    setCode(document.content)
-
-    if (document.isShared) {
-      setShareUrl(`${window.location.origin}/playground?share=${document.shareToken}`)
+    if (doc.isShared) {
+      setShareUrl(`${window.location.origin}/playground?share=${doc.shareToken ?? ''}`)
       setShareModalOpen(true)
       return
     }
 
-    await handleShare(document)
+    await handleShare(doc)
   }
 
-  const handleDeleteDocument = async (event, document) => {
+  const handleDeleteDocument = (event: React.MouseEvent, doc: PlaygroundDocument) => {
     event.stopPropagation()
     setDeleteMode('single')
-    setDocumentPendingDelete(document)
+    setDocumentPendingDelete(doc)
   }
 
   const handleDeleteAllDocuments = () => {
     setDeleteMode('all')
-    setDocumentPendingDelete({ id: 'all-documents', title: 'all saved documents' })
+    setDocumentPendingDelete({ id: 'all-documents', title: 'all saved documents' } as PlaygroundDocument)
   }
 
   const closeDeleteDialog = () => {
@@ -299,7 +286,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
 
     try {
       if (deleteMode === 'all') {
-        await deleteAllDocumentsForUser(currentUser?.id)
+        await deleteAllDocumentsForUser(currentUser?.id ?? '')
         setDocuments([])
         handleNewDocument()
         setNotice('All saved documents deleted.')
@@ -310,14 +297,13 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
 
       await deleteDocument(documentPendingDelete.id)
 
-      const remainingDocuments = documents.filter((item) => item.id !== documentPendingDelete.id)
-      setDocuments(remainingDocuments)
+      const remaining = documents.filter((item) => item.id !== documentPendingDelete.id)
+      setDocuments(remaining)
 
       if (activeDocumentId === documentPendingDelete.id) {
-        const [nextDocument] = remainingDocuments
-
-        if (nextDocument) {
-          openDocument(nextDocument)
+        const [nextDoc] = remaining
+        if (nextDoc) {
+          openDocument(nextDoc)
         } else {
           handleNewDocument()
         }
@@ -327,32 +313,33 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
       setDocumentPendingDelete(null)
       setDeleteMode(null)
     } catch (error) {
-      setNotice(error.message)
+      if (error instanceof Error) setNotice(error.message)
     }
   }
 
-  const storageMessage = currentUser
-    ? (
-        <>
-          Showing all documents for <span className="font-semibold text-accent"><a>{currentUser.name}</a></span>. Saved files appear here.
-        </>
-      )
-    : 'Sign in to save snippets and keep them synced off this device.'
+  const storageMessage = currentUser ? (
+    <>
+      Showing all documents for{' '}
+      <span className="font-semibold text-accent">{currentUser.name}</span>. Saved files appear here.
+    </>
+  ) : (
+    'Sign in to save snippets and keep them synced off this device.'
+  )
 
   return (
     <div>
-      <SiteHeader onNavigate={onNavigate} currentUser={currentUser} onLogout={onLogout} currentPath="/playground" />
+      <AppHeader onNavigate={onNavigate} currentUser={currentUser} onLogout={onLogout} currentPath="/playground" />
 
       <main className="mx-auto max-w-7xl px-6 pb-20 pt-32 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Code Playground</h1>
-          <p className="mx-auto mt-4 max-w-2xl text-sm/7 text-body">
+          <p className="mx-auto mt-4 max-w-2xl text-sm/7 text-muted">
             Create, save, and share code snippets from a browser-based development workspace.
           </p>
         </div>
 
         <div className="mt-10 grid gap-5 lg:grid-cols-[21rem_minmax(0,1fr)]">
-          <aside className="flex min-h-200 flex-col overflow-hidden rounded-3xl bg-card p-4 outline -outline-offset-1 outline-white/10 lg:h-[calc(100vh-9rem)]">
+          <aside className="flex min-h-200 flex-col overflow-hidden rounded-3xl bg-surface p-4 outline -outline-offset-1 outline-white/10 lg:h-[calc(100vh-9rem)]">
             <div className="mt-3 flex items-center justify-between gap-3">
               <div>
                 <h2 className="text-base font-semibold text-white">Saved documents</h2>
@@ -364,7 +351,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
               <button
                 type="button"
                 onClick={() => onNavigate('/login?redirect=/playground')}
-                className="mt-5 w-full rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-black shadow-none transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)]"
+                className="mt-5 w-full rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-black shadow-none transition-shadow duration-300 hover:shadow-[0_0_22px_color-mix(in_srgb,var(--color-accent)_55%,transparent)]"
               >
                 Log in to save your work
               </button>
@@ -373,50 +360,48 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
             <div className="mt-4 flex-1 overflow-hidden">
               <div className="h-full space-y-2.5 overflow-y-auto pr-1">
                 {documents.length === 0 ? (
-                  <div className="rounded-2xl border border-dashed border-white/10 px-4 py-4 text-sm text-body">
+                  <div className="rounded-2xl border border-dashed border-white/10 px-4 py-4 text-sm text-muted">
                     {currentUser
                       ? 'No saved documents yet. Save the current snippet to create your first document.'
                       : 'Saved snippets will stack here.'}
                   </div>
                 ) : (
-                  documents.map((document) => (
+                  documents.map((doc) => (
                     <div
-                      key={document.id}
+                      key={doc.id}
                       className={`flex items-stretch gap-2 rounded-2xl border p-2 transition ${
-                        activeDocumentId === document.id
-                          ? 'border-accent bg-accent/10 shadow-[0_0_0_1px_rgba(158,255,31,0.35)]'
+                        activeDocumentId === doc.id
+                          ? 'border-accent bg-accent/10 shadow-[0_0_0_1px_color-mix(in_srgb,var(--color-accent)_35%,transparent)]'
                           : 'border-white/10 bg-black/20 hover:border-white/30'
                       }`}
                     >
                       <button
                         type="button"
-                        onClick={() => openDocument(document)}
+                        onClick={() => openDocument(doc)}
                         className="min-w-0 flex-1 rounded-xl px-2 py-1.5 text-left"
                       >
                         <div className="flex items-start justify-between gap-3">
-                          <p className="truncate text-sm font-semibold text-white">{document.title}</p>
-                          {activeDocumentId === document.id ? (
+                          <p className="truncate text-sm font-semibold text-white">{doc.title}</p>
+                          {activeDocumentId === doc.id ? (
                             <span className="shrink-0 rounded-full bg-accent/20 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-accent">
                               Open
                             </span>
                           ) : null}
                         </div>
-                        <p className="mt-1 text-xs uppercase tracking-[0.2em] text-body">{document.language}</p>
-                        <p className="mt-2 text-xs text-body">
-                          Updated {new Date(document.updatedAt).toLocaleString()}
-                        </p>
+                        <p className="mt-1 text-xs uppercase tracking-[0.2em] text-muted">{doc.language}</p>
+                        <p className="mt-2 text-xs text-muted">Updated {new Date(doc.updatedAt).toLocaleString()}</p>
                       </button>
                       <div className="flex shrink-0 flex-col gap-2">
                         <button
                           type="button"
-                          onClick={(event) => handleShareSavedDocument(event, document)}
+                          onClick={(e) => handleShareSavedDocument(e, doc)}
                           className="rounded-xl border border-white/10 px-3 py-2 text-xs font-semibold text-white transition hover:border-accent hover:text-accent"
                         >
                           Share
                         </button>
                         <button
                           type="button"
-                          onClick={(event) => handleDeleteDocument(event, document)}
+                          onClick={(e) => handleDeleteDocument(e, doc)}
                           className="rounded-xl border border-red-500/30 px-3 py-2 text-xs font-semibold text-white transition hover:border-red-500 hover:bg-red-500 hover:text-white"
                         >
                           Delete
@@ -439,33 +424,33 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
             ) : null}
           </aside>
 
-          <section className="min-w-0 rounded-3xl bg-card p-4 outline -outline-offset-1 outline-white/10">
+          <section className="min-w-0 rounded-3xl bg-surface p-4 outline -outline-offset-1 outline-white/10">
             <div className="flex flex-col gap-3 xl:flex-row xl:items-end">
               <div className="min-w-0 flex-1">
-                <label htmlFor="snippet-title" className="mb-2 font-mono block text-s text-base font-semibold text-white">
+                <label htmlFor="snippet-title" className="mb-2 block text-base font-semibold text-white font-mono">
                   Document title
                 </label>
                 <input
                   id="snippet-title"
                   value={title}
-                  onChange={(event) => setTitle(event.target.value)}
+                  onChange={(e) => setTitle(e.target.value)}
                   className="block w-full rounded-xl bg-white/5 px-4 py-3 text-sm text-white outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-accent"
                 />
               </div>
 
               <div className="xl:w-52">
-                <label htmlFor="language" className="mb-2 mt-2 font-mono block text-s text-base font-semibold text-white">
+                <label htmlFor="language" className="mb-2 block text-base font-semibold text-white font-mono">
                   Language
                 </label>
                 <div className="relative">
                   <select
                     id="language"
                     value={language}
-                    onChange={(event) => handleLanguageChange(event.target.value)}
+                    onChange={(e) => handleLanguageChange(e.target.value)}
                     className="block w-full appearance-none rounded-xl bg-white/5 px-4 py-3 pr-12 text-sm text-white outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-accent"
                   >
                     {languageOptions.map((option) => (
-                      <option key={option.value} value={option.value} className="bg-card text-white">
+                      <option key={option.value} value={option.value} className="bg-surface text-white">
                         {option.label}
                       </option>
                     ))}
@@ -485,11 +470,10 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
               <button
                 type="button"
                 onClick={handleSave}
-                className="inline-flex shrink-0 items-center justify-center gap-x-2 rounded-md border  bg-accent border-accent/10 px-4 py-3 text-sm font-semibold text-black shadow-none transition-shadow duration-300 hover:shadow-[0_0_22px_rgba(158,255,31,0.55)]"
+                className="inline-flex shrink-0 items-center justify-center gap-x-2 rounded-md border border-accent/10 bg-accent px-4 py-3 text-sm font-semibold text-black shadow-none transition-shadow duration-300 hover:shadow-[0_0_22px_color-mix(in_srgb,var(--color-accent)_55%,transparent)]"
               >
-                <CloudArrowUpIcon aria-hidden="true" className="size-5"/>
+                <CloudArrowUpIcon aria-hidden="true" className="size-5" />
                 Save
-
               </button>
 
               <button
@@ -501,14 +485,14 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
               </button>
             </div>
 
-            <div className="mt-4 rounded-2xl border border-white/10   bg-[#1e1e1e] p-3">
+            <div className="mt-4 rounded-2xl border border-white/10 bg-[#1e1e1e] p-3">
               <div className="min-h-28rem w-full resize-none rounded-xl bg-transparent p-4 font-mono text-sm leading-7 text-white outline-none">
                 <Suspense
-                  fallback={(
+                  fallback={
                     <div className="flex h-[70vh] items-center justify-center rounded-xl border border-white/10 bg-black/30 text-sm text-gray-400">
                       Loading editor...
-                    </div>  
-                  )}
+                    </div>
+                  }
                 >
                   <Editor
                     height="70vh"
@@ -516,11 +500,7 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
                     language={language}
                     value={code}
                     onChange={(value) => setCode(value ?? '')}
-                    options={{
-                      minimap: { enabled: false },
-                      fontSize: 14,
-                      automaticLayout: true,
-                    }}
+                    options={{ minimap: { enabled: false }, fontSize: 14, automaticLayout: true }}
                   />
                 </Suspense>
               </div>
@@ -529,23 +509,22 @@ export default function Playground({ onNavigate, routeSearch = '', currentUser, 
             <div className="mt-4 grid gap-3 xl:grid-cols-[minmax(0,1fr)_18rem]">
               <div className="rounded-2xl border border-white/10 bg-black/20 p-3.5">
                 <p className="text-base font-semibold text-white">Storage rules</p>
-                <ul className="mt-3 space-y-1.5 pl-5 text-body text-sm/6 list-disc marker:text-accent">
+                <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm/6 text-muted marker:text-accent">
                   <li>Saved snippets stay attached to your account.</li>
                   <li>You need to be signed in to save or share a snippet.</li>
                   <li>Shared links reopen the last saved version of a shared snippet.</li>
                 </ul>
               </div>
-
               <div className="rounded-2xl border border-white/10 bg-black/20 p-3.5">
                 <p className="text-base font-semibold text-white">Status</p>
-                <p className="mt-3 text-sm/6 text-body">{notice || 'No recent activity.'}</p>
+                <p className="mt-3 text-sm/6 text-muted">{notice || 'No recent activity.'}</p>
               </div>
             </div>
           </section>
         </div>
       </main>
 
-      <SiteFooter />
+      <AppFooter />
       <ConfirmationMessage open={showSaveConfirmation} message="Document saved successfully." />
       <AlertDialogBox
         open={Boolean(documentPendingDelete)}

@@ -1,21 +1,16 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey =
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
+const supabaseAnonKey = (
   import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY ||
   import.meta.env.VITE_SUPABASE_ANON_KEY
+) as string
 
 function createSessionStorageAdapter() {
   return {
-    getItem(key) {
-      return window.sessionStorage.getItem(key)
-    },
-    setItem(key, value) {
-      window.sessionStorage.setItem(key, value)
-    },
-    removeItem(key) {
-      window.sessionStorage.removeItem(key)
-    },
+    getItem: (key: string) => window.sessionStorage.getItem(key),
+    setItem: (key: string, value: string) => window.sessionStorage.setItem(key, value),
+    removeItem: (key: string) => window.sessionStorage.removeItem(key),
   }
 }
 
