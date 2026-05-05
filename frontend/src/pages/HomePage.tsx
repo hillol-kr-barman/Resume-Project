@@ -200,7 +200,7 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
 
       {/* Featured Projects */}
       <div className="mx-auto mb-24 mt-32 max-w-6xl px-5 lg:px-6">
-        <h2 className="type-section-title text-center">Featured Project</h2>
+        <h2 className="type-section-title text-center">Featured Projects</h2>
         <div className="mx-auto mt-8 grid max-w-md grid-cols-1 gap-4">
           {featuredProjects.map((project) => (
             <ProjectCard key={project.id} project={project} />

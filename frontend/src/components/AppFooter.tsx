@@ -7,7 +7,7 @@ export default function AppFooter() {
       navItems={navigation}
       socials={socials}
       ownerName="Hillol Barman"
-      copyrightSuffix="Software engineering portfolio"
+      copyrightSuffix="Software Engineering Portfolio"
     />
   )
 }
