@@ -108,7 +108,7 @@ export default function HomePage({ onNavigate, currentUser, onLogout, currentPat
       <AppHeader onNavigate={onNavigate} currentUser={currentUser} onLogout={onLogout} currentPath={currentPath} />
 
       {/* Hero Section */}
-      <div className="relative isolate overflow-hidden pt-32">
+      <div className="relative isolate overflow-hidden -mt-14 pt-34">
         <BackgroundBeams className="-z-10" />
         <div className="mx-auto max-w-6xl px-5 pb-18 pt-10 sm:pb-22 lg:px-6 lg:pb-24 lg:pt-18">
           <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
