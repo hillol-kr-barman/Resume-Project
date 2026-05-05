@@ -13,10 +13,9 @@ interface AppHeaderProps {
 export default function AppHeader({ currentPath, currentUser, onNavigate, onLogout }: AppHeaderProps) {
   return (
     <SiteHeader
-      navItems={navigation}
-      logoSrc={logo}
-      logoAlt="Hillol Barman"
+      logo={<img src={logo} alt="Hillol Barman" className="h-8 w-auto" />}
       siteName="Hillol Barman"
+      navItems={navigation}
       currentPath={currentPath}
       currentUser={currentUser}
       onNavigate={onNavigate}
